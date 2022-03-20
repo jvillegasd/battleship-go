@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="34" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="34" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="4">
  <tileset firstgid="1" source="sea.tsx"/>
- <layer id="1" name="BottomLayer" width="34" height="34" locked="1">
+ <layer id="1" name="BottomLayer" width="34" height="34">
   <data encoding="csv">
 68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,32,32,68,68,68,68,68,32,68,32,
 68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,32,32,32,68,68,32,32,
@@ -39,7 +39,7 @@
 32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32
 </data>
  </layer>
- <layer id="2" name="TopLayer" width="34" height="34">
+ <layer id="2" name="TopLayer" width="34" height="34" locked="1">
   <data encoding="csv">
 0,0,0,0,135,0,0,0,0,0,129,0,0,0,135,0,0,0,0,0,136,137,138,0,68,68,68,139,68,139,68,68,111,0,
 0,0,0,136,137,138,139,0,0,142,0,0,139,0,146,137,147,147,147,137,148,149,0,0,68,139,68,68,68,68,111,111,0,0,
