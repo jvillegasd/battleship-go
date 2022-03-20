@@ -1,4 +1,3 @@
-from audioop import cross
 import os
 import pygame
 
@@ -19,23 +18,34 @@ SEA_MAP_IMAGE = pygame.image.load(
     os.path.join('assets', 'map', 'tiled_sea.png'))
 
 
-def draw_window(crosshair_group):
+def draw_window(sprite_groups):
     WIN.fill(BACKGROUND_COLOR)
     WIN.blit(SEA_MAP_IMAGE, (35, 45))
-    
-    crosshair_group.draw(WIN)
-    crosshair_group.update()
-    
+
+    for _, sprite_group in sprite_groups.items():
+        sprite_group.draw(WIN)
+        sprite_group.update()
+
     pygame.display.update()
 
 
 def main():
+    # Adding ship sprites
     new_carrier = Carrier(35, 45)
-    
+    ships_group = pygame.sprite.Group()
+    ships_group.add(new_carrier)
+
+    # Adding remaining sprites
     crosshair = Crosshair()
-    crosshair_group = pygame.sprite.Group()
-    crosshair_group.add(crosshair)
-  
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(crosshair)
+    
+    # Handle sprite group painting dynamically
+    sprite_groups = {
+      'ships': ships_group,
+      'all': all_sprites
+    }
+
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -44,7 +54,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-        draw_window(crosshair_group)
+        draw_window(sprite_groups)
 
     pygame.quit()
 

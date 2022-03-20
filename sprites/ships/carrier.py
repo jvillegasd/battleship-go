@@ -15,4 +15,4 @@ class Carrier(pygame.sprite.Sprite):
 
         self.life = None
         self.rect = self.image.get_rect()
-
+        self.rect.center = [pos_x, pos_y]
