@@ -1,7 +1,7 @@
 import os
 import pygame
 
-WIDTH, HEIGHT = 930, 640
+WIDTH, HEIGHT = 940, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Battleship')
 
@@ -12,7 +12,6 @@ FPS = 60
 
 SEA_MAP_IMAGE = pygame.image.load(
     os.path.join('assets', 'map', 'tiled_sea.png'))
-
 
 def draw_window():
     WIN.fill(BACKGROUND_COLOR)
