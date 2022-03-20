@@ -24,7 +24,7 @@ def main():
     clock = pygame.time.Clock()
     run = True
     while run:
-        clock.tick(FPS)
+        clock.tick(FPS)  # Force game loop to run at FPS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
