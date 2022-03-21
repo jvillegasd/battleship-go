@@ -6,33 +6,64 @@ GUI_FONT = pygame.font.Font(None, 30)
 
 
 class Button:
-    # https://www.youtube.com/watch?v=8SzTzvrWaAA&list=PLIqh2QXT_ndYs0GpAQ2Eldup4eLUoCDC-&index=12
+    """
+      This class represent a button GUI element for PyGame.
+      Resource: https://youtu.be/8SzTzvrWaAA
+    """
+
     def __init__(self,
                  text: str,
                  pos_x: float,
                  pos_y: float,
                  width: float,
                  height: float,
+                 elevation: int = 6,
                  btn_color: str = '#475F77',
+                 btn_bottom_color: str = '#354B5E',
                  btn_hover_color: str = '#D74B4B',
                  text_color: str = '#FFFFFF') -> None:
         super().__init__()
 
+        # Core attributes
         self.pressed = False
 
-        self.top_rect = pygame.Rect(pos_x, pos_y, width, height)
+        # Button colors
         self.top_color = btn_color
         self.current_top_color = btn_color
         self.top_hover_color = btn_hover_color
+        self.bottom_color = btn_bottom_color
 
+        # Elevation
+        self.elevation = elevation
+        self.dynamic_elevation = elevation
+        self.original_pos_y = pos_y
+
+        # Top rectangle
+        self.top_rect = pygame.Rect(pos_x, pos_y, width, height)
+
+        # Text rectangle
         self.text_surf = GUI_FONT.render(text, True, text_color)
         self.text_rect = self.text_surf.get_rect(center=self.top_rect.center)
+
+        # Bottom rectangle
+        self.bottom_rect = pygame.Rect(pos_x, pos_y, width, self.elevation)
 
     def draw(self, window: pygame.display) -> None:
         """
           This method draws button on window. 
         """
 
+        # Elevation logic
+        self.top_rect.y = self.original_pos_y - self.dynamic_elevation
+        self.text_rect.center = self.top_rect.center
+
+        # Draw bottom button
+        self.bottom_rect.midtop = self.top_rect.midtop
+        self.bottom_rect.height = self.top_rect.height + self.dynamic_elevation
+        pygame.draw.rect(window, self.bottom_color,
+                         self.bottom_rect, border_radius=12)
+
+        # Draw top button
         pygame.draw.rect(window, self.current_top_color,
                          self.top_rect, border_radius=12)
         window.blit(self.text_surf, self.text_rect)
@@ -47,13 +78,16 @@ class Button:
         action = False
         mouse_pos = pygame.mouse.get_pos()
         if self.top_rect.collidepoint(mouse_pos):
+            self.dynamic_elevation = 0
             self.current_top_color = self.top_hover_color
             if pygame.mouse.get_pressed()[0] and not self.pressed:
                 action = True
                 self.pressed = True
             elif not pygame.mouse.get_pressed()[0]:
                 self.pressed = False
+                self.dynamic_elevation = self.elevation
         else:
-          self.current_top_color = self.top_color
-        
+            self.dynamic_elevation = self.elevation
+            self.current_top_color = self.top_color
+
         return action
