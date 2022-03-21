@@ -4,7 +4,7 @@ import pygame
 
 class Carrier(pygame.sprite.Sprite):
 
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, pos_x: float, pos_y: float) -> None:
         super().__init__()
 
         self.width, self.height = 47, 187
