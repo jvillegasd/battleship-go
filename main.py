@@ -3,6 +3,11 @@ import pygame
 
 from gui.button import Button
 from sprites.carrier import Carrier
+from sprites.battleship import Battleship
+from sprites.cruiser import Cruiser
+from sprites.destroyer import Destroyer
+from sprites.plane import Plane
+from sprites.submarine import Submarine
 
 WIDTH, HEIGHT = 940, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,8 +29,8 @@ def create_gui_items() -> dict:
     
     start_button = Button(
         text='Start game!',
-        pos_x=20,
-        pos_y=20,
+        pos_x=95,
+        pos_y=400,
         width=200,
         height=40
     )
@@ -45,8 +50,13 @@ def create_ships_sprites() -> pygame.sprite.Group:
     
     ships_group = pygame.sprite.Group()
     new_carrier = Carrier(35, 45)
+    new_battleship = Battleship(35, 45)
+    new_cruiser = Cruiser(35, 45)
+    new_destroyer = Destroyer(35, 45)
+    new_plane = Plane(35, 45)
+    new_submarine = Submarine(35, 45)
     
-    ships_group.add(new_carrier)
+    ships_group.add(new_submarine)
     
     return ships_group
 
@@ -74,7 +84,7 @@ def draw_window(sprite_groups: dict, gui_items: dict) -> None:
 def main():
     # Handle sprite group painting dynamically
     ships_group = create_ships_sprites()
-    sprite_groups = {}
+    sprite_groups = {'ships': ships_group}
 
     # Handling GUI elements painting dynamically
     gui_items = create_gui_items()
