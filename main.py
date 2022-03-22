@@ -2,7 +2,7 @@ import os
 import pygame
 
 from gui.button import Button
-from sprites.carrier import Carrier
+from sprites.rescue_ship import RescueShip
 from sprites.battleship import Battleship
 from sprites.cruiser import Cruiser
 from sprites.destroyer import Destroyer
@@ -49,13 +49,16 @@ def create_ships_sprites() -> pygame.sprite.Group:
     """
     
     ships_group = pygame.sprite.Group()
-    new_carrier = Carrier(35, 45)
-    new_battleship = Battleship(35, 45)
-    new_cruiser = Cruiser(35, 45)
-    new_destroyer = Destroyer(35, 45)
-    new_plane = Plane(35, 45)
-    new_submarine = Submarine(35, 45)
+    new_carrier = RescueShip(43, 313)
+    new_battleship = Battleship(75, 150)
+    new_cruiser = Cruiser(155, 300)
+    new_destroyer = Destroyer(250, 300)
+    new_submarine = Submarine(250, 154)
     
+    ships_group.add(new_carrier)
+    ships_group.add(new_battleship)
+    ships_group.add(new_cruiser)
+    ships_group.add(new_destroyer)
     ships_group.add(new_submarine)
     
     return ships_group
