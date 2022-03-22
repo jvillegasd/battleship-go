@@ -85,9 +85,12 @@ def draw_window(sprite_groups: dict, gui_items: dict) -> None:
 
 
 def main():
+    # Handle game state
+    game_started = False
+  
     # Handle sprite group painting dynamically
     ships_group = create_ships_sprites()
-    sprite_groups = {'ships': ships_group}
+    sprite_groups = {}
 
     # Handling GUI elements painting dynamically
     gui_items = create_gui_items()
@@ -110,6 +113,9 @@ def main():
 
         if gui_items['start_button'].click():
             print('clicked')
+            if not game_started:
+              game_started = True
+              sprite_groups['ships'] = ships_group
 
     pygame.quit()
 
