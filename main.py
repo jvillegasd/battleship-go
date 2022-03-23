@@ -8,6 +8,7 @@ from sprites.cruiser import Cruiser
 from sprites.destroyer import Destroyer
 from sprites.plane import Plane
 from sprites.submarine import Submarine
+from gui.grid import Grid
 
 WIDTH, HEIGHT = 940, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -17,9 +18,6 @@ pygame.display.set_caption('Battleship')
 BACKGROUND_COLOR = (231, 231, 219)
 
 FPS = 60
-
-SEA_MAP_IMAGE = pygame.image.load(
-    os.path.join('assets', 'map', 'tiled_sea.png'))
 
 
 def create_gui_items() -> dict:
@@ -34,9 +32,14 @@ def create_gui_items() -> dict:
         width=200,
         height=40
     )
+    grid = Grid(
+      pos_x=35,
+      pos_y=45
+    )
 
     gui_items = {
-        'start_button': start_button
+        'start_button': start_button,
+        'map': grid
     }
 
     return gui_items
@@ -71,7 +74,6 @@ def draw_window(sprite_groups: dict, gui_items: dict) -> None:
 
     # Draw background
     WIN.fill(BACKGROUND_COLOR)
-    WIN.blit(SEA_MAP_IMAGE, (35, 45))
 
     # Draw GUI
     for _, gui_item in gui_items.items():

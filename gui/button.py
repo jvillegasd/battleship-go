@@ -1,4 +1,3 @@
-import os
 import pygame
 
 pygame.font.init()
