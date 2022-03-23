@@ -1,5 +1,6 @@
 import os
 import pygame
+from gui.grid import Grid
 
 
 class Battleship(pygame.sprite.Sprite):
@@ -13,3 +14,15 @@ class Battleship(pygame.sprite.Sprite):
         self.life = None
         self.rect = self.image.get_rect()
         self.rect.center = [pos_x, pos_y]
+
+    def get_dimensions(self):
+        return self.image.get_width(), self.image.get_height()
+    
+    
+
+    def get_location_from_grid(self, grid: Grid):
+        grid_width, grid_height = grid.get_dimensions()
+        ship_width, ship_height = self.get_dimensions()
+
+    def drag_and_drop(self, grid: Grid) -> None:
+        pass

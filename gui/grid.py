@@ -1,5 +1,7 @@
 import os
+import math
 import pygame
+from typing import Tuple
 
 
 class Grid:
@@ -20,5 +22,13 @@ class Grid:
     def draw(self, window: pygame.display) -> None:
         window.blit(self.image, (self.pos_x, self.pos_y))
 
-    def calculate_grid(self) -> None:
-        print(self.image.get_width(), self.image.get_height())
+    def get_dimensions(self) -> Tuple[float, float]:
+        return self.image.get_width(), self.image.get_height()
+
+    def get_rescaled_dimensions(self) -> Tuple[float, float]:
+        width, height = self.get_dimensions()
+        return math.floor(width / self.tile_size), math.floor(height / self.tile_size)
+
+    def translate_positions(self, pos_x: float, pos_y: float) -> Tuple[float, float]:
+        rescaled_width, rescaled_height = self.get_rescaled_dimensions()
+        return math.floor(pos_x / rescaled_width), math.floor(pos_y / rescaled_height)

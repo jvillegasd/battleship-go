@@ -82,6 +82,8 @@ def draw_window(sprite_groups: dict, gui_items: dict) -> None:
     # Draw sprite groups
     for _, sprite_group in sprite_groups.items():
         sprite_group.draw(WIN)
+    
+    pygame.draw.circle(WIN ,(200,0,0), (75,150),5)
 
     pygame.display.update()
 
