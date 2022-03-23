@@ -20,15 +20,30 @@ class Grid:
             os.path.join('assets', 'map', 'tiled_sea.png'))
 
     def draw(self, window: pygame.display) -> None:
+        """
+          This method draws grid on window.
+        """
         window.blit(self.image, (self.pos_x, self.pos_y))
 
     def get_dimensions(self) -> Tuple[float, float]:
+        """
+          This method returns image grid dimension
+        """
         return self.image.get_width(), self.image.get_height()
 
     def get_rescaled_dimensions(self) -> Tuple[float, float]:
+        """
+          This method re-scales grid dimension using tile_size in order
+          to standardize coordinates.
+        """
+        
         width, height = self.get_dimensions()
         return math.floor(width / self.tile_size), math.floor(height / self.tile_size)
 
-    def translate_positions(self, pos_x: float, pos_y: float) -> Tuple[float, float]:
+    def translate_position(self, pos_x: float, pos_y: float) -> Tuple[float, float]:
+        """
+          This method translates (x, y) position into re-scaled grid.
+        """
+        
         rescaled_width, rescaled_height = self.get_rescaled_dimensions()
         return math.floor(pos_x / rescaled_width), math.floor(pos_y / rescaled_height)
