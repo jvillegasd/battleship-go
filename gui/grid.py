@@ -1,5 +1,4 @@
 import os
-import math
 import pygame
 from typing import Tuple
 
@@ -18,12 +17,41 @@ class Grid:
         self.tile_size = 16
         self.image = pygame.image.load(
             os.path.join('assets', 'map', 'tiled_sea.png'))
+        self.rect = self.image.get_rect()
+
+    def get_tile_under_mouse(self) -> Tuple[int, int]:
+        """
+          This method calculates the current selected tile
+          of the grid by mouse.
+        """
+        
+        # Translate mouse position to grid space
+        x, y = self.translate_position(pygame.mouse.get_pos())
+        final_x, final_y = self.get_rescaled_dimensions()
+
+        if x >= 0 and y >= 0 and x < final_x and y < final_y:
+            return x, y
+        else:
+            return None, None
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws grid on window.
+          This method draws grid and current selected tile
+          if mouse is over grid on window.
         """
+
+        # Draw grid
         window.blit(self.image, (self.pos_x, self.pos_y))
+
+        # Draw mouse tile selection
+        square_x, square_y = self.get_tile_under_mouse()
+        if square_x is not None:
+            square_color = (255, 0, 0)
+            square_pos = (self.pos_x + square_x * self.tile_size,
+                          self.pos_y + square_y * self.tile_size)
+            square_size = (self.tile_size, self.tile_size)
+            pygame.draw.rect(window, square_color,
+                             (square_pos, square_size), 2)
 
     def get_dimensions(self) -> Tuple[float, float]:
         """
@@ -36,14 +64,21 @@ class Grid:
           This method re-scales grid dimension using tile_size in order
           to standardize coordinates.
         """
-        
-        width, height = self.get_dimensions()
-        return math.floor(width / self.tile_size), math.floor(height / self.tile_size)
 
-    def translate_position(self, pos_x: float, pos_y: float) -> Tuple[float, float]:
+        width, height = self.get_dimensions()
+        return int(width // self.tile_size), int(height // self.tile_size)
+
+    def translate_position(self, position: Tuple[int, int]) -> Tuple[float, float]:
         """
           This method translates (x, y) position into re-scaled grid.
         """
-        
-        rescaled_width, rescaled_height = self.get_rescaled_dimensions()
-        return math.floor(pos_x / rescaled_width), math.floor(pos_y / rescaled_height)
+
+        position_with_offset = pygame.Vector2(
+            position) - (self.pos_x, self.pos_y)
+        return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
+
+    def is_ship_inside(self, ship) -> bool:
+        """
+          This method checks if ship is completely inside in grid.
+        """
+        return self.rect.contains(ship.rect)

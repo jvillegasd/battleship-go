@@ -99,11 +99,9 @@ def main():
     # Handling GUI elements painting dynamically
     gui_items = create_gui_items()
 
-    # TODO: Create "Start" button to show up Ships to place
-    # TODO: Create Ships options to place
-    # https://stackoverflow.com/questions/19877900/tips-on-adding-creating-a-drop-down-selection-box-in-pygame
-    # https://stackoverflow.com/questions/30751547/python-pygame-how-to-create-a-drag-and-drop-with-multiple-images
+    
     # https://stackoverflow.com/questions/56984542/is-there-an-effiecient-way-of-making-a-function-to-drag-and-drop-multiple-pngs
+    # https://stackoverflow.com/questions/30751547/python-pygame-how-to-create-a-drag-and-drop-with-multiple-images
 
     clock = pygame.time.Clock()
     run = True
