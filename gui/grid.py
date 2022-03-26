@@ -80,7 +80,8 @@ class Grid:
     def dragged_ship_position(self, ship):
       x, y = self.translate_position((ship.rect.x, ship.rect.y))
       print('ship', x, y, 'rect', ship.rect.x, ship.rect.y)
-      # TODO: Recalculate ship.rect (x, y) coordinates using translated position
+      # TODO: Use ship.rect.center as pivot in order to drop ship in new location
+      # TODO: ship.rect.center has to be in boundaries and is_ship_inside == True
       
       inversed_x = x * self.tile_size
       inversed_y = y * self.tile_size
