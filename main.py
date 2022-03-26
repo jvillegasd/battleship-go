@@ -1,5 +1,5 @@
-import os
 import pygame
+from typing import Tuple
 
 from gui.button import Button
 from sprites.rescue_ship import RescueShip
@@ -24,7 +24,7 @@ def create_gui_items() -> dict:
     """
       This method creates gui items used in screen.
     """
-    
+
     start_button = Button(
         text='Start game!',
         pos_x=95,
@@ -33,8 +33,8 @@ def create_gui_items() -> dict:
         height=40
     )
     grid = Grid(
-      pos_x=35,
-      pos_y=45
+        pos_x=35,
+        pos_y=45
     )
 
     gui_items = {
@@ -45,29 +45,28 @@ def create_gui_items() -> dict:
     return gui_items
 
 
-def create_ships_sprites() -> pygame.sprite.Group:
+def create_ships() -> Tuple[list, list]:
     """
-      This method creates all ship sprites and add them to
-      an sprite group.
+      This method creates all ships and return two list
+      refering to them and their rects.
     """
+
+    ships = []
+    ships_rect = []
     
-    ships_group = pygame.sprite.Group()
     new_carrier = RescueShip(43, 313)
     new_battleship = Battleship(75, 150)
     new_cruiser = Cruiser(155, 300)
     new_destroyer = Destroyer(250, 300)
     new_submarine = Submarine(250, 154)
-    
-    ships_group.add(new_carrier)
-    ships_group.add(new_battleship)
-    ships_group.add(new_cruiser)
-    ships_group.add(new_destroyer)
-    ships_group.add(new_submarine)
-    
-    return ships_group
+
+    ships.append(new_battleship)
+    ships_rect.append(new_battleship.rect)
+
+    return ships, ships_rect
 
 
-def draw_window(sprite_groups: dict, gui_items: dict) -> None:
+def draw_window(gui_items: dict) -> None:
     """
       This method draws everything to the main window.
     """
@@ -77,31 +76,44 @@ def draw_window(sprite_groups: dict, gui_items: dict) -> None:
 
     # Draw GUI
     for _, gui_item in gui_items.items():
-        gui_item.draw(WIN)
-
-    # Draw sprite groups
-    for _, sprite_group in sprite_groups.items():
-        sprite_group.draw(WIN)
-    
-    pygame.draw.circle(WIN ,(200,0,0), (75,150),5)
+        if type(gui_item) == list:
+            for item in gui_item:
+                item.draw(WIN)
+        else:
+            gui_item.draw(WIN)
 
     pygame.display.update()
 
 
+def drag_and_drop_ships(event, ships: list, ships_rect: list, selected_ship: int) -> int:
+    """
+      This method handles mouse events when ships can be moved
+      from grid.
+    """
+    
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_rect = pygame.Rect(event.pos, (1, 1))
+        selected_ship = mouse_rect.collidelist(ships_rect)
+
+    if event.type == pygame.MOUSEMOTION:
+        if event.buttons[0]:
+            if 0 <= selected_ship < len(ships):
+                ships[selected_ship].move_ship(event.rel)
+                ships_rect[selected_ship] = ships[selected_ship].rect
+
+    return selected_ship
+
+
 def main():
-    # Handle game state
+    # Handle game state variables
     game_started = False
-  
-    # Handle sprite group painting dynamically
-    ships_group = create_ships_sprites()
-    sprite_groups = {}
+    selected_ship = -1
+
+    # Create ships and handle selected
+    ships, ships_rect = create_ships()
 
     # Handling GUI elements painting dynamically
     gui_items = create_gui_items()
-
-    
-    # https://stackoverflow.com/questions/56984542/is-there-an-effiecient-way-of-making-a-function-to-drag-and-drop-multiple-pngs
-    # https://stackoverflow.com/questions/30751547/python-pygame-how-to-create-a-drag-and-drop-with-multiple-images
 
     clock = pygame.time.Clock()
     run = True
@@ -111,13 +123,16 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-        draw_window(sprite_groups, gui_items)
+            if game_started:
+                selected_ship = drag_and_drop_ships(
+                    event, ships, ships_rect, selected_ship)
 
         if gui_items['start_button'].click():
-            print('clicked')
             if not game_started:
-              game_started = True
-              sprite_groups['ships'] = ships_group
+                game_started = True
+                gui_items['ships'] = ships
+        
+        draw_window(gui_items)
 
     pygame.quit()
 
