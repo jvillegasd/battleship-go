@@ -53,20 +53,12 @@ class Grid:
             pygame.draw.rect(window, square_color,
                              (square_pos, square_size), 2)
 
-    def get_dimensions(self) -> Tuple[float, float]:
-        """
-          This method returns image grid dimension
-        """
-        return self.image.get_width(), self.image.get_height()
-
     def get_rescaled_dimensions(self) -> Tuple[float, float]:
         """
           This method re-scales grid dimension using tile_size in order
           to standardize coordinates.
         """
-
-        width, height = self.get_dimensions()
-        return int(width // self.tile_size), int(height // self.tile_size)
+        return int(self.image.get_width() // self.tile_size), int(self.image.get_height() // self.tile_size)
 
     def translate_position(self, position: Tuple[int, int]) -> Tuple[float, float]:
         """
