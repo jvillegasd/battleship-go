@@ -53,7 +53,7 @@ def create_ships() -> Tuple[list, list]:
 
     ships = []
     ships_rect = []
-    
+
     new_carrier = RescueShip(43, 313)
     new_battleship = Battleship(75, 150)
     new_cruiser = Cruiser(155, 300)
@@ -84,17 +84,22 @@ def draw_window(gui_items: dict) -> None:
 
     # Draw selected tile if grid is loaded
     if 'map' in gui_items:
-      gui_items['map'].draw_selected_tile(WIN)
-    
+        gui_items['map'].draw_selected_tile(WIN)
+
     pygame.display.update()
 
 
-def drag_and_drop_ships(event, ships: list, ships_rect: list, selected_ship: int) -> int:
+def drag_and_drop_ships(
+        event,
+        grid: Grid,
+        ships: list,
+        ships_rect: list,
+        selected_ship: int) -> int:
     """
       This method handles mouse events when ships can be moved
       from grid.
     """
-    
+
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_rect = pygame.Rect(event.pos, (1, 1))
         selected_ship = mouse_rect.collidelist(ships_rect)
@@ -104,6 +109,11 @@ def drag_and_drop_ships(event, ships: list, ships_rect: list, selected_ship: int
             if 0 <= selected_ship < len(ships):
                 ships[selected_ship].move_ship(event.rel)
                 ships_rect[selected_ship] = ships[selected_ship].rect
+
+    if event.type == pygame.MOUSEBUTTONUP:
+        if 0 <= selected_ship < len(ships):
+            grid.dragged_ship_position(ships[selected_ship])
+            ships_rect[selected_ship] = ships[selected_ship].rect
 
     return selected_ship
 
@@ -129,13 +139,13 @@ def main():
 
             if game_started:
                 selected_ship = drag_and_drop_ships(
-                    event, ships, ships_rect, selected_ship)
+                    event, gui_items['map'], ships, ships_rect, selected_ship)
 
         if gui_items['start_button'].click():
             if not game_started:
                 game_started = True
                 gui_items['ships'] = ships
-        
+
         draw_window(gui_items)
 
     pygame.quit()

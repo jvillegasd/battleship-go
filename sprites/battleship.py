@@ -19,4 +19,9 @@ class Battleship:
         self.rect.y += delta[1]
     
     def draw(self, window):
-        window.blit(self.image, self.rect)
+        # window.blit(self.image, self.rect)
+        
+        width = self.image.get_width()
+        height = self.image.get_height()
+        pygame.draw.rect(window, (255,0,0), (self.rect.x, self.rect.y, width, height), 1, border_radius=1)
+        pygame.draw.circle(window, (255,0,0), self.rect.center, 4) 

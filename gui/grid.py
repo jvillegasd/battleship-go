@@ -76,3 +76,16 @@ class Grid:
           This method checks if ship is completely inside in grid.
         """
         return self.rect.contains(ship.rect)
+
+    def dragged_ship_position(self, ship):
+      x, y = self.translate_position((ship.rect.x, ship.rect.y))
+      print('ship', x, y, 'rect', ship.rect.x, ship.rect.y)
+      # TODO: Recalculate ship.rect (x, y) coordinates using translated position
+      
+      inversed_x = x * self.tile_size
+      inversed_y = y * self.tile_size
+      
+      position_without_offset = pygame.Vector2((inversed_x, inversed_y)) + (self.pos_x, self.pos_y)
+      
+      ship.rect.x = position_without_offset[0]
+      ship.rect.y = position_without_offset[1]
