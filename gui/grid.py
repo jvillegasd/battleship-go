@@ -36,14 +36,16 @@ class Grid:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws grid and current selected tile
+          This method draws grid on window.
+        """
+        window.blit(self.image, (self.pos_x, self.pos_y))
+    
+    def draw_selected_tile(self, window: pygame.display) -> None:
+        """
+          This method draws current selected tile
           if mouse is over grid on window.
         """
-
-        # Draw grid
-        window.blit(self.image, (self.pos_x, self.pos_y))
-
-        # Draw mouse tile selection
+        
         square_x, square_y = self.get_tile_under_mouse()
         if square_x is not None:
             square_color = (255, 0, 0)

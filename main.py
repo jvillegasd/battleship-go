@@ -74,7 +74,7 @@ def draw_window(gui_items: dict) -> None:
     # Draw background
     WIN.fill(BACKGROUND_COLOR)
 
-    # Draw GUI
+    # Draw GUI items
     for _, gui_item in gui_items.items():
         if type(gui_item) == list:
             for item in gui_item:
@@ -82,6 +82,10 @@ def draw_window(gui_items: dict) -> None:
         else:
             gui_item.draw(WIN)
 
+    # Draw selected tile if grid is loaded
+    if 'map' in gui_items:
+      gui_items['map'].draw_selected_tile(WIN)
+    
     pygame.display.update()
 
 
