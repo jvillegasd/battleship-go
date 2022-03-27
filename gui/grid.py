@@ -17,14 +17,20 @@ class Grid:
         self.tile_size = 16
         self.image = pygame.image.load(
             os.path.join('assets', 'map', 'tiled_sea.png'))
+
         self.rect = self.image.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+
+        # Inflate rect width to handle 'is_ship_inside' validation at boundaries
+        self.rect = self.rect.inflate(20, 0)
 
     def get_tile_under_mouse(self) -> Tuple[int, int]:
         """
           This method calculates the current selected tile
           of the grid by mouse.
         """
-        
+
         # Translate mouse position to grid space
         x, y = self.translate_position(pygame.mouse.get_pos())
         final_x, final_y = self.get_rescaled_dimensions()
@@ -38,6 +44,7 @@ class Grid:
         """
           This method draws grid on window.
         """
+        # Image is drawed using initial position due to self.rect is inflated
         window.blit(self.image, (self.pos_x, self.pos_y))
     
     def draw_selected_tile(self, window: pygame.display) -> None:
@@ -45,7 +52,7 @@ class Grid:
           This method draws current selected tile
           if mouse is over grid on window.
         """
-        
+
         square_x, square_y = self.get_tile_under_mouse()
         if square_x is not None:
             square_color = (255, 0, 0)
@@ -67,8 +74,8 @@ class Grid:
           This method translates (x, y) position into re-scaled grid.
         """
 
-        position_with_offset = pygame.Vector2(
-            position) - (self.pos_x, self.pos_y)
+        grid_offset = (self.pos_x, self.pos_y)
+        position_with_offset = pygame.Vector2(position) - grid_offset
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
 
     def is_ship_inside(self, ship) -> bool:
@@ -76,17 +83,3 @@ class Grid:
           This method checks if ship is completely inside in grid.
         """
         return self.rect.contains(ship.rect)
-
-    def dragged_ship_position(self, ship):
-      x, y = self.translate_position((ship.rect.x, ship.rect.y))
-      print('ship', x, y, 'rect', ship.rect.x, ship.rect.y)
-      # TODO: Use ship.rect.center as pivot in order to drop ship in new location
-      # TODO: ship.rect.center has to be in boundaries and is_ship_inside == True
-      
-      inversed_x = x * self.tile_size
-      inversed_y = y * self.tile_size
-      
-      position_without_offset = pygame.Vector2((inversed_x, inversed_y)) + (self.pos_x, self.pos_y)
-      
-      ship.rect.x = position_without_offset[0]
-      ship.rect.y = position_without_offset[1]

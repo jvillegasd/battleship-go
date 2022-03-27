@@ -107,12 +107,12 @@ def drag_and_drop_ships(
     if event.type == pygame.MOUSEMOTION:
         if event.buttons[0]:
             if 0 <= selected_ship < len(ships):
-                ships[selected_ship].move_ship(event.rel)
+                ships[selected_ship].move_ship(event.rel, grid)
                 ships_rect[selected_ship] = ships[selected_ship].rect
 
     if event.type == pygame.MOUSEBUTTONUP:
         if 0 <= selected_ship < len(ships):
-            grid.dragged_ship_position(ships[selected_ship])
+            ships[selected_ship].dragged_ship_position(grid)
             ships_rect[selected_ship] = ships[selected_ship].rect
 
     return selected_ship
