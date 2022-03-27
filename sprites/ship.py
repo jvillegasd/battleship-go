@@ -116,7 +116,7 @@ class Ship:
         self.is_vertical = not self.is_vertical
 
         # Rotate image and its rect
-        self.__rotate_ship_image()
+        self.__rotate_ship_image_and_rect()
 
         # Rotate collision rect
         self.__rotate_collision_rect()
@@ -126,7 +126,7 @@ class Ship:
             self.is_vertical = not self.is_vertical
 
             # Rollback image and its rect rotation
-            self.__rotate_ship_image(-90)
+            self.__rotate_ship_image_and_rect(rollback=True)
 
             # Rollback collision rect rotation
             self.__rotate_collision_rect()
@@ -159,13 +159,24 @@ class Ship:
                                          self.rect.width, self.rect.height), 1, border_radius=1)
         pygame.draw.circle(window, color, self.rect.center, 4)
 
-    def __rotate_ship_image_and_rect(self) -> None:
-        degree = 90 if not self.is_vertical else -90
+    def __rotate_ship_image_and_rect(self, rollback: bool = False) -> None:
+        """
+          This private method rotates ship image and
+          its rect.
+        """
+        
+        degree = 90 if not rollback else -90
         current_center = self.rect.center
         self.image = pygame.transform.rotate(self.image, degree)
         self.rect = self.image.get_rect(center=current_center)
 
     def __rotate_collision_rect(self) -> None:
+        """
+          This private method rotates ship collision rect.
+          This method takes current ship rect and inflates
+          depeding on tracked orientation.
+        """
+        
         self.collision_rect = self.rect
 
         # Inflate collision rect depending on orientation
