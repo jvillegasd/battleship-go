@@ -101,15 +101,15 @@ def draw_window() -> None:
     pygame.display.update()
 
 
-def drag_and_drop_ships(
+def drag_and_drop_ship(
         event,
         grid: Grid,
         ships: list,
         ships_rect: list,
         selected_ship: int) -> int:
     """
-      This method handles mouse events when ships can be moved
-      from grid.
+      This method handles necessary mouse events to drag and
+      drop ships over grid.
     """
 
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -137,7 +137,7 @@ def enable_ship_rotation(
         selected_ship: int) -> None:
 
     """
-
+      This method enables rotation button to selected ship.
     """
     
     # Add rotation button of selected ship to GUI
@@ -171,7 +171,7 @@ def main():
                 run = False
 
             if game_started:
-                selected_ship = drag_and_drop_ships(
+                selected_ship = drag_and_drop_ship(
                     event, GUI_ITEMS['map'], ships, ships_rect, selected_ship)
 
                 if 0 <= selected_ship < len(ships):
