@@ -52,12 +52,12 @@ def create_ships() -> Tuple[list, list]:
       refering to them and their rects.
     """
 
-    new_battleship = Battleship(75, 150)
+    new_battleship = Battleship(76, 157)
 
-    new_carrier = RescueShip(43, 150)
-    new_cruiser = Cruiser(155, 150)
-    new_destroyer = Destroyer(250, 150)
-    new_submarine = Submarine(280, 150)
+    new_carrier = RescueShip(51, 147)
+    new_cruiser = Cruiser(160, 149)
+    new_destroyer = Destroyer(257, 147)
+    new_submarine = Submarine(282, 158)
 
     ships = [
         new_carrier,
@@ -68,11 +68,11 @@ def create_ships() -> Tuple[list, list]:
     ]
 
     ships_rect = [
-        new_carrier.rect,
-        new_battleship.rect,
-        new_cruiser.rect,
-        new_destroyer.rect,
-        new_submarine.rect
+        new_carrier.collision_rect,
+        new_battleship.collision_rect,
+        new_cruiser.collision_rect,
+        new_destroyer.collision_rect,
+        new_submarine.collision_rect
     ]
 
     return ships, ships_rect
@@ -126,7 +126,7 @@ def drag_and_drop_ship(
             GUI_ITEMS.pop('rotate_ship', None)
             
             if 0 <= selected_ship < len(ships):
-                ships[selected_ship].move_ship(event.rel, grid)
+                ships[selected_ship].move_ship(event.rel, grid, ships_rect)
                 ships_rect[selected_ship] = ships[selected_ship].rect
 
     if event.type == pygame.MOUSEBUTTONUP:
