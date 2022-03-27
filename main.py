@@ -157,6 +157,12 @@ def enable_ship_rotation(
 
 def main():
     global GUI_ITEMS
+    
+    # TODO: After drop the dragged ship, checks if ship is not lying down from another ship
+    # TODO: Create button to lock positions and create 2d arrays to simulate game (mine and enemry)
+    # TODO: Create attack system and animations
+    # TODO: Create UI (For maps: Create tab system, chat)
+    # TODO: Create client-server networking for multiplayer
 
     # Handle game state variables
     game_started = False
