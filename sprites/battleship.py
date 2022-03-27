@@ -1,5 +1,4 @@
 import os
-import pygame
 from sprites.ship import Ship
 
 

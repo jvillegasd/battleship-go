@@ -2,8 +2,12 @@ import pygame
 from typing import Tuple
 from gui.grid import Grid
 
-class Ship:
 
+class Ship:
+    """
+      This class handles every ships common logic.
+    """
+    
     def __init__(self, image_path: str, pos_x: float, pos_y: float) -> None:
         self.image = pygame.image.load(image_path)
         self.life = None
@@ -12,6 +16,12 @@ class Ship:
         self.rect.x = pos_x
         self.rect.y = pos_y
 
+    def is_inside_grid(self, grid: Grid) -> bool:
+        """
+          This method checks if ship is completely inside in grid.
+        """
+        return grid.rect.contains(self.rect)
+    
     def move_ship(self, delta: Tuple[float, float], grid: Grid) -> None:
         """
           This method moves ship by adding a delta to current
@@ -22,11 +32,11 @@ class Ship:
         self.rect.x += delta[0]
         self.rect.y += delta[1]
         
-        if not grid.is_ship_inside(self):
+        if not self.is_inside_grid(grid):
             self.rect.x -= delta[0]
             self.rect.y -= delta[1]
     
-    def dragged_ship_position(self, grid: Grid) -> None:
+    def dragged_ship_position(self, grid: 'Grid') -> None:
         """
           This method calculates where to drop dragged ship in a valid 
           position of the grid.
