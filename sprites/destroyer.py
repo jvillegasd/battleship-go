@@ -1,15 +1,10 @@
 import os
-import pygame
+from sprites.ship import Ship
 
 
-class Destroyer(pygame.sprite.Sprite):
+class Destroyer(Ship):
 
     def __init__(self, pos_x: float, pos_y: float) -> None:
-        super().__init__()
-
-        self.image = pygame.image.load(os.path.join(
-            'assets', 'ships', 'destroyer', 'destroyer.png'))
-
-        self.life = None
-        self.rect = self.image.get_rect()
-        self.rect.center = [pos_x, pos_y]
+        image_path = os.path.join(
+            'assets', 'ships', 'destroyer', 'destroyer.png')
+        super().__init__(image_path, pos_x, pos_y)

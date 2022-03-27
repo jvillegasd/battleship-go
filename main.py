@@ -50,18 +50,29 @@ def create_ships() -> Tuple[list, list]:
       This method creates all ships and return two list
       refering to them and their rects.
     """
-
-    ships = []
-    ships_rect = []
-
-    new_carrier = RescueShip(43, 313)
+    
     new_battleship = Battleship(75, 150)
-    new_cruiser = Cruiser(155, 300)
-    new_destroyer = Destroyer(250, 300)
-    new_submarine = Submarine(250, 154)
+    
+    new_carrier = RescueShip(43, 150)
+    new_cruiser = Cruiser(155, 150)
+    new_destroyer = Destroyer(250, 150)
+    new_submarine = Submarine(280, 150)
 
-    ships.append(new_battleship)
-    ships_rect.append(new_battleship.rect)
+    ships = [
+      new_carrier,
+      new_battleship,
+      new_cruiser,
+      new_destroyer,
+      new_submarine
+    ]
+    
+    ships_rect = [
+      new_carrier.rect,
+      new_battleship.rect,
+      new_cruiser.rect,
+      new_destroyer.rect,
+      new_submarine.rect
+    ]
 
     return ships, ships_rect
 
