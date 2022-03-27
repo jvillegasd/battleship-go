@@ -23,7 +23,7 @@ class Grid:
         self.rect.y = pos_y
 
         # Inflate rect width to handle 'is_ship_inside' validation at boundaries
-        self.rect = self.rect.inflate(20, 0)
+        self.rect = self.rect.inflate(12, 10)
 
     def get_tile_under_mouse(self) -> Tuple[int, int]:
         """
@@ -46,6 +46,12 @@ class Grid:
         """
         # Image is drawed using initial position due to self.rect is inflated
         window.blit(self.image, (self.pos_x, self.pos_y))
+    
+    def draw_hitbot(self, window: pygame.display) -> None:
+        """
+          This method draws grid rect on window.
+        """
+        pygame.draw.rect(window, (255,0,0), (self.rect.x, self.rect.y, self.rect.width, self.rect.height), 1, border_radius=1)
     
     def draw_selected_tile(self, window: pygame.display) -> None:
         """

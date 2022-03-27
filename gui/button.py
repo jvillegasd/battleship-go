@@ -2,7 +2,7 @@ import pygame
 from typing import Tuple
 
 pygame.font.init()
-GUI_FONT = pygame.font.Font(None, 25)
+GUI_FONT = pygame.font.Font('assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
 
 class Button:

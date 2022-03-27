@@ -19,11 +19,11 @@ class Ship:
         
         self.can_rotate = True
         self.rotate_btn = Button(
-            text='Rotate',
+            text=">",
             pos_x=self.rect.center[0],
             pos_y=self.rect.center[1],
-            width=70,
-            height=30,
+            width=20,
+            height=20,
             btn_color='#AEC301',
             btn_bottom_color='#64734c',
             btn_hover_color='#637001'
@@ -99,14 +99,11 @@ class Ship:
           This method draws ship on window.
         """
         window.blit(self.image, self.rect)
-        self.draw_hitbox(window)
 
     def draw_hitbox(self, window: pygame.display) -> None:
         """
           This method draws ship rect and its center point on window.
         """
         
-        width = self.image.get_width()
-        height = self.image.get_height()
-        pygame.draw.rect(window, (255,0,0), (self.rect.x, self.rect.y, width, height), 1, border_radius=1)
+        pygame.draw.rect(window, (255,0,0), (self.rect.x, self.rect.y, self.rect.width, self.rect.height), 1, border_radius=1)
         pygame.draw.circle(window, (255,0,0), self.rect.center, 4) 

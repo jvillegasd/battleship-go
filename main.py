@@ -27,10 +27,10 @@ def create_gui_items() -> dict:
     """
 
     start_button = Button(
-        text='Start game!',
-        pos_x=95,
+        text='Start',
+        pos_x=155,
         pos_y=400,
-        width=130,
+        width=70,
         height=40
     )
     grid = Grid(
