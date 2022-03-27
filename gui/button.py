@@ -11,18 +11,19 @@ class Button:
       Resource: https://youtu.be/8SzTzvrWaAA
     """
 
-    def __init__(self,
-                 text: str,
-                 pos_x: float,
-                 pos_y: float,
-                 width: float,
-                 height: float,
-                 elevation: int = 6,
-                 border_radius: int = 12,
-                 btn_color: str = '#475F77',
-                 btn_bottom_color: str = '#354B5E',
-                 btn_hover_color: str = '#D74B4B',
-                 text_color: str = '#FFFFFF') -> None:
+    def __init__(
+            self,
+            text: str,
+            pos_x: float,
+            pos_y: float,
+            width: float,
+            height: float,
+            elevation: int = 6,
+            border_radius: int = 12,
+            btn_color: str = '#475F77',
+            btn_bottom_color: str = '#354B5E',
+            btn_hover_color: str = '#D74B4B',
+            text_color: str = '#FFFFFF') -> None:
         super().__init__()
 
         # Core attributes
@@ -49,17 +50,17 @@ class Button:
 
         # Bottom rectangle
         self.bottom_rect = pygame.Rect(pos_x, pos_y, width, self.elevation)
-    
+
     def center_buttom_from_position(self, position: Tuple[float, float]) -> None:
-          """
-            This method centers the buttom over provided position.
-          """
-          
-          self.top_rect.center = position
-          self.bottom_rect.center = position
-          self.text_rect.center = position
-          
-          self.original_pos_y = position[1]
+        """
+          This method centers the buttom over provided position.
+        """
+
+        self.top_rect.center = position
+        self.bottom_rect.center = position
+        self.text_rect.center = position
+
+        self.original_pos_y = position[1]
 
     def draw(self, window: pygame.display) -> None:
         """

@@ -151,14 +151,13 @@ def enable_ship_rotation(
     GUI_ITEMS['rotate_ship'] = ships[selected_ship].rotate_btn
     
     if ships[selected_ship].rotate_btn.click():
-        ships[selected_ship].rotate_ship(grid)
+        ships[selected_ship].rotate_ship(grid, ships_rect)
         ships_rect[selected_ship] = ships[selected_ship].rect
 
 
 def main():
     global GUI_ITEMS
     
-    # TODO: After drop the dragged ship, checks if ship is not lying down from another ship
     # TODO: Create button to lock positions and create 2d arrays to simulate game (mine and enemry)
     # TODO: Create attack system and animations
     # TODO: Create UI (For maps: Create tab system, chat)

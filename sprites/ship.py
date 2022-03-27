@@ -52,10 +52,11 @@ class Ship:
             ships_collision_rect)
         return len(collided_ships) > 1
 
-    def move_ship(self,
-                  delta: Tuple[float, float],
-                  grid: Grid,
-                  ships_collision_rect: List[pygame.Rect]) -> None:
+    def move_ship(
+            self,
+            delta: Tuple[float, float],
+            grid: Grid,
+            ships_collision_rect: List[pygame.Rect]) -> None:
         """
           This method moves ship by adding a delta to current
           rect position. If final position lets ship outside
@@ -106,7 +107,7 @@ class Ship:
 
         self.rotate_btn.center_buttom_from_position(position_without_offset)
 
-    def rotate_ship(self, grid: Grid) -> None:
+    def rotate_ship(self, grid: Grid, ships_collision_rect: List[pygame.Rect]) -> None:
         """
           This method rotates a ship and validates if 
           final position lets it inside the provided grid.
@@ -121,7 +122,7 @@ class Ship:
         # Rotate collision rect
         self.__rotate_collision_rect()
 
-        if not self.is_inside_grid(grid):
+        if not self.is_inside_grid(grid) or self.is_colliding_with_ships(ships_collision_rect):
             # Rollback ship orientation
             self.is_vertical = not self.is_vertical
 
@@ -164,7 +165,7 @@ class Ship:
           This private method rotates ship image and
           its rect.
         """
-        
+
         degree = 90 if not rollback else -90
         current_center = self.rect.center
         self.image = pygame.transform.rotate(self.image, degree)
@@ -176,7 +177,7 @@ class Ship:
           This method takes current ship rect and inflates
           depeding on tracked orientation.
         """
-        
+
         self.collision_rect = self.rect
 
         # Inflate collision rect depending on orientation
