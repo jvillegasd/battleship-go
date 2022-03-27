@@ -49,12 +49,17 @@ class Button:
 
         # Bottom rectangle
         self.bottom_rect = pygame.Rect(pos_x, pos_y, width, self.elevation)
-
+    
     def center_buttom_from_position(self, position: Tuple[float, float]) -> None:
+          """
+            This method centers the buttom over provided position.
+          """
+          
           self.top_rect.center = position
           self.bottom_rect.center = position
-          
           self.text_rect.center = position
+          
+          self.original_pos_y = position[1]
 
     def draw(self, window: pygame.display) -> None:
         """
