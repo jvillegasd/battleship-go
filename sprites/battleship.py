@@ -1,7 +1,5 @@
 import os
 import pygame
-from typing import Tuple
-from gui.grid import Grid
 from sprites.ship import Ship
 
 
