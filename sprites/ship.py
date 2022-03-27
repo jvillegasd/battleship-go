@@ -36,7 +36,7 @@ class Ship:
             self.rect.x -= delta[0]
             self.rect.y -= delta[1]
     
-    def dragged_ship_position(self, grid: 'Grid') -> None:
+    def dragged_ship_position(self, grid: Grid) -> None:
         """
           This method calculates where to drop dragged ship in a valid 
           position of the grid.
@@ -63,6 +63,20 @@ class Ship:
         # Add another offset in order to locate ship.rect.center at center of the tile
         position_without_offset += tile_center_offset
         self.rect.center = position_without_offset
+    
+    def rotate_ship(self, grid: Grid) -> None:
+        """
+          This method rotates a ship and validates if 
+          final position lets it inside the provided grid.
+        """
+        
+        current_center = self.rect.center
+        self.image = pygame.transform.rotate(self.image, 90)
+        self.rect = self.image.get_rect(center = current_center)
+        
+        if not self.is_inside_grid(grid):
+            self.image = pygame.transform.rotate(self.image, -90)
+            self.rect = self.image.get_rect(center = current_center)
     
     def draw(self, window: pygame.display) -> None:
         """
