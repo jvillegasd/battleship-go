@@ -18,6 +18,7 @@ pygame.display.set_caption('Battleship')
 BACKGROUND_COLOR = (231, 231, 219)
 
 FPS = 60
+GUI_ITEMS = {}
 
 
 def create_gui_items() -> dict:
@@ -29,7 +30,7 @@ def create_gui_items() -> dict:
         text='Start game!',
         pos_x=95,
         pos_y=400,
-        width=200,
+        width=130,
         height=40
     )
     grid = Grid(
@@ -50,34 +51,34 @@ def create_ships() -> Tuple[list, list]:
       This method creates all ships and return two list
       refering to them and their rects.
     """
-    
+
     new_battleship = Battleship(75, 150)
-    
+
     new_carrier = RescueShip(43, 150)
     new_cruiser = Cruiser(155, 150)
     new_destroyer = Destroyer(250, 150)
     new_submarine = Submarine(280, 150)
 
     ships = [
-      new_carrier,
-      new_battleship,
-      new_cruiser,
-      new_destroyer,
-      new_submarine
+        new_carrier,
+        new_battleship,
+        new_cruiser,
+        new_destroyer,
+        new_submarine
     ]
-    
+
     ships_rect = [
-      new_carrier.rect,
-      new_battleship.rect,
-      new_cruiser.rect,
-      new_destroyer.rect,
-      new_submarine.rect
+        new_carrier.rect,
+        new_battleship.rect,
+        new_cruiser.rect,
+        new_destroyer.rect,
+        new_submarine.rect
     ]
 
     return ships, ships_rect
 
 
-def draw_window(gui_items: dict) -> None:
+def draw_window() -> None:
     """
       This method draws everything to the main window.
     """
@@ -86,7 +87,7 @@ def draw_window(gui_items: dict) -> None:
     WIN.fill(BACKGROUND_COLOR)
 
     # Draw GUI items
-    for _, gui_item in gui_items.items():
+    for _, gui_item in GUI_ITEMS.items():
         if type(gui_item) == list:
             for item in gui_item:
                 item.draw(WIN)
@@ -94,8 +95,8 @@ def draw_window(gui_items: dict) -> None:
             gui_item.draw(WIN)
 
     # Draw selected tile if grid is loaded
-    if 'map' in gui_items:
-        gui_items['map'].draw_selected_tile(WIN)
+    if 'map' in GUI_ITEMS:
+        GUI_ITEMS['map'].draw_selected_tile(WIN)
 
     pygame.display.update()
 
@@ -129,7 +130,28 @@ def drag_and_drop_ships(
     return selected_ship
 
 
+def enable_ship_rotation(
+        grid: Grid,
+        ships: list,
+        ships_rect: list,
+        selected_ship: int) -> None:
+
+    """
+
+    """
+    
+    # Add rotation button of selected ship to GUI
+    if not 'rotate_ship' in GUI_ITEMS:
+      GUI_ITEMS['rotate_ship'] = ships[selected_ship].rotate_btn
+    
+    if ships[selected_ship].rotate_btn.click():
+        ships[selected_ship].rotate_ship(grid)
+        ships_rect[selected_ship] = ships[selected_ship].rect
+
+
 def main():
+    global GUI_ITEMS
+
     # Handle game state variables
     game_started = False
     selected_ship = -1
@@ -138,7 +160,7 @@ def main():
     ships, ships_rect = create_ships()
 
     # Handling GUI elements painting dynamically
-    gui_items = create_gui_items()
+    GUI_ITEMS = create_gui_items()
 
     clock = pygame.time.Clock()
     run = True
@@ -150,14 +172,20 @@ def main():
 
             if game_started:
                 selected_ship = drag_and_drop_ships(
-                    event, gui_items['map'], ships, ships_rect, selected_ship)
+                    event, GUI_ITEMS['map'], ships, ships_rect, selected_ship)
 
-        if gui_items['start_button'].click():
+                if 0 <= selected_ship < len(ships):
+                    enable_ship_rotation(
+                        GUI_ITEMS['map'], ships, ships_rect, selected_ship)
+                else:
+                  GUI_ITEMS.pop('rotate_ship', None)
+
+        if GUI_ITEMS['start_button'].click():
             if not game_started:
                 game_started = True
-                gui_items['ships'] = ships
+                GUI_ITEMS['ships'] = ships
 
-        draw_window(gui_items)
+        draw_window()
 
     pygame.quit()
 

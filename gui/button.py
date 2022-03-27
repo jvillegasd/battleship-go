@@ -1,7 +1,7 @@
 import pygame
 
 pygame.font.init()
-GUI_FONT = pygame.font.Font(None, 30)
+GUI_FONT = pygame.font.Font(None, 25)
 
 
 class Button:
@@ -17,6 +17,7 @@ class Button:
                  width: float,
                  height: float,
                  elevation: int = 6,
+                 border_radius: int = 12,
                  btn_color: str = '#475F77',
                  btn_bottom_color: str = '#354B5E',
                  btn_hover_color: str = '#D74B4B',
@@ -32,10 +33,11 @@ class Button:
         self.top_hover_color = btn_hover_color
         self.bottom_color = btn_bottom_color
 
-        # Elevation
+        # Elevation and radius
         self.elevation = elevation
         self.dynamic_elevation = elevation
         self.original_pos_y = pos_y
+        self.border_radius = border_radius
 
         # Top rectangle
         self.top_rect = pygame.Rect(pos_x, pos_y, width, height)
@@ -60,11 +62,11 @@ class Button:
         self.bottom_rect.midtop = self.top_rect.midtop
         self.bottom_rect.height = self.top_rect.height + self.dynamic_elevation
         pygame.draw.rect(window, self.bottom_color,
-                         self.bottom_rect, border_radius=12)
+                         self.bottom_rect, border_radius=self.border_radius)
 
         # Draw top button
         pygame.draw.rect(window, self.current_top_color,
-                         self.top_rect, border_radius=12)
+                         self.top_rect, border_radius=self.border_radius)
         window.blit(self.text_surf, self.text_rect)
 
     def click(self) -> None:

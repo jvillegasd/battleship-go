@@ -1,6 +1,7 @@
 import pygame
 from typing import Tuple
 from gui.grid import Grid
+from gui.button import Button
 
 
 class Ship:
@@ -15,6 +16,18 @@ class Ship:
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
+        
+        self.can_rotate = True
+        self.rotate_btn = Button(
+            text='Rotate',
+            pos_x=self.rect.center[0],
+            pos_y=self.rect.center[1],
+            width=70,
+            height=30,
+            btn_color='#AEC301',
+            btn_bottom_color='#64734c',
+            btn_hover_color='#637001'
+        )
 
     def is_inside_grid(self, grid: Grid) -> bool:
         """
