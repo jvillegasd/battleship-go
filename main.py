@@ -106,11 +106,14 @@ def drag_and_drop_ship(
         grid: Grid,
         ships: list,
         ships_rect: list,
-        selected_ship: int) -> int:
+        selected_ship: int) -> Tuple[int, bool]:
     """
       This method handles necessary mouse events to drag and
       drop ships over grid.
     """
+    global GUI_ITEMS
+    
+    dragging = False
 
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_rect = pygame.Rect(event.pos, (1, 1))
@@ -118,6 +121,10 @@ def drag_and_drop_ship(
 
     if event.type == pygame.MOUSEMOTION:
         if event.buttons[0]:
+            # Remove rotation button when dragging
+            dragging = True
+            GUI_ITEMS.pop('rotate_ship', None)
+            
             if 0 <= selected_ship < len(ships):
                 ships[selected_ship].move_ship(event.rel, grid)
                 ships_rect[selected_ship] = ships[selected_ship].rect
@@ -127,7 +134,7 @@ def drag_and_drop_ship(
             ships[selected_ship].dragged_ship_position(grid)
             ships_rect[selected_ship] = ships[selected_ship].rect
 
-    return selected_ship
+    return selected_ship, dragging
 
 
 def enable_ship_rotation(
@@ -170,12 +177,13 @@ def main():
                 run = False
 
             if game_started:
-                selected_ship = drag_and_drop_ship(
+                selected_ship, dragging = drag_and_drop_ship(
                     event, GUI_ITEMS['map'], ships, ships_rect, selected_ship)
 
                 if 0 <= selected_ship < len(ships):
-                    enable_ship_rotation(
-                        GUI_ITEMS['map'], ships, ships_rect, selected_ship)
+                    if not dragging:
+                        enable_ship_rotation(
+                            GUI_ITEMS['map'], ships, ships_rect, selected_ship)
                 else:
                   GUI_ITEMS.pop('rotate_ship', None)
 

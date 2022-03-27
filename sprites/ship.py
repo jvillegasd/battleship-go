@@ -103,6 +103,7 @@ class Ship:
           This method draws ship on window.
         """
         window.blit(self.image, self.rect)
+        self.draw_hitbox(window)
 
     def draw_hitbox(self, window: pygame.display) -> None:
         """
