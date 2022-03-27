@@ -9,5 +9,5 @@ class Battleship(Ship):
             'assets', 'ships', 'battleship', 'batleship.png')
         super().__init__(image_path, pos_x, pos_y)
         
-        self.inflate_value = (-15, 0)
+        self.inflate_value = (-16, 0)
         self.collision_rect = self.rect.inflate(self.inflate_value)

@@ -8,3 +8,6 @@ class Submarine(Ship):
         image_path = os.path.join(
             'assets', 'ships', 'submarine', 'submarine.png')
         super().__init__(image_path, pos_x, pos_y)
+        
+        self.inflate_value = (-20, 0)
+        self.collision_rect = self.rect.inflate(self.inflate_value)
