@@ -1,6 +1,7 @@
 import os
 import pygame
 from typing import Tuple
+from sprites.ship import Ship
 
 
 class Grid:
@@ -78,7 +79,7 @@ class Grid:
         position_with_offset = pygame.Vector2(position) - grid_offset
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
 
-    def is_ship_inside(self, ship) -> bool:
+    def is_ship_inside(self, ship: Ship) -> bool:
         """
           This method checks if ship is completely inside in grid.
         """
