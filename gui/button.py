@@ -1,4 +1,5 @@
 import pygame
+from typing import Tuple
 
 pygame.font.init()
 GUI_FONT = pygame.font.Font(None, 25)
@@ -48,6 +49,12 @@ class Button:
 
         # Bottom rectangle
         self.bottom_rect = pygame.Rect(pos_x, pos_y, width, self.elevation)
+
+    def center_buttom_from_position(self, position: Tuple[float, float]) -> None:
+          self.top_rect.center = position
+          self.bottom_rect.center = position
+          
+          self.text_rect.center = position
 
     def draw(self, window: pygame.display) -> None:
         """

@@ -28,6 +28,7 @@ class Ship:
             btn_bottom_color='#64734c',
             btn_hover_color='#637001'
         )
+        self.rotate_btn.center_buttom_from_position(self.rect.center)
 
     def is_inside_grid(self, grid: Grid) -> bool:
         """
@@ -48,6 +49,8 @@ class Ship:
         if not self.is_inside_grid(grid):
             self.rect.x -= delta[0]
             self.rect.y -= delta[1]
+        else:
+          self.rotate_btn.center_buttom_from_position(self.rect.center)
     
     def dragged_ship_position(self, grid: Grid) -> None:
         """
@@ -76,6 +79,8 @@ class Ship:
         # Add another offset in order to locate ship.rect.center at center of the tile
         position_without_offset += tile_center_offset
         self.rect.center = position_without_offset
+        
+        self.rotate_btn.center_buttom_from_position(self.rect.center)
     
     def rotate_ship(self, grid: Grid) -> None:
         """
@@ -90,6 +95,8 @@ class Ship:
         if not self.is_inside_grid(grid):
             self.image = pygame.transform.rotate(self.image, -90)
             self.rect = self.image.get_rect(center = current_center)
+        else:
+          self.rotate_btn.center_buttom_from_position(self.rect.center)
     
     def draw(self, window: pygame.display) -> None:
         """

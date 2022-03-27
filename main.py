@@ -141,8 +141,7 @@ def enable_ship_rotation(
     """
     
     # Add rotation button of selected ship to GUI
-    if not 'rotate_ship' in GUI_ITEMS:
-      GUI_ITEMS['rotate_ship'] = ships[selected_ship].rotate_btn
+    GUI_ITEMS['rotate_ship'] = ships[selected_ship].rotate_btn
     
     if ships[selected_ship].rotate_btn.click():
         ships[selected_ship].rotate_ship(grid)
