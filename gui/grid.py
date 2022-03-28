@@ -9,14 +9,23 @@ class Grid:
       is going to happen. Grid uses a fixed map image
       and its tile pixel size is 16. It means that every
       tile of map image is 16x16.
+      
+      Grid image size is 320x320, so game grid is a 20x20
+      2D array.
     """
 
     def __init__(self, pos_x: float, pos_y: float) -> None:
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.tile_size = 16
         self.image = pygame.image.load(
             os.path.join('assets', 'map', 'tiled_sea.png'))
+        
+        self.tile_size = 16
+        self.game_grid_cols = 20
+        self.game_grid_rows = 20
+        
+        self.game_grid = [[0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
+        self.enemy_game_grid = [[0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
 
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
@@ -84,3 +93,7 @@ class Grid:
         grid_offset = (self.pos_x, self.pos_y)
         position_with_offset = pygame.Vector2(position) - grid_offset
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
+
+    def locate_ships_into_game_grid(self, ships: list) -> None:
+        for ship in ships:
+            pass

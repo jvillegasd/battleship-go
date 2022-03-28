@@ -121,6 +121,10 @@ def draw_window() -> None:
     pygame.display.update()
 
 
+def handle_buttom_click(gui_btn: dict) -> bool:
+    return gui_btn['enabled'] and gui_btn['item'].click()
+
+
 def drag_and_drop_ship(
         event,
         grid: Grid,
@@ -179,10 +183,6 @@ def enable_ship_rotation(
     if handle_buttom_click(GUI_ITEMS['rotate_ship']):
         ships[selected_ship].rotate_ship(grid, ships_rect)
         ships_rect[selected_ship] = ships[selected_ship].rect
-
-
-def handle_buttom_click(gui_btn: dict) -> bool:
-    return gui_btn['enabled'] and gui_btn['item'].click()
 
 
 def ship_location_stage_events(
