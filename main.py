@@ -210,8 +210,7 @@ def ship_location_stage_events(
 
 def main():
     global GUI_ITEMS
-
-    # TODO: Create button to lock positions and create 2d arrays to simulate game (mine and enemry)
+    
     # TODO: Create attack system and animations
     # TODO: Create UI (For maps: Create tab system, chat)
     # TODO: Create client-server networking for multiplayer
@@ -246,6 +245,7 @@ def main():
                 if handle_buttom_click(GUI_ITEMS['lock_ships']):
                     ships_locked = True
                     GUI_ITEMS['lock_ships']['enabled'] = False
+                    GUI_ITEMS['map']['item'].locate_ships_into_game_grid(ships)
         else:
             if handle_buttom_click(GUI_ITEMS['start_button']):
                 game_started = True

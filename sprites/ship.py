@@ -13,6 +13,7 @@ class Ship:
         self.image = pygame.image.load(image_path)
         self.life = None
         self.is_vertical = True  # Keep tracking of ship orientation
+        self.name = 'Default'
 
         self.rect = self.image.get_rect()
         self.rect.x = pos_x

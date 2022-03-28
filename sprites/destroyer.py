@@ -11,3 +11,5 @@ class Destroyer(Ship):
 
         self.inflate_value = (-6, 0)
         self.collision_rect = self.rect.inflate(self.inflate_value)
+        
+        self.name = 'D'

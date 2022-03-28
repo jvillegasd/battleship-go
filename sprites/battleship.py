@@ -11,3 +11,5 @@ class Battleship(Ship):
         
         self.inflate_value = (-16, 0)
         self.collision_rect = self.rect.inflate(self.inflate_value)
+        
+        self.name = 'B'

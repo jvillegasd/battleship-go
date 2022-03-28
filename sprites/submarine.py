@@ -11,3 +11,5 @@ class Submarine(Ship):
         
         self.inflate_value = (-20, 0)
         self.collision_rect = self.rect.inflate(self.inflate_value)
+
+        self.name = 'S'

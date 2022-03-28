@@ -11,3 +11,4 @@ class RescueShip(Ship):
         
         self.collision_rect = self.rect.inflate(-2, 0)
         
+        self.name = 'R'

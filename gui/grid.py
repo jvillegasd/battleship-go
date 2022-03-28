@@ -9,7 +9,7 @@ class Grid:
       is going to happen. Grid uses a fixed map image
       and its tile pixel size is 16. It means that every
       tile of map image is 16x16.
-      
+
       Grid image size is 320x320, so game grid is a 20x20
       2D array.
     """
@@ -19,13 +19,15 @@ class Grid:
         self.pos_y = pos_y
         self.image = pygame.image.load(
             os.path.join('assets', 'map', 'tiled_sea.png'))
-        
+
         self.tile_size = 16
         self.game_grid_cols = 20
         self.game_grid_rows = 20
-        
-        self.game_grid = [[0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
-        self.enemy_game_grid = [[0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
+
+        self.game_grid = [
+            [0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
+        self.enemy_game_grid = [
+            [0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
 
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
@@ -95,5 +97,40 @@ class Grid:
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
 
     def locate_ships_into_game_grid(self, ships: list) -> None:
+        """
+          This method locates ships into game grid in order
+          to manage game state.
+          
+          The main idea is to use ship.rect.center as a pivot in order to
+          locate the ship on the game grid around this position. The number
+          of tiles used by the ship on the grid is calculated by dividing its
+          collision_rect height or width (depeding on orientation) by tile_size.
+          This value is used together with translated ship.rec.center position
+          to fill the game grid.
+        """
+        
         for ship in ships:
-            pass
+            x, y = self.translate_position(ship.rect.center)
+
+            if ship.is_vertical:
+                collision_rect_height = ship.collision_rect.height
+                number_of_tiles = int(collision_rect_height // self.tile_size)
+                
+                # Locate ship vertically by using translated position as a pivot
+                for i in range(int(number_of_tiles // 2)):
+                    if y - i >= 0:
+                        self.game_grid[y - i][x] = ship.name
+
+                    if y + i < self.game_grid_rows:
+                        self.game_grid[y + i][x] = ship.name
+            else:
+                collision_rect_width = ship.collision_rect.width
+                number_of_tiles = int(collision_rect_width // self.tile_size)
+                
+                # Locate ship horizontally by using translated position as a pivot
+                for i in range(int(number_of_tiles // 2)):
+                    if x - i >= 0:
+                        self.game_grid[y][x - i] = ship.name
+
+                    if x + i < self.game_grid_cols:
+                        self.game_grid[y][x + i] = ship.name
