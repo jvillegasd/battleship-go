@@ -132,11 +132,9 @@ def drag_and_drop_ship(
         ships_rect: list,
         selected_ship: int) -> Tuple[int, bool]:
     """
-      This method handles necessary mouse events to drag and
+      This method handles required mouse events to drag and
       drop ships over grid.
     """
-
-    global GUI_ITEMS
 
     dragging = False
 
@@ -146,11 +144,7 @@ def drag_and_drop_ship(
 
     if event.type == pygame.MOUSEMOTION:
         if event.buttons[0]:
-            # Remove rotation button when dragging
             dragging = True
-            if 'rotate_ship' in GUI_ITEMS:
-                GUI_ITEMS['rotate_ship']['enabled'] = False
-
             if 0 <= selected_ship < len(ships):
                 ships[selected_ship].move_ship(event.rel, grid, ships_rect)
                 ships_rect[selected_ship] = ships[selected_ship].rect
@@ -198,10 +192,9 @@ def ship_location_stage_events(
         event, GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
 
     # Check if selected ship rotation buttom can be drawed
-    if 0 <= selected_ship < len(ships):
-        if not dragging:
-            enable_ship_rotation(
-                GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
+    if 0 <= selected_ship < len(ships) and not dragging:
+        enable_ship_rotation(
+            GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
     elif 'rotate_ship' in GUI_ITEMS:
         GUI_ITEMS['rotate_ship']['enabled'] = False
 
@@ -210,7 +203,7 @@ def ship_location_stage_events(
 
 def main():
     global GUI_ITEMS
-    
+
     # TODO: Create attack system and animations
     # TODO: Create UI (For maps: Create tab system, chat)
     # TODO: Create client-server networking for multiplayer
