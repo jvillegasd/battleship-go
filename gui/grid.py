@@ -2,6 +2,8 @@ import os
 import pygame
 from typing import Tuple
 
+SHIPS_NAMES = ['B', 'C', 'D', 'R', 'S']
+
 
 class Grid:
     """
@@ -133,22 +135,39 @@ class Grid:
                     if x + i < self.game_grid_cols:
                         self.game_grid[y][x + i] = ship.name
 
-    def attack_enemy(self) -> bool:
+    def attack_enemy(self) -> Tuple[bool, str]:
+        """
+          This method evaluates if an enemy ship is
+          located at selected tile in order to attack it.
+        """
+        
         # Translate mouse position to grid space
         x, y = self.translate_position(pygame.mouse.get_pos())
-        
         if self.__is_valid_position((x, y)):
-          pass
+            if self.enemy_game_grid[y][x] in SHIPS_NAMES:
+                return True, self.enemy_game_grid[y][x]
 
-    def receive_attack_from_enemy(self, position: Tuple[float, float]) -> None:
-        pass
+        return False, ''
+
+    def receive_attack_from_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
+        """
+          This method evaluates if an ally ship is
+          located at selected tile by enemy in order to
+          receive their attack.
+        """
+        
+        if self.__is_valid_position(position):
+            if self.game_grid[position[1]][position[0]] in SHIPS_NAMES:
+                return True, self.game_grid[position[1]][position[0]]
+
+        return False, ''
 
     def __is_valid_position(self, position: Tuple[float, float]) -> bool:
         """
           This private method validates if provided position is
           inside re-scaled grid.
         """
-        
+
         final_x, final_y = self.get_rescaled_dimensions()
         return (position[0] >= 0 and position[1] >= 0 and
                 position[0] < final_x and position[1] < final_y)
