@@ -44,9 +44,7 @@ class Grid:
 
         # Translate mouse position to grid space
         x, y = self.translate_position(pygame.mouse.get_pos())
-        final_x, final_y = self.get_rescaled_dimensions()
-
-        if x >= 0 and y >= 0 and x < final_x and y < final_y:
+        if self.__is_valid_position((x, y)):
             return x, y
         else:
             return None, None
@@ -100,7 +98,7 @@ class Grid:
         """
           This method locates ships into game grid in order
           to manage game state.
-          
+
           The main idea is to use ship.rect.center as a pivot in order to
           locate the ship on the game grid around this position. The number
           of tiles used by the ship on the grid is calculated by dividing its
@@ -108,14 +106,14 @@ class Grid:
           This value is used together with translated ship.rec.center position
           to fill the game grid.
         """
-        
+
         for ship in ships:
             x, y = self.translate_position(ship.rect.center)
 
             if ship.is_vertical:
                 collision_rect_height = ship.collision_rect.height
                 number_of_tiles = int(collision_rect_height // self.tile_size)
-                
+
                 # Locate ship vertically by using translated position as a pivot
                 for i in range(int(number_of_tiles // 2)):
                     if y - i >= 0:
@@ -126,7 +124,7 @@ class Grid:
             else:
                 collision_rect_width = ship.collision_rect.width
                 number_of_tiles = int(collision_rect_width // self.tile_size)
-                
+
                 # Locate ship horizontally by using translated position as a pivot
                 for i in range(int(number_of_tiles // 2)):
                     if x - i >= 0:
@@ -134,3 +132,23 @@ class Grid:
 
                     if x + i < self.game_grid_cols:
                         self.game_grid[y][x + i] = ship.name
+
+    def attack_enemy(self) -> bool:
+        # Translate mouse position to grid space
+        x, y = self.translate_position(pygame.mouse.get_pos())
+        
+        if self.__is_valid_position((x, y)):
+          pass
+
+    def receive_attack_from_enemy(self, position: Tuple[float, float]) -> None:
+        pass
+
+    def __is_valid_position(self, position: Tuple[float, float]) -> bool:
+        """
+          This private method validates if provided position is
+          inside re-scaled grid.
+        """
+        
+        final_x, final_y = self.get_rescaled_dimensions()
+        return (position[0] >= 0 and position[1] >= 0 and
+                position[0] < final_x and position[1] < final_y)
