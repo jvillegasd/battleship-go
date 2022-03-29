@@ -1,15 +1,20 @@
 import pygame
 from typing import Tuple, List
 
+# Import GUI items
+from gui.grid import Grid
 from gui.button import Button
+
+# Import sprites
 from sprites.rescue_ship import RescueShip
 from sprites.battleship import Battleship
 from sprites.cruiser import Cruiser
 from sprites.destroyer import Destroyer
 from sprites.submarine import Submarine
-from gui.grid import Grid
 
+# Import animations
 from sprites.animations.fire import Fire
+
 
 WIDTH, HEIGHT = 940, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -46,11 +51,6 @@ def create_gui_items() -> dict:
         pos_y=45
     )
 
-    fire = Fire(
-        pos_x=40,
-        pos_y=40
-    )
-
     gui_items = {
         'start_button': {
             'enabled': True,
@@ -63,10 +63,6 @@ def create_gui_items() -> dict:
         'map': {
             'enabled': True,
             'item': grid
-        },
-        'fire': {
-            'enabled': True,
-            'item': [fire]
         }
     }
 
