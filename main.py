@@ -6,9 +6,10 @@ from sprites.rescue_ship import RescueShip
 from sprites.battleship import Battleship
 from sprites.cruiser import Cruiser
 from sprites.destroyer import Destroyer
-from sprites.plane import Plane
 from sprites.submarine import Submarine
 from gui.grid import Grid
+
+from sprites.animations.explosion import Explosion
 
 WIDTH, HEIGHT = 940, 640
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -17,7 +18,7 @@ pygame.display.set_caption('Battleship')
 # Color name: Little Greene French Grey Pale
 BACKGROUND_COLOR = (231, 231, 219)
 
-FPS = 60
+FPS = 30
 GUI_ITEMS = {}
 
 
@@ -45,6 +46,11 @@ def create_gui_items() -> dict:
         pos_y=45
     )
 
+    explosion = Explosion(
+        pos_x=40,
+        pos_y=40
+    )
+
     gui_items = {
         'start_button': {
             'enabled': True,
@@ -57,6 +63,10 @@ def create_gui_items() -> dict:
         'map': {
             'enabled': True,
             'item': grid
+        },
+        'fire': {
+            'enabled': True,
+            'item': [explosion]
         }
     }
 
