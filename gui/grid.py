@@ -145,6 +145,7 @@ class Grid:
         x, y = self.translate_position(pygame.mouse.get_pos())
         if self.__is_valid_position((x, y)):
             if self.enemy_game_grid[y][x] in SHIPS_NAMES:
+                self.enemy_game_grid[y][x] = 1
                 return True, self.enemy_game_grid[y][x]
 
         return False, ''
@@ -158,6 +159,7 @@ class Grid:
         
         if self.__is_valid_position(position):
             if self.game_grid[position[1]][position[0]] in SHIPS_NAMES:
+                self.game_grid[position[1]][position[0]] = 1
                 return True, self.game_grid[position[1]][position[0]]
 
         return False, ''
