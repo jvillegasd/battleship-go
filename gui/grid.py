@@ -40,7 +40,7 @@ class Grid:
 
     def get_tile_under_mouse(self) -> Tuple[int, int]:
         """
-          This method calculates the current selected tile
+          This function calculates the current selected tile
           of the grid by mouse.
         """
 
@@ -53,21 +53,21 @@ class Grid:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws grid on window.
+          This function draws grid on window.
         """
         # Image is drawed using initial position due to self.rect is inflated
         window.blit(self.image, (self.pos_x, self.pos_y))
 
     def draw_hitbot(self, window: pygame.display) -> None:
         """
-          This method draws grid rect on window.
+          This function draws grid rect on window.
         """
         pygame.draw.rect(window, (255, 0, 0), (self.rect.x, self.rect.y,
                          self.rect.width, self.rect.height), 1, border_radius=1)
 
     def draw_selected_tile(self, window: pygame.display) -> None:
         """
-          This method draws current selected tile
+          This function draws current selected tile
           if mouse is over grid on window.
         """
 
@@ -82,14 +82,14 @@ class Grid:
 
     def get_rescaled_dimensions(self) -> Tuple[float, float]:
         """
-          This method re-scales grid dimension using tile_size in order
+          This function re-scales grid dimension using tile_size in order
           to standardize coordinates.
         """
         return int(self.image.get_width() // self.tile_size), int(self.image.get_height() // self.tile_size)
 
     def translate_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
         """
-          This method translates (x, y) position into re-scaled grid.
+          This function translates (x, y) position into re-scaled grid.
         """
 
         grid_offset = (self.pos_x, self.pos_y)
@@ -98,7 +98,7 @@ class Grid:
 
     def center_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
         """
-          This method readjust and upscales the provided position
+          This function readjust and upscales the provided position
           to the center of the tile it falls.
           
           The position is going to be translated into grid space
@@ -126,7 +126,7 @@ class Grid:
         
     def locate_ships_into_game_grid(self, ships: list) -> None:
         """
-          This method locates ships into game grid in order
+          This function locates ships into game grid in order
           to manage game state.
 
           The main idea is to use ship.rect.center as a pivot in order to
@@ -165,7 +165,7 @@ class Grid:
 
     def attack_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
         """
-          This method evaluates if an enemy ship is
+          This function evaluates if an enemy ship is
           located at selected tile in order to attack it.
         """
         
@@ -180,7 +180,7 @@ class Grid:
 
     def receive_attack_from_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
         """
-          This method evaluates if an ally ship is
+          This function evaluates if an ally ship is
           located at selected tile by enemy in order to
           receive their attack.
         """
@@ -194,7 +194,7 @@ class Grid:
 
     def __is_valid_position(self, position: Tuple[float, float]) -> bool:
         """
-          This private method validates if provided position is
+          This private function validates if provided position is
           inside re-scaled grid.
         """
 

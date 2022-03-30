@@ -28,9 +28,14 @@ FPS = 30
 GUI_ITEMS = {}
 
 
+# ------------------------------------------------------------
+# GUI related functions
+# ------------------------------------------------------------
+
+
 def create_gui_items() -> dict:
     """
-      This method creates gui items used in screen.
+      This function creates gui items used in screen.
     """
 
     start_button = Button(
@@ -72,7 +77,7 @@ def create_gui_items() -> dict:
 
 def create_ships() -> Tuple[list, list]:
     """
-      This method creates all ships and return two list
+      This function creates all ships and return two list
       refering to them and their rects.
     """
 
@@ -104,7 +109,7 @@ def create_ships() -> Tuple[list, list]:
 
 def draw_window() -> None:
     """
-      This method draws everything to the main window.
+      This function draws everything to the main window.
     """
 
     # Draw background
@@ -128,6 +133,11 @@ def draw_window() -> None:
     pygame.display.update()
 
 
+# ------------------------------------------------------------
+# Ship location stage functions
+# ------------------------------------------------------------
+
+
 def handle_buttom_click(gui_btn: dict) -> bool:
     return gui_btn['enabled'] and gui_btn['item'].click()
 
@@ -139,7 +149,7 @@ def drag_and_drop_ship(
         ships_rect: list,
         selected_ship: int) -> Tuple[int, bool]:
     """
-      This method handles required mouse events to drag and
+      This function handles required mouse events to drag and
       drop ships over grid.
     """
 
@@ -170,7 +180,7 @@ def enable_ship_rotation(
         ships_rect: List[pygame.Rect],
         selected_ship: int) -> None:
     """
-      This method enables rotation button to selected ship.
+      This function enables rotation button to selected ship.
     """
 
     global GUI_ITEMS
@@ -192,7 +202,7 @@ def ship_location_stage_events(
         ships_rect: List[pygame.Rect],
         selected_ship: int) -> int:
     """
-      This method handles pygame events related to ship location stage.
+      This function handles pygame events related to ship location stage.
     """
 
     selected_ship, dragging = drag_and_drop_ship(
@@ -206,6 +216,11 @@ def ship_location_stage_events(
         GUI_ITEMS['rotate_ship']['enabled'] = False
 
     return selected_ship
+
+
+# ------------------------------------------------------------
+# Battle stage functions
+# ------------------------------------------------------------
 
 
 def handle_attack_animation():
@@ -251,6 +266,11 @@ def battle_stage_events(event, ships: list):
     handle_attack_animation()
 
 
+# ------------------------------------------------------------
+# Main loop function
+# ------------------------------------------------------------
+
+
 def main():
     global GUI_ITEMS
 
@@ -283,6 +303,7 @@ def main():
                     selected_ship = ship_location_stage_events(
                         event, ships, ships_rect, selected_ship)
 
+                # Battle stage
                 if ships_locked:
                     battle_stage_events(event, ships)
 
@@ -290,12 +311,12 @@ def main():
             if not ships_locked:
                 if handle_buttom_click(GUI_ITEMS['lock_ships']):
                     ships_locked = True
-                    GUI_ITEMS['lock_ships']['enabled'] = False
-                    GUI_ITEMS['map']['item'].locate_ships_into_game_grid(ships)
                     GUI_ITEMS['fire'] = {
                         'enabled': True,
                         'item': []
                     }
+                    GUI_ITEMS['lock_ships']['enabled'] = False
+                    GUI_ITEMS['map']['item'].locate_ships_into_game_grid(ships)
         else:
             if handle_buttom_click(GUI_ITEMS['start_button']):
                 game_started = True

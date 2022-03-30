@@ -53,7 +53,7 @@ class Button:
 
     def center_buttom_from_position(self, position: Tuple[float, float]) -> None:
         """
-          This method centers the buttom over provided position.
+          This function centers the buttom over provided position.
         """
 
         self.top_rect.center = position
@@ -64,7 +64,7 @@ class Button:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws button on window. 
+          This function draws button on window. 
         """
 
         # Elevation logic
@@ -84,7 +84,7 @@ class Button:
 
     def click(self) -> None:
         """
-          This method checks if button was clicked. Verify if
+          This function checks if button was clicked. Verify if
           button is still pressed in order to do not execute button
           action everytime until mouse click is released.
         """

@@ -37,7 +37,7 @@ class Ship:
 
     def is_inside_grid(self, grid: Grid) -> bool:
         """
-          This method checks if ship is completely inside in grid.
+          This function checks if ship is completely inside in grid.
           Collision have to be made with image rect in order to handle
           unexpected behaviour at grid boundaries.
         """
@@ -45,8 +45,8 @@ class Ship:
 
     def is_colliding_with_ships(self, ships_collision_rect: List[pygame.Rect]) -> bool:
         """
-          This method checks if ship is colliding with others ships.
-          For this method, collision rect is used.
+          This function checks if ship is colliding with others ships.
+          For this function, collision rect is used.
         """
 
         collided_ships = self.collision_rect.collidelistall(
@@ -59,7 +59,7 @@ class Ship:
             grid: Grid,
             ships_collision_rect: List[pygame.Rect]) -> None:
         """
-          This method moves ship by adding a delta to current
+          This function moves ship by adding a delta to current
           rect position. If final position lets ship outside
           the grid, the ship is moved to inital position.
         """
@@ -79,7 +79,7 @@ class Ship:
 
     def dragged_ship_position(self, grid: Grid) -> None:
         """
-          This method calculates where to drop dragged ship in a valid 
+          This function calculates where to drop dragged ship in a valid 
           position of the grid.
 
           The main idea is to use ship.rect.center as a pivot in order to
@@ -94,7 +94,7 @@ class Ship:
 
     def rotate_ship(self, grid: Grid, ships_collision_rect: List[pygame.Rect]) -> None:
         """
-          This method rotates a ship and validates if 
+          This function rotates a ship and validates if 
           final position lets it inside the provided grid.
         """
 
@@ -119,7 +119,7 @@ class Ship:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws ship on window.
+          This function draws ship on window.
         """
         window.blit(self.image, self.rect)
         self.draw_hitbox(window)
@@ -127,7 +127,7 @@ class Ship:
 
     def draw_hitbox(self, window: pygame.display) -> None:
         """
-          This method draws ship collision rect and its center point on window.
+          This function draws ship collision rect and its center point on window.
         """
 
         color = (255, 0, 0)
@@ -137,7 +137,7 @@ class Ship:
 
     def draw_rect(self, window: pygame.display) -> None:
         """
-          This method draws ship rect and its center point on window.
+          This function draws ship rect and its center point on window.
         """
 
         color = (13, 115, 13)
@@ -147,7 +147,7 @@ class Ship:
 
     def __rotate_ship_image_and_rect(self, rollback: bool = False) -> None:
         """
-          This private method rotates ship image and
+          This private function rotates ship image and
           its rect.
         """
 
@@ -158,8 +158,8 @@ class Ship:
 
     def __rotate_collision_rect(self) -> None:
         """
-          This private method rotates ship collision rect.
-          This method takes current ship rect and inflates
+          This private function rotates ship collision rect.
+          This function takes current ship rect and inflates
           depeding on tracked orientation.
         """
 

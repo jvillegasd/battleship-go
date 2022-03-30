@@ -29,7 +29,7 @@ class AssetAnimation:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This method draws current frame of
+          This function draws current frame of
           animation on window.
         """
         
@@ -44,7 +44,7 @@ class AssetAnimation:
 
     def __calculate_current_frame(self) -> pygame.image:
         """
-          This method calculates current frame of
+          This function calculates current frame of
           animation. In order to keep animation
           smooth, it was slowered by a specific factor.
         """
