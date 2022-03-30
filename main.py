@@ -282,9 +282,9 @@ def battle_stage_events(event, ships: list):
 def main():
     global GUI_ITEMS
 
-    # TODO: Create attack system and animations
-    # TODO: Create UI (For maps: Create tab system, chat)
+    # TODO: Create UI (For maps (ally-enemy): Create tab system, chat)
     # TODO: Create client-server networking for multiplayer
+    # TODO: Reset battle buttom
 
     # Handle game state variables
     game_started = False
