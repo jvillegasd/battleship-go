@@ -1,5 +1,6 @@
 import os
 import pygame
+from typing import Tuple
 
 
 class AssetAnimation:
@@ -8,6 +9,9 @@ class AssetAnimation:
     """
 
     def __init__(self, animation_path: str, pos_x: float, pos_y: float) -> None:
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        
         self.index = 0
         self.images = []
         for image_file in os.listdir(animation_path):
@@ -23,7 +27,7 @@ class AssetAnimation:
         self.slow_animation_factor = 2
         self.slow_animation_cnt = 0
 
-    def draw(self, window: pygame.display):
+    def draw(self, window: pygame.display) -> None:
         """
           This method draws current frame of
           animation on window.
@@ -31,6 +35,12 @@ class AssetAnimation:
         
         image = self.__calculate_current_frame()
         window.blit(image, self.rect)
+    
+    def animation_finished(self) -> bool:
+        return self.index >= len(self.images)
+
+    def center_animation_from_position(self, position: Tuple[float, float]) -> None:
+        self.rect.center = position
 
     def __calculate_current_frame(self) -> pygame.image:
         """
@@ -39,7 +49,7 @@ class AssetAnimation:
           smooth, it was slowered by a specific factor.
         """
         
-        if self.index >= len(self.images):
+        if self.animation_finished():
             self.index = 0
         image = self.images[self.index]
         

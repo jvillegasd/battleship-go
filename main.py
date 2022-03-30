@@ -14,6 +14,7 @@ from sprites.submarine import Submarine
 
 # Import animations
 from sprites.animations.fire import Fire
+from sprites.animations.explosion import Explosion
 
 
 WIDTH, HEIGHT = 940, 640
@@ -207,6 +208,49 @@ def ship_location_stage_events(
     return selected_ship
 
 
+def handle_attack_animation():
+
+    explosions = [
+        (i, animation)
+        for i, animation in enumerate(GUI_ITEMS['fire']['item'])
+        if type(animation) == Explosion
+    ]
+
+    for i, explosion in explosions:
+        if explosion.animation_finished():
+            new_fire = Fire(
+                pos_x=explosion.pos_x,
+                pos_y=explosion.pos_y
+            )
+            new_fire.center_animation_from_position(explosion.rect.center)
+            GUI_ITEMS['fire']['item'][i] = new_fire
+
+
+def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
+
+    global GUI_ITEMS
+
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        attacked, ship_name = grid.attack_enemy(event.pos)
+
+        if attacked:
+
+            explosion = Explosion(
+                pos_x=event.pos[0],
+                pos_y=event.pos[1]
+            )
+
+            centered_position = grid.center_position(event.pos)
+            explosion.center_animation_from_position(centered_position)
+            GUI_ITEMS['fire']['item'].append(explosion)
+
+
+def battle_stage_events(event, ships: list):
+    attack_enemy_ship(event, GUI_ITEMS['map']['item'], ships)
+
+    handle_attack_animation()
+
+
 def main():
     global GUI_ITEMS
 
@@ -239,12 +283,19 @@ def main():
                     selected_ship = ship_location_stage_events(
                         event, ships, ships_rect, selected_ship)
 
+                if ships_locked:
+                    battle_stage_events(event, ships)
+
         if game_started:
             if not ships_locked:
                 if handle_buttom_click(GUI_ITEMS['lock_ships']):
                     ships_locked = True
                     GUI_ITEMS['lock_ships']['enabled'] = False
                     GUI_ITEMS['map']['item'].locate_ships_into_game_grid(ships)
+                    GUI_ITEMS['fire'] = {
+                        'enabled': True,
+                        'item': []
+                    }
         else:
             if handle_buttom_click(GUI_ITEMS['start_button']):
                 game_started = True

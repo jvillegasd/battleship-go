@@ -87,7 +87,7 @@ class Grid:
         """
         return int(self.image.get_width() // self.tile_size), int(self.image.get_height() // self.tile_size)
 
-    def translate_position(self, position: Tuple[int, int]) -> Tuple[float, float]:
+    def translate_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
         """
           This method translates (x, y) position into re-scaled grid.
         """
@@ -96,6 +96,34 @@ class Grid:
         position_with_offset = pygame.Vector2(position) - grid_offset
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
 
+    def center_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
+        """
+          This method readjust and upscales the provided position
+          to the center of the tile it falls.
+          
+          The position is going to be translated into grid space
+          in order to get a valid position, them, this coordinates
+          is upscaled and centered at tile.
+        """
+        
+        grid_offset = (self.pos_x, self.pos_y)
+        tile_center_offset = (int(self.tile_size // 2),
+                              int(self.tile_size // 2))
+        
+        # Translate ship.rect.center position
+        x, y = self.translate_position(position)
+        
+        # Take translated position and upscale it
+        upscaled_x = x * self.tile_size
+        upscaled_y = y * self.tile_size
+        position_without_offset = pygame.Vector2(
+            (upscaled_x, upscaled_y)) + grid_offset
+
+        # Add another offset in order to locate ship.rect.center at center of the tile
+        position_without_offset += tile_center_offset
+        
+        return position_without_offset
+        
     def locate_ships_into_game_grid(self, ships: list) -> None:
         """
           This method locates ships into game grid in order
@@ -135,18 +163,18 @@ class Grid:
                     if x + i < self.game_grid_cols:
                         self.game_grid[y][x + i] = ship.name
 
-    def attack_enemy(self) -> Tuple[bool, str]:
+    def attack_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
         """
           This method evaluates if an enemy ship is
           located at selected tile in order to attack it.
         """
         
         # Translate mouse position to grid space
-        x, y = self.translate_position(pygame.mouse.get_pos())
+        x, y = self.translate_position(position)
         if self.__is_valid_position((x, y)):
-            if self.enemy_game_grid[y][x] in SHIPS_NAMES:
-                self.enemy_game_grid[y][x] = 1
-                return True, self.enemy_game_grid[y][x]
+            if self.game_grid[y][x] in SHIPS_NAMES:
+                self.game_grid[y][x] = 1
+                return True, self.game_grid[y][x]
 
         return False, ''
 

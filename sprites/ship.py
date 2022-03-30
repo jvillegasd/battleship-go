@@ -83,26 +83,10 @@ class Ship:
           position of the grid.
 
           The main idea is to use ship.rect.center as a pivot in order to
-          locate dragged ship. This pivot is going to be translated into
-          grid space in order to get a valid position, them, this coordinates is
-          upscaled and centered at tile.
+          locate dragged ship.
         """
-
-        grid_offset = (grid.pos_x, grid.pos_y)
-        tile_center_offset = (int(grid.tile_size // 2),
-                              int(grid.tile_size // 2))
-
-        # Translate ship.rect.center position
-        x, y = grid.translate_position(self.rect.center)
-
-        # Take translated position and upscale it
-        upscaled_x = x * grid.tile_size
-        upscaled_y = y * grid.tile_size
-        position_without_offset = pygame.Vector2(
-            (upscaled_x, upscaled_y)) + grid_offset
-
-        # Add another offset in order to locate ship.rect.center at center of the tile
-        position_without_offset += tile_center_offset
+        
+        position_without_offset = grid.center_position(self.rect.center)
         self.rect.center = position_without_offset
         self.collision_rect.center = position_without_offset
 
