@@ -24,7 +24,6 @@ class Button:
             btn_bottom_color: str = '#354B5E',
             btn_hover_color: str = '#D74B4B',
             text_color: str = '#FFFFFF') -> None:
-        super().__init__()
 
         # Core attributes
         self.pressed = False

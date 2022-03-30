@@ -8,10 +8,17 @@ class AssetAnimation:
       This class handle common logic of asset animation.
     """
 
-    def __init__(self, animation_path: str, pos_x: float, pos_y: float) -> None:
+    def __init__(
+            self,
+            animation_path: str,
+            pos_x: float,
+            pos_y: float,
+            stop_after_finish: bool = False) -> None:
+        
         self.pos_x = pos_x
         self.pos_y = pos_y
-        
+        self.stop_after_finish = stop_after_finish
+
         self.index = 0
         self.images = []
         for image_file in os.listdir(animation_path):
@@ -22,7 +29,7 @@ class AssetAnimation:
         self.rect = self.images[0].get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-        
+
         # Animation speed reduction
         self.slow_animation_factor = 2
         self.slow_animation_cnt = 0
@@ -32,10 +39,13 @@ class AssetAnimation:
           This function draws current frame of
           animation on window.
         """
-        
+
+        if self.stop_after_finish and self.animation_finished():
+            return
+
         image = self.__calculate_current_frame()
         window.blit(image, self.rect)
-    
+
     def animation_finished(self) -> bool:
         return self.index >= len(self.images)
 
@@ -48,11 +58,11 @@ class AssetAnimation:
           animation. In order to keep animation
           smooth, it was slowered by a specific factor.
         """
-        
+
         if self.animation_finished():
             self.index = 0
         image = self.images[self.index]
-        
+
         # Make animation slower than FPS
         self.slow_animation_cnt += 1
         if self.slow_animation_cnt > self.slow_animation_factor:
