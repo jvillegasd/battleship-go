@@ -282,7 +282,6 @@ def battle_stage_events(event, ships: list):
 def main():
     global GUI_ITEMS
 
-    # TODO: Investigate Pygame-GUI lib: https://pygame-gui.readthedocs.io/en/latest/
     # TODO: Create UI (For maps (ally-enemy): Create tab system, chat)
     # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
