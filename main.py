@@ -142,13 +142,13 @@ def draw_window() -> None:
     pygame.display.update()
 
 
+def handle_buttom_click(gui_btn: dict) -> bool:
+    return gui_btn['enabled'] and gui_btn['item'].click()
+
+
 # ------------------------------------------------------------
 # Ship location stage functions
 # ------------------------------------------------------------
-
-
-def handle_buttom_click(gui_btn: dict) -> bool:
-    return gui_btn['enabled'] and gui_btn['item'].click()
 
 
 def drag_and_drop_ship(
