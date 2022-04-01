@@ -4,6 +4,7 @@ from typing import Tuple, List
 # Import GUI items
 from gui.grid import Grid
 from gui.button import Button
+from gui.map_tab import MapTab
 
 # Import sprites
 from sprites.rescue_ship import RescueShip
@@ -56,6 +57,10 @@ def create_gui_items() -> dict:
         pos_x=35,
         pos_y=45
     )
+    map_gui = MapTab(
+      pos_x=500,
+      pos_y=100
+    )
 
     gui_items = {
         'start_button': {
@@ -69,6 +74,10 @@ def create_gui_items() -> dict:
         'map': {
             'enabled': True,
             'item': grid
+        },
+        'tabs': {
+            'enabled': True,
+            'item': map_gui
         }
     }
 

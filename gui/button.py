@@ -104,3 +104,7 @@ class Button:
             self.current_top_color = self.top_color
 
         return action
+
+    def change_top_colors(self, new_color: str) -> None:
+        self.top_color = new_color
+        self.top_hover_color = new_color
