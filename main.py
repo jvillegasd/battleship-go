@@ -58,8 +58,8 @@ def create_gui_items() -> dict:
         pos_y=45
     )
     map_gui = MapTab(
-      pos_x=500,
-      pos_y=100
+        pos_x=500,
+        pos_y=100
     )
 
     gui_items = {
@@ -187,22 +187,27 @@ def enable_ship_rotation(
         grid: Grid,
         ships: list,
         ships_rect: List[pygame.Rect],
-        selected_ship: int) -> None:
+        selected_ship: int,
+        dragging: bool) -> None:
     """
       This function enables rotation button to selected ship.
     """
 
     global GUI_ITEMS
 
-    # Add rotation button of selected ship to GUI
-    GUI_ITEMS['rotate_ship'] = {
-        'enabled': True,
-        'item': ships[selected_ship].rotate_btn
-    }
+    # Check if selected ship rotation buttom can be drawed
+    if 0 <= selected_ship < len(ships) and not dragging:
+        # Add rotation button of selected ship to GUI
+        GUI_ITEMS['rotate_ship'] = {
+            'enabled': True,
+            'item': ships[selected_ship].rotate_btn
+        }
 
-    if handle_buttom_click(GUI_ITEMS['rotate_ship']):
-        ships[selected_ship].rotate_ship(grid, ships_rect)
-        ships_rect[selected_ship] = ships[selected_ship].rect
+        if handle_buttom_click(GUI_ITEMS['rotate_ship']):
+            ships[selected_ship].rotate_ship(grid, ships_rect)
+            ships_rect[selected_ship] = ships[selected_ship].rect
+    elif 'rotate_ship' in GUI_ITEMS:
+        GUI_ITEMS['rotate_ship']['enabled'] = False
 
 
 def ship_location_stage_events(
@@ -217,12 +222,8 @@ def ship_location_stage_events(
     selected_ship, dragging = drag_and_drop_ship(
         event, GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
 
-    # Check if selected ship rotation buttom can be drawed
-    if 0 <= selected_ship < len(ships) and not dragging:
-        enable_ship_rotation(
-            GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
-    elif 'rotate_ship' in GUI_ITEMS:
-        GUI_ITEMS['rotate_ship']['enabled'] = False
+    enable_ship_rotation(
+        GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship, dragging)
 
     return selected_ship
 
