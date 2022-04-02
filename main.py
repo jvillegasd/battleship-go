@@ -107,14 +107,12 @@ def create_ships() -> Tuple[list, list]:
     return ships, ships_rect
 
 
-def can_draw_ships() -> bool:
+def ally_tab_selected() -> bool:
     """
-      This function checks if ships can be drawn
-      on window.
+      This function checks if ally tab is selected.
     """
     
-    return (GUI_ITEMS['ships']['enabled'] and
-            GUI_ITEMS['tabs']['enabled'] and
+    return (GUI_ITEMS['tabs']['enabled'] and
             GUI_ITEMS['tabs']['item'].ally_map_selected)
 
 
@@ -127,20 +125,17 @@ def draw_window() -> None:
     WIN.fill(BACKGROUND_COLOR)
 
     # Draw GUI items
-    for item_name, gui_item in GUI_ITEMS.items():
+    for _, gui_item in GUI_ITEMS.items():
         if not gui_item['enabled']:
             continue
 
         if type(gui_item['item']) == list:
-            if item_name == 'ships' and not can_draw_ships():
-                continue
-
             for item in gui_item['item']:
                 item.draw(WIN)
         else:
             gui_item['item'].draw(WIN)
 
-    # Draw selected tile from current map
+    # Draw selected tile for current tab
     if GUI_ITEMS['tabs']['enabled']:
         if GUI_ITEMS['tabs']['item'].ally_map_selected:
             GUI_ITEMS['tabs']['item'].ally_map.draw_selected_tile(WIN)
@@ -258,7 +253,7 @@ def handle_attack_animation():
                 new_fire.center_animation_from_position(animation.rect.center)
                 GUI_ITEMS[map_fire]['item'][i] = new_fire
     
-    # Enable animation for current selected tab
+    # Enable animation for current tab
     if GUI_ITEMS['tabs']['item'].ally_map_selected:
         GUI_ITEMS['ally_fire']['enabled'] = True
         GUI_ITEMS['enemy_fire']['enabled'] = False
@@ -336,9 +331,12 @@ def main():
             if game_started:
                 # Ships location stage
                 if not ships_locked:
-                    if can_draw_ships():
+                    if ally_tab_selected():
+                        GUI_ITEMS['ships']['enabled'] = True
                         selected_ship = ship_location_stage_events(
                             event, ships, ships_rect, selected_ship)
+                    else:
+                        GUI_ITEMS['ships']['enabled'] = False
 
                 # Battle stage
                 if ships_locked:
