@@ -1,5 +1,6 @@
 import pygame
 from typing import Tuple, List
+
 from gui.grid import Grid
 from gui.button import Button
 
