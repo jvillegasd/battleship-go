@@ -4,7 +4,7 @@ from gui.grid import Grid
 from gui.button import Button
 
 
-class MapTab:
+class MapWidget:
 
     def __init__(self, pos_x: float, pos_y: float) -> None:
         self.pos_x = pos_x
@@ -19,6 +19,7 @@ class MapTab:
         self.main_rect_color = (204, 230, 244)
         self.main_rect_border_radius = 12
         
+        # Define button tab colors
         self.ally_map_selected = True
         self.selected_tab_color = '#72788D'
         self.unselected_tab_color = '#AEC301'
@@ -58,6 +59,11 @@ class MapTab:
         )
 
     def draw(self, window: pygame.display) -> None:
+        """
+          This function draws tab widget and selected map
+          depending on which tab is selected on window.
+        """
+        
         # Draw main rect
         pygame.draw.rect(window, self.main_rect_color, self.main_rect,
                          border_radius=self.main_rect_border_radius)
@@ -66,20 +72,26 @@ class MapTab:
         self.ally_tab_btn.draw(window)
         self.enemy_tab_btn.draw(window)
         
-        # Draw maps
-        self.ally_map.draw(window)
+        # Draw map of current tab
+        if self.ally_map_selected:
+            self.ally_map.draw(window)
+        else:
+            self.enemy_map.draw(window)
         
         # Handle button tabs events
         self.__handle_button_tabs_events()
     
     def __handle_button_tabs_events(self) -> None:
+        """
+          This function handles button tab widget click events
+          to keep tracking current selected tab.
+        """
+        
         if self.ally_tab_btn.click():
             self.ally_map_selected = True
-            print('tab 1', self.ally_map_selected)
             self.ally_tab_btn.change_top_colors(self.selected_tab_color)
             self.enemy_tab_btn.change_top_colors(self.unselected_tab_color)
         if self.enemy_tab_btn.click():
             self.ally_map_selected = False
-            print('tab 2', self.ally_map_selected)
             self.ally_tab_btn.change_top_colors(self.unselected_tab_color)
             self.enemy_tab_btn.change_top_colors(self.selected_tab_color)

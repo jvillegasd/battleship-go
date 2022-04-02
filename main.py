@@ -4,7 +4,7 @@ from typing import Tuple, List
 # Import GUI items
 from gui.grid import Grid
 from gui.button import Button
-from gui.map_tab import MapTab
+from gui.map_widget import MapWidget
 
 # Import sprites
 from sprites.rescue_ship import RescueShip
@@ -53,7 +53,7 @@ def create_gui_items() -> dict:
         width=110,
         height=40
     )
-    map_gui = MapTab(
+    map_gui = MapWidget(
         pos_x=50,
         pos_y=50
     )
@@ -82,14 +82,14 @@ def create_ships() -> Tuple[list, list]:
       refering to them and their rects.
     """
 
-    new_carrier = RescueShip(65, 285)
-    new_battleship = Battleship(113, 150)
-    new_cruiser = Cruiser(180, 149)
-    new_destroyer = Destroyer(267, 147)
-    new_submarine = Submarine(350, 158)
+    new_rescue_ship = RescueShip(65, 275)
+    new_battleship = Battleship(106, 157)
+    new_cruiser = Cruiser(174, 149)
+    new_destroyer = Destroyer(271, 147)
+    new_submarine = Submarine(344, 158)
 
     ships = [
-        new_carrier,
+        new_rescue_ship,
         new_battleship,
         new_cruiser,
         new_destroyer,
@@ -97,7 +97,7 @@ def create_ships() -> Tuple[list, list]:
     ]
 
     ships_rect = [
-        new_carrier.collision_rect,
+        new_rescue_ship.collision_rect,
         new_battleship.collision_rect,
         new_cruiser.collision_rect,
         new_destroyer.collision_rect,
@@ -116,19 +116,26 @@ def draw_window() -> None:
     WIN.fill(BACKGROUND_COLOR)
 
     # Draw GUI items
-    for _, gui_item in GUI_ITEMS.items():
+    for item_name, gui_item in GUI_ITEMS.items():
         if not gui_item['enabled']:
             continue
 
         if type(gui_item['item']) == list:
+            if (item_name == 'ships' and
+                    not GUI_ITEMS['tabs']['item'].ally_map_selected):
+                continue
+
             for item in gui_item['item']:
                 item.draw(WIN)
         else:
             gui_item['item'].draw(WIN)
 
-    # Draw map selected tile
+    # Draw selected tile from current map
     if GUI_ITEMS['tabs']['enabled']:
-        GUI_ITEMS['tabs']['item'].ally_map.draw_selected_tile(WIN)
+        if GUI_ITEMS['tabs']['item'].ally_map_selected:
+            GUI_ITEMS['tabs']['item'].ally_map.draw_selected_tile(WIN)
+        else:
+            GUI_ITEMS['tabs']['item'].ally_map.draw_selected_tile(WIN)
 
     pygame.display.update()
 
@@ -310,8 +317,9 @@ def main():
             if game_started:
                 # Ships location stage
                 if not ships_locked:
-                    selected_ship = ship_location_stage_events(
-                        event, ships, ships_rect, selected_ship)
+                    if GUI_ITEMS['tabs']['item'].ally_map_selected:
+                        selected_ship = ship_location_stage_events(
+                            event, ships, ships_rect, selected_ship)
 
                 # Battle stage
                 if ships_locked:
