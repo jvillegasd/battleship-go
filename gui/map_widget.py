@@ -5,7 +5,11 @@ from gui.button import Button
 
 
 class MapWidget:
-
+    """
+      This class represent a map widget where maps
+      are going to be placed.
+    """
+    
     def __init__(self, pos_x: float, pos_y: float) -> None:
         self.pos_x = pos_x
         self.pos_y = pos_y

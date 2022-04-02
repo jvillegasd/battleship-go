@@ -305,6 +305,7 @@ def main():
     global GUI_ITEMS
 
     # TODO: Create UI (For maps (ally-enemy): Create tab system, chat)
+    # TODO: Implement stages as Game state class, reference: https://www.youtube.com/watch?v=j9yMFG3D7fg
     # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
