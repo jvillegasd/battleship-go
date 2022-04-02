@@ -79,7 +79,22 @@ class Button:
         # Draw top button
         pygame.draw.rect(window, self.current_top_color,
                          self.top_rect, border_radius=self.border_radius)
+
+        # Handle hover
+        self.hover()
+        
         window.blit(self.text_surf, self.text_rect)
+    
+    def hover(self) -> None:
+        """
+          This function handles mouse hover event.
+        """
+        
+        mouse_pos = pygame.mouse.get_pos()
+        if self.top_rect.collidepoint(mouse_pos):
+            self.current_top_color = self.top_hover_color
+        else:
+          self.current_top_color = self.top_color
 
     def click(self) -> None:
         """
@@ -92,7 +107,6 @@ class Button:
         mouse_pos = pygame.mouse.get_pos()
         if self.top_rect.collidepoint(mouse_pos):
             self.dynamic_elevation = 0
-            self.current_top_color = self.top_hover_color
             if pygame.mouse.get_pressed()[0] and not self.pressed:
                 action = True
                 self.pressed = True
@@ -101,7 +115,6 @@ class Button:
                 self.dynamic_elevation = self.elevation
         else:
             self.dynamic_elevation = self.elevation
-            self.current_top_color = self.top_color
 
         return action
 

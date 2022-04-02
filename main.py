@@ -76,7 +76,7 @@ def create_gui_items() -> dict:
             'item': grid
         },
         'tabs': {
-            'enabled': True,
+            'enabled': False,
             'item': map_gui
         }
     }
