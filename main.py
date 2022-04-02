@@ -107,6 +107,17 @@ def create_ships() -> Tuple[list, list]:
     return ships, ships_rect
 
 
+def can_draw_ships() -> bool:
+    """
+      This function checks if ships can be drawn
+      on window.
+    """
+    
+    return (GUI_ITEMS['ships']['enabled'] and
+            GUI_ITEMS['tabs']['enabled'] and
+            GUI_ITEMS['tabs']['item'].ally_map_selected)
+
+
 def draw_window() -> None:
     """
       This function draws everything to the main window.
@@ -121,8 +132,7 @@ def draw_window() -> None:
             continue
 
         if type(gui_item['item']) == list:
-            if (item_name == 'ships' and
-                    not GUI_ITEMS['tabs']['item'].ally_map_selected):
+            if item_name == 'ships' and not can_draw_ships():
                 continue
 
             for item in gui_item['item']:
@@ -317,7 +327,7 @@ def main():
             if game_started:
                 # Ships location stage
                 if not ships_locked:
-                    if GUI_ITEMS['tabs']['item'].ally_map_selected:
+                    if can_draw_ships():
                         selected_ship = ship_location_stage_events(
                             event, ships, ships_rect, selected_ship)
 
