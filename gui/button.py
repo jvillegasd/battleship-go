@@ -119,5 +119,10 @@ class Button:
         return action
 
     def change_top_colors(self, new_color: str) -> None:
+        """
+          This function changes top_color and top_hover
+          button color.
+        """
+        
         self.top_color = new_color
         self.top_hover_color = new_color
