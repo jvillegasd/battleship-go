@@ -11,7 +11,7 @@ class MapTab:
         self.pos_y = pos_y
         
         self.width = 350
-        self.height = 350
+        self.height = 380
         self.btn_width = 90
         self.btn_height = 30
 
@@ -22,7 +22,8 @@ class MapTab:
         self.ally_map_selected = True
         self.selected_tab_color = '#72788D'
         self.unselected_tab_color = '#AEC301'
-
+        
+        # Define button tabs
         self.ally_tab_btn = Button(
             text="Your map",
             pos_x=self.pos_x,
@@ -45,16 +46,27 @@ class MapTab:
             elevation=0,
             border_radius=0
         )
+        
+        # Define ally and enemy maps
+        self.ally_map = Grid(
+          pos_x=self.pos_x + 15,
+          pos_y=self.pos_y + 43
+        )
 
     def draw(self, window: pygame.display) -> None:
+        # Draw main rect
         pygame.draw.rect(window, self.main_rect_color, self.main_rect,
                          border_radius=self.main_rect_border_radius)
         
+        # Draw button tabs
         self.ally_tab_btn.draw(window)
         self.enemy_tab_btn.draw(window)
         
+        # Draw maps
+        self.ally_map.draw(window)
+        
+        # Handle button tabs events
         self.__handle_button_tabs_events()
-    
     
     def __handle_button_tabs_events(self) -> None:
         if self.ally_tab_btn.click():

@@ -53,10 +53,14 @@ class Grid:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This function draws grid on window.
+          This function draws grid and selected tile on window.
         """
+        
         # Image is drawed using initial position due to self.rect is inflated
         window.blit(self.image, (self.pos_x, self.pos_y))
+        
+        # Draw selected tile
+        self.draw_selected_tile(window)
 
     def draw_hitbot(self, window: pygame.display) -> None:
         """

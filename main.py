@@ -53,10 +53,6 @@ def create_gui_items() -> dict:
         width=110,
         height=40
     )
-    grid = Grid(
-        pos_x=35,
-        pos_y=45
-    )
     map_gui = MapTab(
         pos_x=500,
         pos_y=100
@@ -70,10 +66,6 @@ def create_gui_items() -> dict:
         'lock_ships': {
             'enabled': False,
             'item': lock_ships
-        },
-        'map': {
-            'enabled': True,
-            'item': grid
         },
         'tabs': {
             'enabled': True,
@@ -134,10 +126,6 @@ def draw_window() -> None:
                 item.draw(WIN)
         else:
             gui_item['item'].draw(WIN)
-
-    # Draw selected tile if grid is loaded
-    if 'map' in GUI_ITEMS:
-        GUI_ITEMS['map']['item'].draw_selected_tile(WIN)
 
     pygame.display.update()
 
