@@ -48,14 +48,14 @@ def create_gui_items() -> dict:
     )
     lock_ships = Button(
         text='Lock ships',
-        pos_x=136,
-        pos_y=400,
+        pos_x=170,
+        pos_y=450,
         width=110,
         height=40
     )
     map_gui = MapTab(
-        pos_x=500,
-        pos_y=100
+        pos_x=50,
+        pos_y=50
     )
 
     gui_items = {
@@ -82,12 +82,11 @@ def create_ships() -> Tuple[list, list]:
       refering to them and their rects.
     """
 
-    new_battleship = Battleship(76, 157)
-
-    new_carrier = RescueShip(51, 147)
-    new_cruiser = Cruiser(160, 149)
-    new_destroyer = Destroyer(257, 147)
-    new_submarine = Submarine(282, 158)
+    new_carrier = RescueShip(65, 285)
+    new_battleship = Battleship(113, 150)
+    new_cruiser = Cruiser(180, 149)
+    new_destroyer = Destroyer(267, 147)
+    new_submarine = Submarine(350, 158)
 
     ships = [
         new_carrier,
@@ -126,6 +125,10 @@ def draw_window() -> None:
                 item.draw(WIN)
         else:
             gui_item['item'].draw(WIN)
+
+    # Draw map selected tile
+    if GUI_ITEMS['tabs']['enabled']:
+        GUI_ITEMS['tabs']['item'].ally_map.draw_selected_tile(WIN)
 
     pygame.display.update()
 
@@ -208,10 +211,10 @@ def ship_location_stage_events(
     """
 
     selected_ship, dragging = drag_and_drop_ship(
-        event, GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship)
+        event, GUI_ITEMS['tabs']['item'].ally_map, ships, ships_rect, selected_ship)
 
     enable_ship_rotation(
-        GUI_ITEMS['map']['item'], ships, ships_rect, selected_ship, dragging)
+        GUI_ITEMS['tabs']['item'].ally_map, ships, ships_rect, selected_ship, dragging)
 
     return selected_ship
 
@@ -267,7 +270,7 @@ def battle_stage_events(event, ships: list):
       This function handles pygame events related to battle stage.
     """
 
-    attack_enemy_ship(event, GUI_ITEMS['map']['item'], ships)
+    attack_enemy_ship(event, GUI_ITEMS['tabs']['item'].enemy_map, ships)
 
     handle_attack_animation()
 
@@ -323,7 +326,8 @@ def main():
                         'item': []
                     }
                     GUI_ITEMS['lock_ships']['enabled'] = False
-                    GUI_ITEMS['map']['item'].locate_ships_into_game_grid(ships)
+                    GUI_ITEMS['tabs']['item'].ally_map.locate_ships_into_game_grid(
+                        ships)
         else:
             if handle_buttom_click(GUI_ITEMS['start_button']):
                 game_started = True

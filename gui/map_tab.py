@@ -52,6 +52,10 @@ class MapTab:
           pos_x=self.pos_x + 15,
           pos_y=self.pos_y + 43
         )
+        self.enemy_map = Grid(
+          pos_x=self.pos_x + 15,
+          pos_y=self.pos_y + 43
+        )
 
     def draw(self, window: pygame.display) -> None:
         # Draw main rect
