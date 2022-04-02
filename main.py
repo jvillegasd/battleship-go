@@ -243,19 +243,28 @@ def ship_location_stage_events(
 
 def handle_attack_animation():
     """
-      This function iterates over attack animation list
+      This function iterates over attack animation lists
       to find which explossion animation is finished
       so, they can be replaced by fire animation.
     """
-
-    for i, animation in enumerate(GUI_ITEMS['fire']['item']):
-        if type(animation) == Explosion and animation.animation_finished():
-            new_fire = Fire(
-                pos_x=animation.pos_x,
-                pos_y=animation.pos_y
-            )
-            new_fire.center_animation_from_position(animation.rect.center)
-            GUI_ITEMS['fire']['item'][i] = new_fire
+    
+    for map_fire in ['ally_fire', 'enemy_fire']:
+        for i, animation in enumerate(GUI_ITEMS[map_fire]['item']):
+            if type(animation) == Explosion and animation.animation_finished():
+                new_fire = Fire(
+                    pos_x=animation.pos_x,
+                    pos_y=animation.pos_y
+                )
+                new_fire.center_animation_from_position(animation.rect.center)
+                GUI_ITEMS[map_fire]['item'][i] = new_fire
+    
+    # Enable animation for current selected tab
+    if GUI_ITEMS['tabs']['item'].ally_map_selected:
+        GUI_ITEMS['ally_fire']['enabled'] = True
+        GUI_ITEMS['enemy_fire']['enabled'] = False
+    else:
+        GUI_ITEMS['ally_fire']['enabled'] = False
+        GUI_ITEMS['enemy_fire']['enabled'] = True
 
 
 def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
@@ -267,8 +276,7 @@ def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
     global GUI_ITEMS
 
     if event.type == pygame.MOUSEBUTTONDOWN:
-        attacked, ship_name = grid.attack_enemy(event.pos)
-
+        attacked, ship_name = grid.attack_tile(event.pos)
         if attacked:
 
             explosion = Explosion(
@@ -279,7 +287,7 @@ def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
 
             centered_position = grid.center_position(event.pos)
             explosion.center_animation_from_position(centered_position)
-            GUI_ITEMS['fire']['item'].append(explosion)
+            GUI_ITEMS['enemy_fire']['item'].append(explosion)
 
 
 def battle_stage_events(event, ships: list):
@@ -287,7 +295,8 @@ def battle_stage_events(event, ships: list):
       This function handles pygame events related to battle stage.
     """
 
-    attack_enemy_ship(event, GUI_ITEMS['tabs']['item'].enemy_map, ships)
+    if not GUI_ITEMS['tabs']['item'].ally_map_selected:
+        attack_enemy_ship(event, GUI_ITEMS['tabs']['item'].enemy_map, ships)
 
     handle_attack_animation()
 
@@ -339,7 +348,11 @@ def main():
             if not ships_locked:
                 if handle_buttom_click(GUI_ITEMS['lock_ships']):
                     ships_locked = True
-                    GUI_ITEMS['fire'] = {
+                    GUI_ITEMS['ally_fire'] = {
+                        'enabled': True,
+                        'item': []
+                    }
+                    GUI_ITEMS['enemy_fire'] = {
                         'enabled': True,
                         'item': []
                     }

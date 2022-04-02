@@ -28,8 +28,6 @@ class Grid:
 
         self.game_grid = [
             [0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
-        self.enemy_game_grid = [
-            [0 for i in range(self.game_grid_cols)] for j in range(self.game_grid_rows)]
 
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
@@ -164,32 +162,18 @@ class Grid:
                     if x + i < self.game_grid_cols:
                         self.game_grid[y][x + i] = ship.name
 
-    def attack_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
+    def attack_tile(self, position: Tuple[float, float]) -> Tuple[bool, str]:
         """
-          This function evaluates if an enemy ship is
-          located at selected tile in order to attack it.
+          This function evaluates if a ship is located
+          at selected tile in order to attack it.
         """
         
         # Translate mouse position to grid space
         x, y = self.translate_position(position)
         if self.__is_valid_position((x, y)):
-            if self.enemy_game_grid[y][x] in SHIPS_NAMES:
-                self.enemy_game_grid[y][x] = 1
-                return True, self.enemy_game_grid[y][x]
-
-        return False, ''
-
-    def receive_attack_from_enemy(self, position: Tuple[float, float]) -> Tuple[bool, str]:
-        """
-          This function evaluates if an ally ship is
-          located at selected tile by enemy in order to
-          receive their attack.
-        """
-        
-        if self.__is_valid_position(position):
-            if self.game_grid[position[1]][position[0]] in SHIPS_NAMES:
-                self.game_grid[position[1]][position[0]] = 1
-                return True, self.game_grid[position[1]][position[0]]
+            if self.game_grid[y][x] in SHIPS_NAMES:
+                self.game_grid[y][x] = 1
+                return True, self.game_grid[y][x]
 
         return False, ''
 
