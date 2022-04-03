@@ -155,7 +155,7 @@ def handle_buttom_click(gui_btn: dict) -> bool:
 
 
 def drag_and_drop_ship(
-        event,
+        event: pygame.event.Event,
         grid: Grid,
         ships: list,
         ships_rect: list,
@@ -214,7 +214,7 @@ def enable_ship_rotation(
 
 
 def ship_location_stage_events(
-        event,
+        event: pygame.event.Event,
         ships: list,
         ships_rect: List[pygame.Rect],
         selected_ship: int) -> int:
@@ -262,7 +262,7 @@ def handle_attack_animation():
         GUI_ITEMS['enemy_fire']['enabled'] = True
 
 
-def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
+def attack_enemy_ship(event: pygame.event.Event, grid: Grid, ships: list) -> Tuple[bool, str]:
     """
       This function handles required mouse events to
       attack enemy ship.
@@ -285,7 +285,7 @@ def attack_enemy_ship(event, grid: Grid, ships: list) -> Tuple[bool, str]:
             GUI_ITEMS['enemy_fire']['item'].append(explosion)
 
 
-def battle_stage_events(event, ships: list):
+def battle_stage_events(event: pygame.event.Event, ships: list):
     """
       This function handles pygame events related to battle stage.
     """
@@ -304,7 +304,6 @@ def battle_stage_events(event, ships: list):
 def main():
     global GUI_ITEMS
 
-    # TODO: Create UI (For maps (ally-enemy): Create tab system, chat)
     # TODO: Implement stages as Game state class, reference: https://www.youtube.com/watch?v=j9yMFG3D7fg
     # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
