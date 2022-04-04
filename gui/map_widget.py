@@ -80,12 +80,9 @@ class MapWidget:
         if self.ally_map_selected:
             self.ally_map.draw(window)
         else:
-            self.enemy_map.draw(window)
-        
-        # Handle button tabs events
-        self.__handle_button_tabs_events()
+            self.enemy_map.draw(window)  
     
-    def __handle_button_tabs_events(self) -> None:
+    def handle_button_tabs_events(self) -> None:
         """
           This function handles button tab widget click events
           to keep tracking current selected tab.

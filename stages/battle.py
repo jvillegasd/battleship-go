@@ -64,6 +64,8 @@ class Battle:
                 sys.exit()
 
             if self.states['maps_ships_loaded']:
+                self.map_widget.handle_button_tabs_events()
+                
                 if self.__ally_tab_selected():
                     self.gui_items['ships']['enabled'] = True
                 else:
