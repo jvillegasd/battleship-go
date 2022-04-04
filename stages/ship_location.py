@@ -1,6 +1,6 @@
 import sys
 import pygame
-from typing import Tuple, List
+from typing import Tuple
 
 # Import GUI items
 from gui.grid import Grid
@@ -16,7 +16,7 @@ from sprites.submarine import Submarine
 
 
 class ShipLocation:
-    """ This class manages Ship location stage game state. """
+    """ This class manages Ship location stage. """
 
     def __init__(self) -> None:
         self.states = {
@@ -24,6 +24,7 @@ class ShipLocation:
             'ship_locked': False
         }
 
+        self.map_widget = MapWidget(pos_x=73, pos_y=25)
         self.ships, self.ships_rect = self.__create_ships()
         self.gui_items = self.__load_gui_items()
 
@@ -53,12 +54,10 @@ class ShipLocation:
 
         # Draw selected tile for current tab
         if self.gui_items['tabs']['enabled']:
-            if self.gui_items['tabs']['item'].ally_map_selected:
-                self.gui_items['tabs']['item'].ally_map.draw_selected_tile(
-                    window)
+            if self.map_widget.ally_map_selected:
+                self.map_widget.ally_map.draw_selected_tile(window)
             else:
-                self.gui_items['tabs']['item'].enemy_map.draw_selected_tile(
-                    window)
+                self.map_widget.enemy_map.draw_selected_tile(window)
 
         pygame.display.update()
 
@@ -77,23 +76,22 @@ class ShipLocation:
                 self.gui_items['ships']['enabled'] = True
 
                 self.states['selected_ship'], dragging = self.__drag_and_drop_ship(
-                    event, self.gui_items['tabs']['item'].ally_map, self.states['selected_ship'])
+                    event, self.map_widget.ally_map, self.states['selected_ship'])
 
                 self.__enable_ship_rotation(
-                    self.gui_items['tabs']['item'].ally_map, self.states['selected_ship'], dragging)
+                    self.map_widget.ally_map, self.states['selected_ship'], dragging)
             else:
                 self.gui_items['ships']['enabled'] = False
 
         if self.handle_buttom_click(self.gui_items['lock_ships']):
             self.states['ship_locked'] = True
-            self.gui_items['tabs']['item'].ally_map.locate_ships_into_game_grid(
-                self.ships)
+            self.map_widget.ally_map.locate_ships_into_game_grid(self.ships)
 
         return self.states
 
     def get_maps_and_ships(self) -> Tuple[MapWidget, list]:
         """ This function returns map widget and ships """
-        return self.gui_items['tabs']['item'], self.ships
+        return self.map_widget, self.ships
 
     def __load_gui_items(self) -> dict:
         """
@@ -108,10 +106,6 @@ class ShipLocation:
             width=110,
             height=40
         )
-        map_gui = MapWidget(
-            pos_x=73,
-            pos_y=25
-        )
 
         gui_items = {
             'lock_ships': {
@@ -120,7 +114,7 @@ class ShipLocation:
             },
             'tabs': {
                 'enabled': True,
-                'item': map_gui
+                'item': self.map_widget
             },
             'ships': {
                 'enabled': True,

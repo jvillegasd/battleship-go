@@ -6,7 +6,7 @@ from gui.button import Button
 
 
 class Intro:
-    """ This class manages Intro stage game state. """
+    """ This class manages Intro stage. """
     
     def __init__(self) -> None:
         self.states = {
