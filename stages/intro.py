@@ -23,10 +23,10 @@ class Intro:
         """
         
         start_button = Button(
-            text='Start',
-            pos_x=655,
-            pos_y=200,
-            width=70,
+            text='Start game',
+            pos_x=190,
+            pos_y=220,
+            width=120,
             height=40
         )
 

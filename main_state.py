@@ -3,7 +3,7 @@ from typing import Tuple, List
 
 from stages.intro import Intro
 
-WIDTH, HEIGHT = 940, 640
+WIDTH, HEIGHT = 500, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Battleship')
 
@@ -22,7 +22,6 @@ class GameState:
     def intro(self) -> None:
         states = self.intro_stage.process_events()
         self.intro_stage.draw(WIN)
-        
         
     
     def state_manager(self) -> None:
