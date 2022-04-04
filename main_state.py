@@ -17,7 +17,7 @@ FPS = 30
 class GameState:
 
     def __init__(self) -> None:
-        self.state = 'ship_location'
+        self.state = 'intro'
         self.intro_stage = Intro()
         self.ship_location_stage = ShipLocation()
     
