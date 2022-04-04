@@ -304,7 +304,7 @@ def battle_stage_events(event: pygame.event.Event, ships: list):
 def main():
     global GUI_ITEMS
 
-    # TODO: Implement stages as Game state class, reference: https://www.youtube.com/watch?v=j9yMFG3D7fg
+    # TODO: Implement stages as Game state class, reference: 
     # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
