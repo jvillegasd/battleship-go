@@ -57,6 +57,11 @@ class Battle:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+            if self.__ally_tab_selected():
+                self.gui_items['ships']['enabled'] = True
+            else:
+                self.gui_items['ships']['enabled'] = False
 
         return self.states
 
@@ -87,14 +92,19 @@ class Battle:
                 'enabled': True,
                 'item': []
             },
-            'ships': {
+            'tabs': {
                 'enabled': False,
                 'item': None
             },
-            'tabs': {
+            'ships': {
                 'enabled': False,
                 'item': None
             }
         }
 
         return gui_items
+
+    def __ally_tab_selected(self) -> bool:
+        """ This function checks if ally tab is selected. """
+        return (self.gui_items['tabs']['enabled'] and
+                self.gui_items['tabs']['item'].ally_map_selected)
