@@ -1,6 +1,7 @@
-import pygame
 import sys
+import pygame
 
+# Import GUI items
 from gui.button import Button
 
 
@@ -16,34 +17,11 @@ class Intro:
         # Color name: Little Greene French Grey Pale
         self.background_color = (231, 231, 219)
 
-    def __load_gui_items(self) -> dict:
-        """
-          This function creates and loads gui items
-          used in stage.
-        """
-        
-        start_button = Button(
-            text='Start game',
-            pos_x=190,
-            pos_y=220,
-            width=120,
-            height=40
-        )
-
-        gui_items = {
-            'start_button': {
-                'enabled': True,
-                'item': start_button
-            }
-        }
-
-        return gui_items
-
     def handle_buttom_click(self, gui_btn: dict) -> bool:
         """ This function handles button click event """
         return gui_btn['enabled'] and gui_btn['item'].click()
 
-    def draw(self, window: pygame.display) -> None:
+    def draw(self, window: pygame.display) -> dict:
         """ This function draws gui items on window. """
         
         # Draw background
@@ -77,3 +55,26 @@ class Intro:
             self.states['game_started'] = True
 
         return self.states
+
+    def __load_gui_items(self) -> dict:
+        """
+          This function creates and loads gui items
+          used in stage.
+        """
+        
+        start_button = Button(
+            text='Start game',
+            pos_x=187,
+            pos_y=220,
+            width=120,
+            height=40
+        )
+
+        gui_items = {
+            'start_button': {
+                'enabled': True,
+                'item': start_button
+            }
+        }
+
+        return gui_items
