@@ -83,6 +83,7 @@ class Button:
         # Handle hover
         self.hover()
         
+        # Draw text
         window.blit(self.text_surf, self.text_rect)
     
     def hover(self) -> None:

@@ -27,7 +27,7 @@ class GameState:
 
     def intro(self) -> None:
         """ Intro stage state handler. """
-        
+
         states = self.intro_stage.process_events()
         self.intro_stage.draw(WIN)
 
@@ -47,13 +47,13 @@ class GameState:
 
     def battle(self) -> None:
         """ Battle stage state handler. """
-        
+
         states = self.battle_stage.process_events()
         self.battle_stage.draw(WIN)
 
     def state_manager(self) -> None:
         """ This function keeps tracking of current game state. """
-      
+
         if self.state == 'intro':
             self.intro()
         elif self.state == 'ship_location':
@@ -66,7 +66,7 @@ def main():
     # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
-  
+
     game_state = GameState()
     clock = pygame.time.Clock()
 

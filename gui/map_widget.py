@@ -11,14 +11,15 @@ class MapWidget:
     """
     
     def __init__(self, pos_x: float, pos_y: float) -> None:
+        # Define attributes
         self.pos_x = pos_x
         self.pos_y = pos_y
-        
         self.width = 350
         self.height = 380
         self.btn_width = 90
         self.btn_height = 30
-
+        
+        # Define main rect
         self.main_rect = pygame.Rect((self.pos_x, self.pos_y), (self.width, self.height))
         self.main_rect_color = (204, 230, 244)
         self.main_rect_border_radius = 12
@@ -81,8 +82,11 @@ class MapWidget:
             self.ally_map.draw(window)
         else:
             self.enemy_map.draw(window)  
+        
+        # Handle tabs events
+        self.__handle_button_tabs_events()
     
-    def handle_button_tabs_events(self) -> None:
+    def __handle_button_tabs_events(self) -> None:
         """
           This function handles button tab widget click events
           to keep tracking current selected tab.

@@ -72,8 +72,6 @@ class ShipLocation:
                 pygame.quit()
                 sys.exit()
             
-            self.map_widget.handle_button_tabs_events()
-            
             if self.__ally_tab_selected():
                 self.gui_items['ships']['enabled'] = True
 

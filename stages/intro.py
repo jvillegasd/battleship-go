@@ -3,11 +3,12 @@ import pygame
 
 # Import GUI items
 from gui.button import Button
+from gui.text_bubble import TextBubble
 
 
 class Intro:
     """ This class manages Intro stage. """
-    
+
     def __init__(self) -> None:
         self.states = {
             'game_started': False
@@ -23,7 +24,7 @@ class Intro:
 
     def draw(self, window: pygame.display) -> dict:
         """ This function draws gui items on window. """
-        
+
         # Draw background
         window.fill(self.background_color)
 
@@ -45,7 +46,7 @@ class Intro:
           This function handles pygame events related
           to current stage.
         """
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -61,7 +62,7 @@ class Intro:
           This function creates and loads gui items
           used in stage.
         """
-        
+
         start_button = Button(
             text='Start game',
             pos_x=187,
@@ -69,11 +70,23 @@ class Intro:
             width=120,
             height=40
         )
+        text = TextBubble(
+            pos_x=30,
+            pos_y=30,
+            width=140,
+            height=50,
+            text='test'
+        )
+        text.change_text('Battleship, life: 6/11')
 
         gui_items = {
             'start_button': {
                 'enabled': True,
                 'item': start_button
+            },
+            'text': {
+                'enabled': True,
+                'item': text
             }
         }
 
