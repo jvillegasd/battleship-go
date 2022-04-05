@@ -64,7 +64,6 @@ class GameState:
 
 
 def main():
-    # TODO: Calculate life of ships (attacking) and show bubble with info
     # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
 
