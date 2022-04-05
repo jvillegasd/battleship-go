@@ -1,6 +1,6 @@
 import sys
 import pygame
-from typing import Tuple
+from typing import Tuple, List
 
 # Import GUI items
 from gui.grid import Grid
@@ -89,9 +89,9 @@ class ShipLocation:
 
         return self.states
 
-    def get_maps_and_ships(self) -> Tuple[MapWidget, list]:
+    def get_maps_and_ships(self) -> Tuple[MapWidget, list, List[pygame.Rect]]:
         """ This function returns map widget and ships """
-        return self.map_widget, self.ships
+        return self.map_widget, self.ships, self.ships_rect
 
     def __load_gui_items(self) -> dict:
         """

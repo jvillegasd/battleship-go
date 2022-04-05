@@ -1,6 +1,6 @@
 import sys
 import pygame
-from typing import Tuple
+from typing import Tuple, List
 
 # Import GUI items
 from gui.grid import Grid
@@ -18,7 +18,8 @@ class Battle:
         self.states = {
             'game_finished': False,
             'winner_name': None,
-            'maps_ships_loaded': False
+            'maps_ships_loaded': False,
+            'selected_ship': -1
         }
 
         self.gui_items = self.__load_gui_items()
@@ -74,14 +75,16 @@ class Battle:
                         event, self.map_widget.enemy_map, self.ships)
 
                 self.__handle_attack_animation()
+                self.__handle_ship_hover_event()
 
         return self.states
 
-    def load_maps_and_ships(self, maps: MapWidget, ships: list) -> None:
+    def load_maps_and_ships(self, maps: MapWidget, ships: list, ships_rect: List[pygame.Rect]) -> None:
         """ This function loads into GUI map widget and ships """
 
         self.map_widget = maps
         self.ships = ships
+        self.ships_rect = ships_rect
 
         self.gui_items['tabs']['item'] = self.map_widget
         self.gui_items['tabs']['enabled'] = True
@@ -171,3 +174,18 @@ class Battle:
         else:
             self.gui_items['ally_fire']['enabled'] = False
             self.gui_items['enemy_fire']['enabled'] = True
+
+    def __handle_ship_hover_event(self) -> None:
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_rect = pygame.Rect(mouse_pos, (1, 1))
+        selected_ship = mouse_rect.collidelist(self.ships_rect)
+
+        if 0 <= selected_ship < len(self.ships):
+            self.gui_items['text_bubble'] = {
+                'enabled': True,
+                'item': self.ships[selected_ship].life_diplay
+            }
+        elif 'text_bubble' in self.gui_items:
+            self.gui_items['text_bubble']['enabled'] = False
+
+        self.states['selected_ship'] = selected_ship

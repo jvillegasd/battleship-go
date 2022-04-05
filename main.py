@@ -42,8 +42,8 @@ class GameState:
 
         if states['ship_locked']:
             self.state = 'battle'
-            map_widget, ships = self.ship_location_stage.get_maps_and_ships()
-            self.battle_stage.load_maps_and_ships(map_widget, ships)
+            map_widget, ships, ships_rect = self.ship_location_stage.get_maps_and_ships()
+            self.battle_stage.load_maps_and_ships(map_widget, ships, ships_rect)
 
     def battle(self) -> None:
         """ Battle stage state handler. """

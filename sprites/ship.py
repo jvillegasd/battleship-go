@@ -18,8 +18,8 @@ class Ship:
         self.name = 'Default'
         
         # Define ship life
-        self.life = None
-        self.current_life = None
+        self.life = 1
+        self.current_life = 1
         
         # Define ship rect
         self.rect = self.image.get_rect()
@@ -48,8 +48,8 @@ class Ship:
         self.life_diplay = TextBubble(
             pos_x=self.rect.center[0],
             pos_y=self.rect.center[1],
-            width=140,
-            height=50,
+            width=80,
+            height=20,
             text=f'Life: {self.current_life}/{self.life}'
         )
         self.life_diplay.center_button_from_position(self.rect.center)

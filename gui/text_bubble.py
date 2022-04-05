@@ -45,6 +45,7 @@ class TextBubble:
         
         self.bubble_rect.center = position
         self.bubble_shadow_rect.center = position
+        self.text_rect.center = position
 
     def draw(self, window: pygame.display) -> None:
         # Draw shadows
