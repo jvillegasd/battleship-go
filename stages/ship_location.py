@@ -20,8 +20,8 @@ class ShipLocation:
 
     def __init__(self) -> None:
         self.states = {
-            'last_selected_ship': -1,
-            'ship_locked': False
+            'ship_locked': False,
+            'last_selected_ship': -1
         }
 
         self.map_widget = MapWidget(pos_x=73, pos_y=25)
@@ -175,15 +175,16 @@ class ShipLocation:
         last_selected_ship = self.states['last_selected_ship']
 
         # Check if selected ship rotation buttom can be drawed
-        if 0 <= selected_ship < len(self.ships) and not dragging:
+        if self.__valid_ship_index(selected_ship) and not dragging:
             self.ships[selected_ship].can_draw_button = True
+
             if last_selected_ship != selected_ship:
                 self.ships[last_selected_ship].can_draw_button = False
 
             if self.ships[selected_ship].rotate_button_click():
                 self.ships[selected_ship].rotate_ship(grid, self.ships_rect)
                 self.ships_rect[selected_ship] = self.ships[selected_ship].rect
-        elif 0 <= last_selected_ship < len(self.ships):
+        elif self.__valid_ship_index(last_selected_ship):
             self.ships[last_selected_ship].can_draw_button = False
 
     def __create_ships(self) -> Tuple[list, list]:
@@ -215,3 +216,7 @@ class ShipLocation:
         ]
 
         return ships, ships_rect
+
+    def __valid_ship_index(self, selected_ship: int) -> bool:
+        """ This function checks if selected_ship is a valid index """
+        return 0 <= selected_ship < len(self.ships)

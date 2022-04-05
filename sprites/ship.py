@@ -10,7 +10,7 @@ class Ship:
     """
       This class handles every ships common logic.
     """
-    # TODO: Create method to control button and text bubble drawing
+    
     def __init__(self, image_path: str, pos_x: float, pos_y: float) -> None:
         # Define core attributes
         self.image = pygame.image.load(image_path)
@@ -194,7 +194,7 @@ class Ship:
         pygame.draw.circle(window, color, self.rect.center, 4)
 
     def rotate_button_click(self) -> bool:
-        return self.rotate_btn.click()
+        return self.can_draw_button and self.rotate_btn.click()
 
     def __rotate_ship_image_and_rect(self, rollback: bool = False) -> None:
         """

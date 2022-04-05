@@ -19,7 +19,7 @@ class Battle:
             'game_finished': False,
             'winner_name': None,
             'maps_ships_loaded': False,
-            'selected_ship': -1
+            'last_selected_ship': -1
         }
 
         self.gui_items = self.__load_gui_items()
@@ -71,10 +71,10 @@ class Battle:
                     self.gui_items['ships']['enabled'] = False
                     self.attack_enemy_ship(
                         event, self.map_widget.enemy_map, self.ships)
-        
+
         if self.states['maps_ships_loaded']:
+            self.states['last_selected_ship'] = self.__show_ship_life_status()
             self.__handle_attack_animation()
-            self.__show_ship_life_status()
             self.map_widget.handle_button_tabs_events()
 
         return self.states
@@ -175,19 +175,25 @@ class Battle:
             self.gui_items['ally_fire']['enabled'] = False
             self.gui_items['enemy_fire']['enabled'] = True
 
-    def __show_ship_life_status(self) -> None:
+    def __show_ship_life_status(self) -> int:
         """ This function show ship current life when it is hovered. """
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_rect = pygame.Rect(mouse_pos, (1, 1))
+
         selected_ship = mouse_rect.collidelist(self.ships_rect)
+        last_selected_ship = self.states['last_selected_ship']
 
-        if 0 <= selected_ship < len(self.ships):
-            self.gui_items['text_bubble'] = {
-                'enabled': True,
-                'item': self.ships[selected_ship].life_diplay
-            }
-        elif 'text_bubble' in self.gui_items:
-            self.gui_items['text_bubble']['enabled'] = False
+        if self.__valid_ship_index(selected_ship):
+            self.ships[selected_ship].can_draw_bubble = True
 
-        self.states['selected_ship'] = selected_ship
+            if last_selected_ship != selected_ship:
+                self.ships[last_selected_ship].can_draw_bubble = False
+        elif self.__valid_ship_index(last_selected_ship):
+            self.ships[last_selected_ship].can_draw_bubble = False
+
+        return selected_ship
+
+    def __valid_ship_index(self, selected_ship: int) -> bool:
+        """ This function checks if selected_ship is a valid index """
+        return 0 <= selected_ship < len(self.ships)
