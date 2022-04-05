@@ -75,7 +75,7 @@ class Battle:
                         event, self.map_widget.enemy_map, self.ships)
 
                 self.__handle_attack_animation()
-                self.__handle_ship_hover_event()
+                self.__show_ship_life_status()
 
         return self.states
 
@@ -175,7 +175,9 @@ class Battle:
             self.gui_items['ally_fire']['enabled'] = False
             self.gui_items['enemy_fire']['enabled'] = True
 
-    def __handle_ship_hover_event(self) -> None:
+    def __show_ship_life_status(self) -> None:
+        """ This function show ship current life when it is hovered. """
+
         mouse_pos = pygame.mouse.get_pos()
         mouse_rect = pygame.Rect(mouse_pos, (1, 1))
         selected_ship = mouse_rect.collidelist(self.ships_rect)

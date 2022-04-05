@@ -48,6 +48,8 @@ class TextBubble:
         self.text_rect.center = position
 
     def draw(self, window: pygame.display) -> None:
+        """ This function draws text bubble on window. """
+        
         # Draw shadows
         pygame.draw.rect(window, self.shadow_color,
                          self.bubble_shadow_rect, border_radius=12)
@@ -60,5 +62,7 @@ class TextBubble:
         window.blit(self.text_surf, self.text_rect)
 
     def change_text(self, new_text: str) -> None:
+        """ This function changes text of text bubble. """
+        
         self.text_surf = GUI_FONT.render(new_text, True, self.text_color)
         self.text_rect = self.text_surf.get_rect(center=self.bubble_rect.center)
