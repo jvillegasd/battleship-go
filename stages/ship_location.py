@@ -20,7 +20,7 @@ class ShipLocation:
 
     def __init__(self) -> None:
         self.states = {
-            'selected_ship': -1,
+            'last_selected_ship': -1,
             'ship_locked': False
         }
 
@@ -74,12 +74,15 @@ class ShipLocation:
 
             if self.__ally_tab_selected():
                 self.gui_items['ships']['enabled'] = True
+                selected_ship = self.states['last_selected_ship']
 
-                self.states['selected_ship'], dragging = self.__drag_and_drop_ship(
-                    event, self.map_widget.ally_map, self.states['selected_ship'])
+                selected_ship, dragging = self.__drag_and_drop_ship(
+                    event, self.map_widget.ally_map, selected_ship)
 
                 self.__enable_ship_rotation(
-                    self.map_widget.ally_map, self.states['selected_ship'], dragging)
+                    self.map_widget.ally_map, selected_ship, dragging)
+
+                self.states['last_selected_ship'] = selected_ship
             else:
                 self.gui_items['ships']['enabled'] = False
 
@@ -169,19 +172,19 @@ class ShipLocation:
             dragging: bool) -> None:
         """ This function enables rotation button to selected ship. """
 
+        last_selected_ship = self.states['last_selected_ship']
+
         # Check if selected ship rotation buttom can be drawed
         if 0 <= selected_ship < len(self.ships) and not dragging:
-            # Add rotation button of selected ship to GUI
-            self.gui_items['rotate_ship'] = {
-                'enabled': True,
-                'item': self.ships[selected_ship].rotate_btn
-            }
+            self.ships[selected_ship].can_draw_button = True
+            if last_selected_ship != selected_ship:
+                self.ships[last_selected_ship].can_draw_button = False
 
-            if self.handle_buttom_click(self.gui_items['rotate_ship']):
+            if self.ships[selected_ship].rotate_button_click():
                 self.ships[selected_ship].rotate_ship(grid, self.ships_rect)
                 self.ships_rect[selected_ship] = self.ships[selected_ship].rect
-        elif 'rotate_ship' in self.gui_items:
-            self.gui_items['rotate_ship']['enabled'] = False
+        elif 0 <= last_selected_ship < len(self.ships):
+            self.ships[last_selected_ship].can_draw_button = False
 
     def __create_ships(self) -> Tuple[list, list]:
         """

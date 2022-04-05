@@ -10,7 +10,7 @@ class Ship:
     """
       This class handles every ships common logic.
     """
-
+    # TODO: Create method to control button and text bubble drawing
     def __init__(self, image_path: str, pos_x: float, pos_y: float) -> None:
         # Define core attributes
         self.image = pygame.image.load(image_path)
@@ -32,6 +32,7 @@ class Ship:
 
         # Define rotate button
         self.can_rotate = True
+        self.can_draw_button = False
         self.rotate_btn = Button(
             text=">",
             pos_x=self.rect.center[0],
@@ -45,6 +46,7 @@ class Ship:
         self.rotate_btn.center_buttom_from_position(self.rect.center)
 
         # Define text bubble
+        self.can_draw_bubble = False
         self.life_diplay = TextBubble(
             pos_x=self.rect.center[0],
             pos_y=self.rect.center[1],
@@ -159,11 +161,17 @@ class Ship:
 
     def draw(self, window: pygame.display) -> None:
         """
-          This function draws ship on window.
+          This function draws ship, rotate button
+          and text bubble on window.
         """
+        
         window.blit(self.image, self.rect)
-        self.draw_hitbox(window)
-        self.draw_rect(window)
+        
+        if self.can_draw_button:
+            self.rotate_btn.draw(window)
+        
+        if self.can_draw_bubble:
+            self.life_diplay.draw(window)
 
     def draw_hitbox(self, window: pygame.display) -> None:
         """
@@ -184,6 +192,9 @@ class Ship:
         pygame.draw.rect(window, color, (self.rect.x, self.rect.y,
                                          self.rect.width, self.rect.height), 1, border_radius=1)
         pygame.draw.circle(window, color, self.rect.center, 4)
+
+    def rotate_button_click(self) -> bool:
+        return self.rotate_btn.click()
 
     def __rotate_ship_image_and_rect(self, rollback: bool = False) -> None:
         """
