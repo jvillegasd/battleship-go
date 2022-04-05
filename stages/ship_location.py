@@ -83,6 +83,7 @@ class ShipLocation:
             else:
                 self.gui_items['ships']['enabled'] = False
 
+        self.map_widget.handle_button_tabs_events()
         if self.handle_buttom_click(self.gui_items['lock_ships']):
             self.states['ship_locked'] = True
             self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(

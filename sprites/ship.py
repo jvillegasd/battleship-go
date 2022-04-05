@@ -110,6 +110,7 @@ class Ship:
         self.collision_rect.center = position_without_offset
 
         self.rotate_btn.center_buttom_from_position(position_without_offset)
+        self.life_diplay.center_button_from_position(position_without_offset)
 
     def rotate_ship(self, grid: Grid, ships_collision_rect: List[pygame.Rect]) -> None:
         """

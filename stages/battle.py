@@ -69,13 +69,13 @@ class Battle:
                     self.gui_items['ships']['enabled'] = True
                 else:
                     self.gui_items['ships']['enabled'] = False
-
-                if not self.map_widget.ally_map_selected:
                     self.attack_enemy_ship(
                         event, self.map_widget.enemy_map, self.ships)
-
-                self.__handle_attack_animation()
-                self.__show_ship_life_status()
+        
+        if self.states['maps_ships_loaded']:
+            self.__handle_attack_animation()
+            self.__show_ship_life_status()
+            self.map_widget.handle_button_tabs_events()
 
         return self.states
 
