@@ -1,4 +1,5 @@
 import pygame
+from typing import Tuple
 
 pygame.font.init()
 GUI_FONT = pygame.font.Font('assets/fonts/CascadiaCode-SemiBold.ttf', 14)
@@ -34,39 +35,25 @@ class TextBubble:
         
         # Define bubble shadow rect
         self.bubble_shadow_rect = self.bubble_rect.inflate(6, 6)
-
-        # Define bubble triangle
-        triangle_pivot = pygame.Vector2(self.bubble_rect.bottomleft) + (16, 0)
-        self.triangle_points = [
-            triangle_pivot,
-            triangle_pivot + (15, 0),
-            triangle_pivot + (0, 15)
-        ]
-        
-        # Define bubble triangle shadow
-        triangle_shadow_pivot = pygame.Vector2(
-            self.bubble_rect.bottomleft) + (13, 0)
-        self.triangle_shadow_points = [
-            triangle_shadow_pivot,
-            triangle_shadow_pivot + (23, 0),
-            triangle_shadow_pivot + (0, 23)
-        ]
         
         # Define text rect
         self.text_surf = GUI_FONT.render(text, True, self.text_color)
         self.text_rect = self.text_surf.get_rect(center=self.bubble_rect.center)
 
+    def center_button_from_position(self, position: Tuple[float, float]) -> None:
+        """ This function center text bubble over provider position """
+        
+        self.bubble_rect.center = position
+        self.bubble_shadow_rect.center = position
+
     def draw(self, window: pygame.display) -> None:
         # Draw shadows
         pygame.draw.rect(window, self.shadow_color,
                          self.bubble_shadow_rect, border_radius=12)
-        pygame.draw.polygon(window, self.shadow_color,
-                            self.triangle_shadow_points)
         
         # Draw bubble and triangle
         pygame.draw.rect(window, self.bubble_color,
                          self.bubble_rect, border_radius=12)
-        pygame.draw.polygon(window, self.bubble_color, self.triangle_points)
         
         # Draw text
         window.blit(self.text_surf, self.text_rect)

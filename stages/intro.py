@@ -70,23 +70,10 @@ class Intro:
             width=120,
             height=40
         )
-        text = TextBubble(
-            pos_x=30,
-            pos_y=30,
-            width=140,
-            height=50,
-            text='test'
-        )
-        text.change_text('Battleship, life: 6/11')
-
         gui_items = {
             'start_button': {
                 'enabled': True,
                 'item': start_button
-            },
-            'text': {
-                'enabled': True,
-                'item': text
             }
         }
 

@@ -81,22 +81,11 @@ class Button:
                          self.top_rect, border_radius=self.border_radius)
 
         # Handle hover
-        self.hover()
+        self.__hover()
         
         # Draw text
         window.blit(self.text_surf, self.text_rect)
     
-    def hover(self) -> None:
-        """
-          This function handles mouse hover event.
-        """
-        
-        mouse_pos = pygame.mouse.get_pos()
-        if self.top_rect.collidepoint(mouse_pos):
-            self.current_top_color = self.top_hover_color
-        else:
-          self.current_top_color = self.top_color
-
     def click(self) -> None:
         """
           This function checks if button was clicked. Verify if
@@ -127,3 +116,14 @@ class Button:
         
         self.top_color = new_color
         self.top_hover_color = new_color
+    
+    def __hover(self) -> None:
+        """
+          This function handles mouse hover event.
+        """
+        
+        mouse_pos = pygame.mouse.get_pos()
+        if self.top_rect.collidepoint(mouse_pos):
+            self.current_top_color = self.top_hover_color
+        else:
+          self.current_top_color = self.top_color

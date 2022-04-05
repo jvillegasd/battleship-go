@@ -3,6 +3,7 @@ from typing import Tuple, List
 
 from gui.grid import Grid
 from gui.button import Button
+from gui.text_bubble import TextBubble
 
 
 class Ship:
@@ -11,18 +12,25 @@ class Ship:
     """
 
     def __init__(self, image_path: str, pos_x: float, pos_y: float) -> None:
+        # Define core attributes
         self.image = pygame.image.load(image_path)
-        self.life = None
         self.is_vertical = True  # Keep tracking of ship orientation
         self.name = 'Default'
-
+        
+        # Define ship life
+        self.life = None
+        self.current_life = None
+        
+        # Define ship rect
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
 
+        # Define collision rect
         self.inflate_value = (0, 0)
         self.collision_rect = self.rect
 
+        # Define rotate button
         self.can_rotate = True
         self.rotate_btn = Button(
             text=">",
@@ -35,6 +43,16 @@ class Ship:
             btn_hover_color='#637001'
         )
         self.rotate_btn.center_buttom_from_position(self.rect.center)
+
+        # Define text bubble
+        self.life_diplay = TextBubble(
+            pos_x=self.rect.center[0],
+            pos_y=self.rect.center[1],
+            width=140,
+            height=50,
+            text=f'Life: {self.current_life}/{self.life}'
+        )
+        self.life_diplay.center_button_from_position(self.rect.center)
 
     def is_inside_grid(self, grid: Grid) -> bool:
         """
@@ -86,7 +104,7 @@ class Ship:
           The main idea is to use ship.rect.center as a pivot in order to
           locate dragged ship.
         """
-        
+
         position_without_offset = grid.center_position(self.rect.center)
         self.rect.center = position_without_offset
         self.collision_rect.center = position_without_offset
