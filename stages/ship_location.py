@@ -71,7 +71,7 @@ class ShipLocation:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            
+
             if self.__ally_tab_selected():
                 self.gui_items['ships']['enabled'] = True
 
@@ -85,7 +85,8 @@ class ShipLocation:
 
         if self.handle_buttom_click(self.gui_items['lock_ships']):
             self.states['ship_locked'] = True
-            self.map_widget.ally_map.locate_ships_into_game_grid(self.ships)
+            self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(
+                self.ships)
 
         return self.states
 

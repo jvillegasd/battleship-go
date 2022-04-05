@@ -1,3 +1,4 @@
+import enum
 import os
 import pygame
 from typing import Tuple
@@ -53,7 +54,7 @@ class Grid:
         """
           This function draws grid on window.
         """
-        
+
         # Image is drawed using initial position due to self.rect is inflated
         window.blit(self.image, (self.pos_x, self.pos_y))
 
@@ -99,19 +100,19 @@ class Grid:
         """
           This function readjust and upscales the provided position
           to the center of the tile it falls.
-          
+
           The position is going to be translated into grid space
           in order to get a valid position, them, this coordinates
           is upscaled and centered at tile.
         """
-        
+
         grid_offset = (self.pos_x, self.pos_y)
         tile_center_offset = (int(self.tile_size // 2),
                               int(self.tile_size // 2))
-        
+
         # Translate ship.rect.center position
         x, y = self.translate_position(position)
-        
+
         # Take translated position and upscale it
         upscaled_x = x * self.tile_size
         upscaled_y = y * self.tile_size
@@ -120,10 +121,10 @@ class Grid:
 
         # Add another offset in order to locate ship.rect.center at center of the tile
         position_without_offset += tile_center_offset
-        
+
         return position_without_offset
-        
-    def locate_ships_into_game_grid(self, ships: list) -> None:
+
+    def locate_ships_into_game_grid(self, ships: list) -> list:
         """
           This function locates ships into game grid in order
           to manage game state.
@@ -136,7 +137,7 @@ class Grid:
           to fill the game grid.
         """
 
-        for ship in ships:
+        for index, ship in enumerate(ships):
             x, y = self.translate_position(ship.rect.center)
 
             if ship.is_vertical:
@@ -162,12 +163,16 @@ class Grid:
                     if x + i < self.game_grid_cols:
                         self.game_grid[y][x + i] = ship.name
 
+            ships[index].set_ship_life(number_of_tiles)
+
+        return ships
+
     def attack_tile(self, position: Tuple[float, float]) -> Tuple[bool, str]:
         """
           This function evaluates if a ship is located
           at selected tile in order to attack it.
         """
-        
+
         # Translate mouse position to grid space
         x, y = self.translate_position(position)
         if self.__is_valid_position((x, y)):

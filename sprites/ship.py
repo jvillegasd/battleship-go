@@ -16,11 +16,11 @@ class Ship:
         self.image = pygame.image.load(image_path)
         self.is_vertical = True  # Keep tracking of ship orientation
         self.name = 'Default'
-        
+
         # Define ship life
         self.life = 1
         self.current_life = 1
-        
+
         # Define ship rect
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
@@ -135,6 +135,26 @@ class Ship:
 
             # Rollback collision rect rotation
             self.__rotate_collision_rect()
+
+    def set_ship_life(self, life: int) -> None:
+        """ This function assign life to current ship. """
+
+        self.life = life
+        self.current_life = life
+        self.life_diplay.change_text(f'life: {self.current_life}/{self.life}')
+
+    def get_attacked(self) -> int:
+        """
+          This function substracts 1 point of live
+          everytime the ships get attacked. 
+        """
+
+        if self.current_life > 0:
+            self.current_life -= 1
+            self.life_diplay.change_text(
+                f'life: {self.current_life}/{self.life}')
+
+        return self.current_life
 
     def draw(self, window: pygame.display) -> None:
         """
