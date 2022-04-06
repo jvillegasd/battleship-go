@@ -64,7 +64,7 @@ class GameState:
 
 
 def main():
-    # TODO: Create client-server networking for multiplayer: https://www.techwithtim.net/tutorials/python-online-game-tutorial/client/
+    # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
 
     game_state = GameState()
