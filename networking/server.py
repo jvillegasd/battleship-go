@@ -7,8 +7,8 @@ from threading import Thread
 CONN_LIMIT = 2
 BUFFER_SIZE = 2048
 
-server_ip = '192.168.1.1'
-port = 5555
+server_ip = 'localhost'
+port = 65432
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,6 +23,8 @@ print('Waiting for a connection, Server started')
 
 
 def threaded_client(conn: socket.socket) -> None:
+    conn.send(str.encode('Connected'))
+    
     reply: str
     while True:
         try:
