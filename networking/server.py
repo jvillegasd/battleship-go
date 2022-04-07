@@ -22,8 +22,8 @@ server_socket.listen(CONN_LIMIT)
 print('Waiting for a connection, Server started')
 
 
-def threaded_client(conn):
-    reply = ''
+def threaded_client(conn: socket.socket) -> None:
+    reply: str
     while True:
         try:
             data = conn.recv(BUFFER_SIZE)
@@ -39,11 +39,14 @@ def threaded_client(conn):
             conn.sendall(str.encode(reply))
         except:
             break
+    
+    print('Connection lost')
+    conn.close()
 
 
 while True:
     conn, address = server_socket.accept()
-    print('Connected to', address, type(conn))
+    print('Connected to', address)
 
     new_client_conn = Thread(target=threaded_client, args=(conn,))
     new_client_conn.start()
