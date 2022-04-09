@@ -74,17 +74,12 @@ def client_listener(client_socket: socket.socket, client_ip: str):
         if not data:
             break
 
-        print('data', data, type(data))
-
-        if type(data) == bytes:
-            decoded_data = data.decode('utf-8')
-            print('decoded data', decoded_data, flush=True)
-
-            clients_tiles = json.loads(decoded_data)
-            game_data['clients'] = clients_tiles
-        elif data == 'Reset game':
+        decoded_data = json.loads(data.decode('utf-8'))
+        if decoded_data == 'Reset game':
             for client_name in game_data['clients']:
                 game_data['clients'][client_name]['attacked_tile'] = None
+        else:
+            game_data['clients'] = decoded_data
 
         if len(game_data['clients']) == CONN_LIMIT:
             send_data_to_clients(game_data['clients'], client_name)
