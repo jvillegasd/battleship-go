@@ -76,14 +76,14 @@ def client_listener(client_socket: socket.socket, client_ip: str):
 
         decoded_data = data.decode('utf-8')
         print('received', decoded_data, flush=True)
-        
+
         if decoded_data == 'Reset game':
             for client_name in game_data['clients']:
                 game_data['clients'][client_name]['attacked_tile'] = None
         else:
             clients_tiles = json.loads(decoded_data)
             game_data['clients'] = clients_tiles
-        
+
         if len(game_data['clients']) == CONN_LIMIT:
             send_data_to_clients(game_data['clients'], client_name)
 
