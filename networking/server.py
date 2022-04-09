@@ -1,4 +1,3 @@
-from email.header import decode_header
 import json
 import socket
 from threading import Thread
@@ -26,12 +25,14 @@ def start_server():
     server_socket.bind((host_address, host_port))
     server_socket.listen(CONN_LIMIT)
 
-    server_thread = Thread(target=server_lobby, args=(server_socket, ''))
+    server_thread = Thread(target=server_lobby, args=(server_socket,))
     server_thread.start()
 
 
-def server_lobby(server_socket: socket.socket, client_address: str):
+def server_lobby(server_socket: socket.socket):
     global game_data
+
+    print('Server started...')
 
     while True:
         if len(game_data['clients']) < CONN_LIMIT:
@@ -58,13 +59,21 @@ def send_data_to_client(data: object, client_name: str):
     game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
 
 
-def client_listener(client_socket: socket.socket, client_ip: str):
-    global server_socket, game_data
+def decode_data(data: bytes) -> object:
+    return json.loads(data.decode('utf-8'))
 
-    client_name = client_socket.recv(BUFFER_SIZE)
+
+def client_listener(client_socket: socket.socket, client_ip: str):
+    global game_data
+
+    data = client_socket.recv(BUFFER_SIZE)
+    client_name = decode_data(data)
+    
     game_data['clients'][client_name] = {'attacked_tile': None}
     game_data['sockets'][client_name] = client_socket
     send_data_to_client('Connected', client_name)
+    
+    print('Client connected:', client_name)
 
     if len(game_data['clients']) > 1:
         send_data_to_clients(game_data['clients'], client_name)
@@ -73,17 +82,21 @@ def client_listener(client_socket: socket.socket, client_ip: str):
         data = client_socket.recv(BUFFER_SIZE)
         if not data:
             break
-
-        decoded_data = json.loads(data.decode('utf-8'))
+        
+        decoded_data = decode_data(data)
+        print('received_data', decoded_data)
+        
         if decoded_data == 'Reset game':
             for client_name in game_data['clients']:
                 game_data['clients'][client_name]['attacked_tile'] = None
-        else:
+        elif type(decoded_data) == dict:
             game_data['clients'] = decoded_data
 
-        if len(game_data['clients']) == CONN_LIMIT:
-            send_data_to_clients(game_data['clients'], client_name)
+        send_data_to_clients(game_data['clients'], client_name)
 
     game_data['clients'].pop(client_name, None)
     game_data['sockets'].pop(client_name, None)
     client_socket.close()
+
+
+start_server()
