@@ -11,6 +11,7 @@ BUFFER_SIZE = 4096
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
+logging.root.setLevel(logging.NOTSET)
 
 
 class Server:
@@ -67,7 +68,7 @@ class Server:
             data = client_socket.recv(BUFFER_SIZE)
             if not data:
                 break
-
+            
             decoded_data = self.__decode_data(data)
             logging.info(f'Received_data: {decoded_data}')
 

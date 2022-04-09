@@ -1,6 +1,3 @@
-# https://github.com/effiongcharles/network_rock_paper_scissors_game/blob/master/game_client.py
-# https://stackoverflow.com/questions/1072821/is-modifying-a-class-variable-in-python-threadsafe
-
 import json
 import socket
 import logging
@@ -13,9 +10,11 @@ BUFFER_SIZE = 4096
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
+logging.root.setLevel(logging.NOTSET)
 
 
 class Client:
+    """ This function represents client instance. """
 
     def __init__(self, client_name: str, host_address: str, host_port: int) -> None:
         self.client_name = client_name
@@ -41,7 +40,7 @@ class Client:
     def server_listener(self, server_socket: socket.socket, client_name: str) -> None:
         """ This function listen to server messages. """
 
-        self.send_data_to_server(client_name, server_socket)
+        self.send_data_to_server(client_name)
         data = server_socket.recv(BUFFER_SIZE)
         ack = self.__decode_data(data)
 
@@ -59,11 +58,11 @@ class Client:
 
         server_socket.close()
 
-    def send_data_to_server(self, data: object, server_socket: socket.socket) -> None:
+    def send_data_to_server(self, data: object) -> None:
         """ This function sends data to server. """
 
         message = json.dumps(data)
-        server_socket.send(bytes(message, 'utf-8'))
+        self.server_socket.send(bytes(message, 'utf-8'))
 
     @thread_safe
     def update_client_tiles(self, new_clients_tiles: dict) -> None:
