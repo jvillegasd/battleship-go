@@ -94,13 +94,13 @@ class Server:
 
     @thread_safe
     def send_data_to_client(self, data: object, client_name: str) -> None:
-        """ This function send data to a specific client. """
+        """ This function sends data to a specific client. """
 
         message = json.dumps(data)
         self.game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
 
     @thread_safe
-    def update_game_data(self, new_game_data: object) -> None:
+    def update_game_data(self, new_game_data: dict) -> None:
         """ This function updates game data. """
         self.game_data['clients'] = new_game_data
 
