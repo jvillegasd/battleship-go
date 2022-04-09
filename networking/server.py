@@ -1,102 +1,116 @@
 import json
 import socket
+import logging
 from threading import Thread
 
-# TODO: Change print to Logging
+from networking.decorator import thread_safe
+
 
 CONN_LIMIT = 2
 BUFFER_SIZE = 4096
-HEADER_SIZE = 10
 
-game_data = {
-    'clients': {},
-    'sockets': {}
-}
-
-server_socket = None
-host_address = 'localhost'
-host_port = 65432
+logging.basicConfig(format='%(asctime)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S')
 
 
-def start_server():
-    global server_socket
+class Server:
+    """ This class represents server instance. """
 
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((host_address, host_port))
-    server_socket.listen(CONN_LIMIT)
+    def __init__(self, host_address: str, host_port: int) -> None:
+        self.server_socket = None
+        self.host_address = host_address
+        self.host_port = host_port
+        self.game_data = {
+            'clients': {},
+            'sockets': {}
+        }
 
-    server_thread = Thread(target=server_lobby, args=(server_socket,))
-    server_thread.start()
+    def start_server(self) -> None:
+        """ This function creates a server socket and start a thread for listening. """
 
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind((self.host_address, self.host_port))
+        self.server_socket.listen(CONN_LIMIT)
 
-def server_lobby(server_socket: socket.socket):
-    global game_data
+        server_thread = Thread(target=self.server_lobby)
+        server_thread.start()
 
-    print('Server started...')
+    def server_lobby(self) -> None:
+        """ This function handles server lobby, waiting for every player is connected. """
 
-    while True:
-        if len(game_data['clients']) < CONN_LIMIT:
-            client, address = server_socket.accept()
+        logging.info('Server started...')
 
-            client_thread = Thread(
-                target=client_listener, args=(client, address))
-            client_thread.start()
+        while True:
+            if len(self.game_data['clients']) < CONN_LIMIT:
+                client, address = self.server_socket.accept()
 
+                client_thread = Thread(
+                    target=self.client_listener, args=(client, address))
+                client_thread.start()
 
-def send_data_to_clients(data: object, sender_name: str):
-    global game_data
+    def client_listener(self, client_socket: socket.socket, client_ip: str):
+        """ This function listens to clients messages and processes them. """
 
-    message = json.dumps(data)
-    for client_name in game_data['sockets']:
-        if client_name != sender_name:
-            game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
-
-
-def send_data_to_client(data: object, client_name: str):
-    global game_data
-
-    message = json.dumps(data)
-    game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
-
-
-def decode_data(data: bytes) -> object:
-    return json.loads(data.decode('utf-8'))
-
-
-def client_listener(client_socket: socket.socket, client_ip: str):
-    global game_data
-
-    data = client_socket.recv(BUFFER_SIZE)
-    client_name = decode_data(data)
-    
-    game_data['clients'][client_name] = {'attacked_tile': None}
-    game_data['sockets'][client_name] = client_socket
-    send_data_to_client('Connected', client_name)
-    
-    print('Client connected:', client_name)
-
-    if len(game_data['clients']) > 1:
-        send_data_to_clients(game_data['clients'], client_name)
-
-    while True:
         data = client_socket.recv(BUFFER_SIZE)
-        if not data:
-            break
-        
-        decoded_data = decode_data(data)
-        print('received_data', decoded_data)
-        
-        if decoded_data == 'Reset game':
-            for client_name in game_data['clients']:
-                game_data['clients'][client_name]['attacked_tile'] = None
-        elif type(decoded_data) == dict:
-            game_data['clients'] = decoded_data
+        client_name = self.__decode_data(data)
 
-        send_data_to_clients(game_data['clients'], client_name)
+        self.game_data['clients'][client_name] = {'attacked_tile': None}
+        self.game_data['sockets'][client_name] = client_socket
+        self.send_data_to_client('Connected', client_name)
 
-    game_data['clients'].pop(client_name, None)
-    game_data['sockets'].pop(client_name, None)
-    client_socket.close()
+        logging.info(f'Client connected: {client_name}')
 
+        if len(self.game_data['clients']) > 1:
+            self.send_data_to_clients(self.game_data['clients'], client_name)
 
-start_server()
+        while True:
+            data = client_socket.recv(BUFFER_SIZE)
+            if not data:
+                break
+
+            decoded_data = self.__decode_data(data)
+            logging.info(f'Received_data: {decoded_data}')
+
+            if decoded_data == 'Reset game':
+                self.reset_game_data()
+            elif type(decoded_data) == dict:
+                self.update_game_data(decoded_data)
+
+            self.send_data_to_clients(self.game_data['clients'], client_name)
+
+        self.game_data['clients'].pop(client_name, None)
+        self.game_data['sockets'].pop(client_name, None)
+        client_socket.close()
+
+    @thread_safe
+    def send_data_to_clients(self, data: object, sender_name: str) -> None:
+        """ This function sends data to all clients. """
+
+        message = json.dumps(data)
+        for client_name in self.game_data['sockets']:
+            if client_name != sender_name:
+                self.game_data['sockets'][client_name].send(
+                    bytes(message, 'utf-8'))
+
+    @thread_safe
+    def send_data_to_client(self, data: object, client_name: str) -> None:
+        """ This function send data to a specific client. """
+
+        message = json.dumps(data)
+        self.game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
+
+    @thread_safe
+    def update_game_data(self, new_game_data: object) -> None:
+        """ This function updates game data. """
+        self.game_data['clients'] = new_game_data
+
+    @thread_safe
+    def reset_game_data(self) -> None:
+        """ This function reset game data. """
+
+        for client_name in self.game_data['clients']:
+            self.game_data['clients'][client_name]['attacked_tile'] = None
+
+    def __decode_data(self, data: bytes) -> object:
+        """ This function decode data received from clients. """
+        return json.loads(data.decode('utf-8'))
