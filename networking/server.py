@@ -1,54 +1,92 @@
-import sys
+from email.header import decode_header
+import json
 import socket
 from threading import Thread
 
 # TODO: Change print to Logging
 
 CONN_LIMIT = 2
-BUFFER_SIZE = 2048
+BUFFER_SIZE = 4096
+HEADER_SIZE = 10
 
-server_ip = 'localhost'
-port = 65432
+game_data = {
+    'clients': {},
+    'sockets': {}
+}
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    server_socket.bind((server_ip, port))
-except socket.error as error:
-    print(error)
-
-
-server_socket.listen(CONN_LIMIT)
-print('Waiting for a connection, Server started')
+server_socket = None
+host_address = 'localhost'
+host_port = 65432
 
 
-def threaded_client(conn: socket.socket) -> None:
-    conn.send(str.encode('Connected'))
-    
-    reply: str
+def start_server():
+    global server_socket
+
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host_address, host_port))
+    server_socket.listen(CONN_LIMIT)
+
+    server_thread = Thread(target=server_lobby, args=(server_socket, ''))
+    server_thread.start()
+
+
+def server_lobby(server_socket: socket.socket, client_address: str):
+    global game_data
+
     while True:
-        try:
-            data = conn.recv(BUFFER_SIZE)
-            reply = data.decode('utf-8')
+        if len(game_data['clients']) < CONN_LIMIT:
+            client, address = server_socket.accept()
 
-            if not data:
-                print('Disconnected')
-                break
-            else:
-                print('Received', reply)
-                print('Sending', reply)
+            client_thread = Thread(
+                target=client_listener, args=(client, address))
+            client_thread.start()
 
-            conn.sendall(str.encode(reply))
-        except:
+
+def send_data_to_clients(data: object, sender_name: str):
+    global game_data
+
+    message = json.dumps(data)
+    for client_name in game_data['sockets']:
+        if client_name != sender_name:
+            game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
+
+
+def send_data_to_client(data: object, client_name: str):
+    global game_data
+
+    message = json.dumps(data)
+    game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
+
+
+def client_listener(client_socket: socket.socket, client_ip: str):
+    global server_socket, game_data
+
+    client_name = client_socket.recv(BUFFER_SIZE)
+    game_data['clients'][client_name] = {'attacked_tile': None}
+    game_data['sockets'][client_name] = client_socket
+    send_data_to_client('Connected', client_name)
+
+    if len(game_data['clients']) > 1:
+        send_data_to_clients(game_data['clients'], client_name)
+
+    while True:
+        data = client_socket.recv(BUFFER_SIZE)
+        if not data:
             break
-    
-    print('Connection lost')
-    conn.close()
 
+        decoded_data = data.decode('utf-8')
+        print('received', decoded_data, flush=True)
+        
+        if decoded_data == 'Reset game':
+            for client_name in game_data['clients']:
+                game_data['clients'][client_name]['attacked_tile'] = None
+        else:
+            clients_tiles = json.loads(decoded_data)
+            game_data['clients'] = clients_tiles
+        
+        if len(game_data['clients']) == CONN_LIMIT:
+            send_data_to_clients(game_data['clients'], client_name)
 
-while True:
-    conn, address = server_socket.accept()
-    print('Connected to', address)
-
-    new_client_conn = Thread(target=threaded_client, args=(conn,))
-    new_client_conn.start()
+    game_data['clients'].pop(client_name, None)
+    game_data['sockets'].pop(client_name, None)
+    client_socket.close()
