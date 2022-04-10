@@ -3,17 +3,17 @@ import socket
 import logging
 from threading import Thread
 
+from networking.network import Network
 from networking.decorator import thread_safe
+from networking.constans import BUFFER_SIZE
 
-
-BUFFER_SIZE = 4096
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.root.setLevel(logging.NOTSET)
 
 
-class Client:
+class Client(Network):
     """ This function represents client instance. """
 
     def __init__(self, client_name: str, host_address: str, host_port: int) -> None:
@@ -42,7 +42,7 @@ class Client:
 
         self.send_data_to_server(client_name)
         data = server_socket.recv(BUFFER_SIZE)
-        ack = self.__decode_data(data)
+        ack = self.decode_data(data)
 
         logging.info(f'Server ACK: {ack}')
 
@@ -51,7 +51,7 @@ class Client:
             if not data:
                 break
 
-            decoded_data = self.__decode_data(data)
+            decoded_data = self.decode_data(data)
             logging.info(f'Received data: {decoded_data}')
 
             self.update_client_tiles(decoded_data)
@@ -61,14 +61,10 @@ class Client:
     def send_data_to_server(self, data: object) -> None:
         """ This function sends data to server. """
 
-        message = json.dumps(data)
-        self.server_socket.send(bytes(message, 'utf-8'))
+        message = self.create_datagram(BUFFER_SIZE, data)
+        self.server_socket.sendall(message)
 
     @thread_safe
     def update_client_tiles(self, new_clients_tiles: dict) -> None:
         """ This function updates client tiles. """
         self.clients_tiles = new_clients_tiles
-
-    def __decode_data(self, data: bytes) -> object:
-        """ This function decode data received from server. """
-        return json.loads(data.decode('utf-8'))

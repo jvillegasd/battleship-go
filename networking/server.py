@@ -3,18 +3,17 @@ import socket
 import logging
 from threading import Thread
 
+from networking.network import Network
 from networking.decorator import thread_safe
+from networking.constans import CONN_LIMIT, BUFFER_SIZE
 
-
-CONN_LIMIT = 2
-BUFFER_SIZE = 4096
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.root.setLevel(logging.NOTSET)
 
 
-class Server:
+class Server(Network):
     """ This class represents server instance. """
 
     def __init__(self, host_address: str, host_port: int) -> None:
@@ -53,7 +52,7 @@ class Server:
         """ This function listens to clients messages and processes them. """
 
         data = client_socket.recv(BUFFER_SIZE)
-        client_name = self.__decode_data(data)
+        client_name = self.decode_data(data)
 
         self.game_data['clients'][client_name] = {'attacked_tile': None}
         self.game_data['sockets'][client_name] = client_socket
@@ -68,8 +67,8 @@ class Server:
             data = client_socket.recv(BUFFER_SIZE)
             if not data:
                 break
-            
-            decoded_data = self.__decode_data(data)
+
+            decoded_data = self.decode_data(data)
             logging.info(f'Received_data: {decoded_data}')
 
             if decoded_data == 'Reset game':
@@ -87,18 +86,17 @@ class Server:
     def send_data_to_clients(self, data: object, sender_name: str) -> None:
         """ This function sends data to all clients. """
 
-        message = json.dumps(data)
+        message = self.create_datagram(BUFFER_SIZE, data)
         for client_name in self.game_data['sockets']:
             if client_name != sender_name:
-                self.game_data['sockets'][client_name].send(
-                    bytes(message, 'utf-8'))
+                self.game_data['sockets'][client_name].sendall(message)
 
     @thread_safe
     def send_data_to_client(self, data: object, client_name: str) -> None:
         """ This function sends data to a specific client. """
 
-        message = json.dumps(data)
-        self.game_data['sockets'][client_name].send(bytes(message, 'utf-8'))
+        message = self.create_datagram(BUFFER_SIZE, data)
+        self.game_data['sockets'][client_name].sendall(message)
 
     @thread_safe
     def update_game_data(self, new_game_data: dict) -> None:
@@ -111,7 +109,3 @@ class Server:
 
         for client_name in self.game_data['clients']:
             self.game_data['clients'][client_name]['attacked_tile'] = None
-
-    def __decode_data(self, data: bytes) -> object:
-        """ This function decode data received from clients. """
-        return json.loads(data.decode('utf-8'))
