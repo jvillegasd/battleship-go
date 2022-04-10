@@ -63,7 +63,7 @@ class GameState:
             self.battle()
 
 
-def main():
+def main() -> None:
     # TODO: Create client-server networking for multiplayer
     # TODO: Reset battle buttom
 
