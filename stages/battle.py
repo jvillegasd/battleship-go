@@ -4,6 +4,7 @@ from typing import Tuple, List
 
 # Import GUI items
 from gui.grid import Grid
+from gui.dev_sign import DevSign
 from gui.map_widget import MapWidget
 
 # Import animations
@@ -122,7 +123,8 @@ class Battle:
           This function creates and loads gui items
           used in stage.
         """
-
+        
+        sign = DevSign(pos_x=325, pos_y=475)
         gui_items = {
             'tabs': {
                 'enabled': False,
@@ -139,6 +141,10 @@ class Battle:
             'enemy_fire': {
                 'enabled': True,
                 'item': []
+            },
+            'dev_sign': {
+                'enabled': True,
+                'item': sign
             }
         }
 

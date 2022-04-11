@@ -3,7 +3,7 @@ import pygame
 
 # Import GUI items
 from gui.button import Button
-from gui.text_bubble import TextBubble
+from gui.dev_sign import DevSign
 
 
 class Intro:
@@ -70,10 +70,15 @@ class Intro:
             width=120,
             height=40
         )
+        sign = DevSign(pos_x=325, pos_y=475)
         gui_items = {
             'start_button': {
                 'enabled': True,
                 'item': start_button
+            },
+            'dev_sign': {
+                'enabled': True,
+                'item': sign
             }
         }
 

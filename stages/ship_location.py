@@ -5,6 +5,7 @@ from typing import Tuple, List
 # Import GUI items
 from gui.grid import Grid
 from gui.button import Button
+from gui.dev_sign import DevSign
 from gui.map_widget import MapWidget
 
 # Import sprites
@@ -111,7 +112,8 @@ class ShipLocation:
             width=110,
             height=40
         )
-
+        sign = DevSign(pos_x=325, pos_y=475)
+        
         gui_items = {
             'lock_ships': {
                 'enabled': True,
@@ -124,6 +126,10 @@ class ShipLocation:
             'ships': {
                 'enabled': True,
                 'item': self.ships
+            },
+            'dev_sign': {
+                'enabled': True,
+                'item': sign
             }
         }
 
