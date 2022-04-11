@@ -1,6 +1,6 @@
-import json
 import socket
 import logging
+from typing import List
 from threading import Thread
 
 from networking.network import Network
@@ -90,8 +90,8 @@ class Server(Network):
                 elif 'disconnect' in decoded_data:
                     logging.info(f'Client disconnected: {client_name}')
                     break
-                else:
-                    self.update_game_data(decoded_data)
+                elif 'game_data' in decoded_data:
+                    self.update_game_data(decoded_data['data'])
 
                 self.send_data_to_clients(
                     self.game_data['clients'], client_name)
@@ -133,3 +133,7 @@ class Server(Network):
 
         for client_name in self.game_data['clients']:
             self.game_data['clients'][client_name]['attacked_tile'] = None
+
+    @thread_safe
+    def get_connected_clients(self) -> List[str]:
+        return self.game_data['clients'].keys()

@@ -8,6 +8,9 @@ class GameServer(tk.Frame):
 
     def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
         tk.Frame.__init__(self, parent, *args, **kwargs)
+        
+        # Core attributes
+        self.server = None
         self.parent = parent
 
         # Top frame for start and stop game server
@@ -59,12 +62,23 @@ class GameServer(tk.Frame):
         self.stop_btn.config(state=tk.DISABLED)
 
         self.server.stop_server()
+        self.server = None
 
         self.lbl_host['text'] = 'Address: X.X.X.X'
         self.lbl_port['text'] = 'Port: XXXX'
 
     def refresh_clients_display(self) -> None:
-        print('hi')
+        if self.server:
+            connected_clients = self.server.get_connected_clients()
+            self.text_display.config(state=tk.NORMAL)
+            self.text_display.delete('1.0', tk.END)
+            
+            for client_name in connected_clients:
+                self.text_display.insert(tk.END, client_name + '\n')
+            
+            self.text_display.config(state=tk.DISABLED)
+
+        self.text_display.after(1000, self.refresh_clients_display)
 
 
 def main() -> None:
