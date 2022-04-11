@@ -153,13 +153,13 @@ class ShipLocation:
         if event.type == pygame.MOUSEMOTION:
             if event.buttons[0]:
                 dragging = True
-                if 0 <= selected_ship < len(self.ships):
+                if self.__valid_ship_index(selected_ship):
                     self.ships[selected_ship].move_ship(
                         event.rel, grid, self.ships_rect)
                     self.ships_rect[selected_ship] = self.ships[selected_ship].rect
 
         if event.type == pygame.MOUSEBUTTONUP:
-            if 0 <= selected_ship < len(self.ships):
+            if self.__valid_ship_index(selected_ship):
                 self.ships[selected_ship].dragged_ship_position(grid)
                 self.ships_rect[selected_ship] = self.ships[selected_ship].rect
 
@@ -174,7 +174,7 @@ class ShipLocation:
 
         last_selected_ship = self.states['last_selected_ship']
 
-        # Check if selected ship rotation buttom can be drawed
+        # Check if selected ship rotation button can be drawed
         if self.__valid_ship_index(selected_ship) and not dragging:
             self.ships[selected_ship].can_draw_button = True
 
