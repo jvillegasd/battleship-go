@@ -5,6 +5,7 @@ from networking.server import Server
 
 
 class GameServer(tk.Frame):
+    """ This class  """
 
     def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
         tk.Frame.__init__(self, parent, *args, **kwargs)
@@ -12,6 +13,7 @@ class GameServer(tk.Frame):
         # Core attributes
         self.server = None
         self.parent = parent
+        self.polling_interval = 1000
 
         # Top frame for start and stop game server
         self.top_frame = tk.Frame(self.parent)
@@ -42,9 +44,11 @@ class GameServer(tk.Frame):
         self.client_frame.pack(side=tk.BOTTOM, pady=(0, 20))
 
         # Define a timer for client refresh polling
-        self.text_display.after(1000, self.refresh_clients_display)
+        self.text_display.after(self.polling_interval, self.refresh_clients_display)
 
     def start_server(self) -> None:
+        """ This function starts a new server instance. """
+        
         self.start_btn.config(state=tk.DISABLED)
         self.stop_btn.config(state=tk.NORMAL)
 
@@ -58,6 +62,8 @@ class GameServer(tk.Frame):
         self.lbl_port['text'] = f'Port: {host_port}'
 
     def stop_server(self) -> None:
+        """ This function stops current server instances and delete it. """
+        
         self.start_btn.config(state=tk.NORMAL)
         self.stop_btn.config(state=tk.DISABLED)
 
@@ -68,6 +74,8 @@ class GameServer(tk.Frame):
         self.lbl_port['text'] = 'Port: XXXX'
 
     def refresh_clients_display(self) -> None:
+        """ This function polls connected clients to current server. """
+        
         if self.server:
             connected_clients = self.server.get_connected_clients()
             self.text_display.config(state=tk.NORMAL)
@@ -78,13 +86,14 @@ class GameServer(tk.Frame):
             
             self.text_display.config(state=tk.DISABLED)
 
-        self.text_display.after(1000, self.refresh_clients_display)
+        self.text_display.after(self.polling_interval, self.refresh_clients_display)
 
 
 def main() -> None:
     root = tk.Tk(className='Battleship - Game server')
     root.geometry('300x300')
     root.resizable(width=False, height=False)
+    root.eval('tk::PlaceWindow . center')
 
     GameServer(root).pack(side='top', fill='both', expand=True)
     root.mainloop()
