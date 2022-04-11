@@ -5,7 +5,7 @@ from threading import Thread
 
 from networking.network import Network
 from networking.decorator import thread_safe
-from networking.constans import BUFFER_SIZE
+from networking.constants import BUFFER_SIZE
 
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
