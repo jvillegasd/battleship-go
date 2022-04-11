@@ -62,7 +62,7 @@ class Server(Network):
     def client_listener(self, client_socket: socket.socket, client_ip: str):
         """ This function listens to clients messages and processes them. """
 
-        closed_by_server = False
+        socket_disconnected = False
         
         data = client_socket.recv(BUFFER_SIZE)
         client_name = self.decode_data(data)
@@ -96,13 +96,13 @@ class Server(Network):
                 self.send_data_to_clients(
                     self.game_data['clients'], client_name)
         except socket.error:
-            closed_by_server = True
-            logging.info(f'Client disconnected by server: {client_name}')
+            socket_disconnected = True
+            logging.info(f'Client socket disconnected: {client_name}')
 
         self.game_data['clients'].pop(client_name, None)
         self.game_data['sockets'].pop(client_name, None)
 
-        if not closed_by_server:
+        if not socket_disconnected:
             client_socket.shutdown(socket.SHUT_RDWR)
             client_socket.close()
 

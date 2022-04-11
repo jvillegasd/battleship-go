@@ -43,23 +43,30 @@ class Client(Network):
     def server_listener(self, server_socket: socket.socket, client_name: str) -> None:
         """ This function listen to server messages. """
 
+        socket_disconnected = False
+
         self.send_data_to_server(client_name)
         data = server_socket.recv(BUFFER_SIZE)
         ack = self.decode_data(data)
 
         logging.info(f'Server ACK: {ack}')
 
-        while True:
-            data = server_socket.recv(BUFFER_SIZE)
-            if not data:
-                break
+        try:
+            while True:
+                data = server_socket.recv(BUFFER_SIZE)
+                if not data:
+                    break
 
-            decoded_data = self.decode_data(data)
-            logging.info(f'Received data: {decoded_data}')
+                decoded_data = self.decode_data(data)
+                logging.info(f'Received data: {decoded_data}')
 
-            self.update_client_tiles(decoded_data)
+                self.update_client_tiles(decoded_data)
+        except socket.error:
+            socket_disconnected = True
+            logging.info('Server socket disconnected')
 
-        server_socket.close()
+        if not socket_disconnected:
+            server_socket.close()
 
     def send_data_to_server(self, data: object) -> None:
         """ This function sends data to server. """
