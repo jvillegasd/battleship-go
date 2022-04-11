@@ -37,6 +37,9 @@ class Client(Network):
         except socket.error as error:
             logging.ERROR(error)
 
+    def disconnect(self) -> None:
+        self.send_data_to_server({'disconnect': True})
+
     def server_listener(self, server_socket: socket.socket, client_name: str) -> None:
         """ This function listen to server messages. """
 
