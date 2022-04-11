@@ -5,7 +5,7 @@ from networking.server import Server
 
 
 class GameServer(tk.Frame):
-    """ This class  """
+    """ This class manages game server frame. """
 
     def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
         tk.Frame.__init__(self, parent, *args, **kwargs)
