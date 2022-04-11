@@ -38,6 +38,7 @@ class Client(Network):
             logging.ERROR(error)
 
     def disconnect(self) -> None:
+        """ This function send a disconnected request to server. """
         self.send_data_to_server({'disconnect': True})
 
     def server_listener(self, server_socket: socket.socket, client_name: str) -> None:

@@ -63,12 +63,11 @@ class Server(Network):
         """ This function listens to clients messages and processes them. """
 
         socket_disconnected = False
-        
+
         data = client_socket.recv(BUFFER_SIZE)
         client_name = self.decode_data(data)
 
-        self.game_data['clients'][client_name] = {'attacked_tile': None}
-        self.game_data['sockets'][client_name] = client_socket
+        self.__add_client_to_server(client_name, client_socket)
         self.send_data_to_client('Connected', client_name)
 
         logging.info(f'Client connected: {client_name}')
@@ -99,9 +98,7 @@ class Server(Network):
             socket_disconnected = True
             logging.info(f'Client socket disconnected: {client_name}')
 
-        self.game_data['clients'].pop(client_name, None)
-        self.game_data['sockets'].pop(client_name, None)
-
+        self.__remove_client_from_server(client_name)
         if not socket_disconnected:
             client_socket.shutdown(socket.SHUT_RDWR)
             client_socket.close()
@@ -136,4 +133,21 @@ class Server(Network):
 
     @thread_safe
     def get_connected_clients(self) -> List[str]:
+        """ This function returns connected clients. """
         return self.game_data['clients'].keys()
+
+    @thread_safe
+    def __add_client_to_server(
+            self,
+            client_name: str,
+            client_socket: socket.socket) -> None:
+        """ This function adds a client to game_data. """
+
+        self.game_data['clients'][client_name] = {'attacked_tile': None}
+        self.game_data['sockets'][client_name] = client_socket
+
+    @thread_safe
+    def __remove_client_from_server(self, client_name: str) -> None:
+        """ This function removes client from game_data. """
+        self.game_data['clients'].pop(client_name, None)
+        self.game_data['sockets'].pop(client_name, None)
