@@ -52,6 +52,8 @@ class Intro:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+            self.gui_items['host_input']['item'].handle_input_events(event)
 
         if self.handle_buttom_click(self.gui_items['start_button']):
             self.states['game_started'] = True
