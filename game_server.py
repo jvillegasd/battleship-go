@@ -1,4 +1,3 @@
-# https://github.com/effiongcharles/network_rock_paper_scissors_game/blob/master/game_server.py
 import tkinter as tk
 
 from networking.server import Server

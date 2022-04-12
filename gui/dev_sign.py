@@ -14,13 +14,14 @@ class DevSign:
         self.width = 30
         self.height = 30
         self.sign = 'Made by jvillegasd :D'
-        
+
         # Define colors
         self.text_color = '#72788D'
-        
+
         # Define text rect
         self.sign_surf = GUI_FONT.render(self.sign, True, self.text_color)
-        self.sign_rect = self.sign_surf.get_rect(topleft=(self.pos_x, self.pos_y))
+        self.sign_rect = self.sign_surf.get_rect(
+            topleft=(self.pos_x, self.pos_y))
 
     def draw(self, window: pygame.display) -> None:
         """ This function draws sign on window. """

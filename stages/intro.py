@@ -4,6 +4,7 @@ import pygame
 # Import GUI items
 from gui.button import Button
 from gui.dev_sign import DevSign
+from gui.text_input import Input
 
 
 class Intro:
@@ -71,6 +72,7 @@ class Intro:
             height=40
         )
         sign = DevSign(pos_x=325, pos_y=475)
+        host_input = Input(pos_x=50, pos_y=50, width=100, height=20)
         gui_items = {
             'start_button': {
                 'enabled': True,
@@ -79,6 +81,10 @@ class Intro:
             'dev_sign': {
                 'enabled': True,
                 'item': sign
+            },
+            'host_input': {
+                'enabled': True,
+                'item': host_input
             }
         }
 
