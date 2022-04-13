@@ -1,7 +1,6 @@
 import pygame
 
 pygame.font.init()
-GUI_FONT = pygame.font.Font('assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
 
 class Input:
@@ -23,6 +22,8 @@ class Input:
         self.pos_y = pos_y
         self.width = width
         self.height = height
+        self.font = pygame.font.Font(
+            'assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
         # Input tracking variable
         self.input_text: str = ''
@@ -39,7 +40,7 @@ class Input:
         self.current_input_color = input_color
 
         # Define text rect
-        self.input_surf = GUI_FONT.render(
+        self.input_surf = self.font.render(
             self.input_text, True, self.text_color)
         self.input_rect = self.input_surf.get_rect(
             topleft=(self.pos_x, self.pos_y), width=self.width, height=self.height)
@@ -84,7 +85,7 @@ class Input:
         if self.split_text:
             current_text = self.input_text[-self.splited_size:]
 
-        self.input_surf = GUI_FONT.render(current_text, True, self.text_color)
+        self.input_surf = self.font.render(current_text, True, self.text_color)
         self.input_rect = self.input_surf.get_rect(
             topleft=(self.pos_x, self.pos_y), width=self.width, height=self.height)
 

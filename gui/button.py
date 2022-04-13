@@ -2,7 +2,6 @@ import pygame
 from typing import Tuple
 
 pygame.font.init()
-GUI_FONT = pygame.font.Font('assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
 
 class Button:
@@ -33,6 +32,8 @@ class Button:
         self.current_top_color = btn_color
         self.top_hover_color = btn_hover_color
         self.bottom_color = btn_bottom_color
+        self.font = pygame.font.Font(
+            'assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
         # Elevation and radius
         self.elevation = elevation
@@ -44,7 +45,7 @@ class Button:
         self.top_rect = pygame.Rect(pos_x, pos_y, width, height)
 
         # Text rectangle
-        self.text_surf = GUI_FONT.render(text, True, text_color)
+        self.text_surf = self.font.render(text, True, text_color)
         self.text_rect = self.text_surf.get_rect(center=self.top_rect.center)
 
         # Bottom rectangle
@@ -82,10 +83,10 @@ class Button:
 
         # Handle hover
         self.__hover()
-        
+
         # Draw text
         window.blit(self.text_surf, self.text_rect)
-    
+
     def click(self) -> None:
         """
           This function checks if button was clicked. Verify if
@@ -113,17 +114,17 @@ class Button:
           This function changes top_color and top_hover
           button color.
         """
-        
+
         self.top_color = new_color
         self.top_hover_color = new_color
-    
+
     def __hover(self) -> None:
         """
           This function handles mouse hover event.
         """
-        
+
         mouse_pos = pygame.mouse.get_pos()
         if self.top_rect.collidepoint(mouse_pos):
             self.current_top_color = self.top_hover_color
         else:
-          self.current_top_color = self.top_color
+            self.current_top_color = self.top_color

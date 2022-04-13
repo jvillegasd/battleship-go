@@ -1,7 +1,6 @@
 import pygame
 
 pygame.font.init()
-GUI_FONT = pygame.font.Font('assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
 
 class DevSign:
@@ -14,12 +13,14 @@ class DevSign:
         self.width = 30
         self.height = 30
         self.sign = 'Made by jvillegasd :D'
+        self.font = pygame.font.Font(
+            'assets/fonts/CascadiaCode-SemiBold.ttf', 14)
 
         # Define colors
         self.text_color = '#72788D'
 
         # Define text rect
-        self.sign_surf = GUI_FONT.render(self.sign, True, self.text_color)
+        self.sign_surf = self.font.render(self.sign, True, self.text_color)
         self.sign_rect = self.sign_surf.get_rect(
             topleft=(self.pos_x, self.pos_y))
 

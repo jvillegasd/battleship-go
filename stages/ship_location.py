@@ -106,7 +106,6 @@ class ShipLocation:
         """
 
         sign = DevSign(pos_x=325, pos_y=475)
-
         lock_ships = Button(
             text='Lock ships',
             pos_x=190,

@@ -2,9 +2,10 @@ import sys
 import pygame
 
 # Import GUI items
+from gui.label import Label
 from gui.button import Button
-from gui.dev_sign import DevSign
 from gui.text_input import Input
+from gui.dev_sign import DevSign
 
 
 class Intro:
@@ -56,6 +57,9 @@ class Intro:
             if self.gui_items['host_input']['enabled']:
                 self.gui_items['host_input']['item'].handle_input_events(event)
 
+            if self.gui_items['port_input']['enabled']:
+                self.gui_items['port_input']['item'].handle_input_events(event)
+
         if self.handle_buttom_click(self.gui_items['start_button']):
             self.states['game_started'] = True
 
@@ -66,9 +70,8 @@ class Intro:
           This function creates and loads gui items
           used in stage.
         """
-        
-        sign = DevSign(pos_x=325, pos_y=475)
 
+        sign = DevSign(pos_x=325, pos_y=475)
         start_button = Button(
             text='Start game',
             pos_x=187,
@@ -76,8 +79,19 @@ class Intro:
             width=120,
             height=40
         )
+        title_label = Label(
+            pos_x=10,
+            pos_y=10,
+            text='Battleship',
+            font_size=20
+        )
+
         host_input = Input(pos_x=280, pos_y=150)
+        host_label = Label(pos_x=150, pos_y=150, text='Host:')
+
         port_input = Input(pos_x=280, pos_y=200)
+        port_label = Label(pos_x=150, pos_y=200, text='Port:')
+
         gui_items = {
             'start_button': {
                 'enabled': True,
@@ -87,9 +101,21 @@ class Intro:
                 'enabled': True,
                 'item': sign
             },
+            'title_label': {
+                'enabled': True,
+                'item': title_label
+            },
+            'host_label': {
+                'enabled': True,
+                'item': host_label
+            },
             'host_input': {
                 'enabled': True,
                 'item': host_input
+            },
+            'port_label': {
+                'enabled': True,
+                'item': port_label
             },
             'port_input': {
                 'enabled': True,
