@@ -105,6 +105,8 @@ class ShipLocation:
           used in stage.
         """
 
+        sign = DevSign(pos_x=325, pos_y=475)
+
         lock_ships = Button(
             text='Lock ships',
             pos_x=190,
@@ -112,8 +114,6 @@ class ShipLocation:
             width=110,
             height=40
         )
-        sign = DevSign(pos_x=325, pos_y=475)
-        
         gui_items = {
             'lock_ships': {
                 'enabled': True,

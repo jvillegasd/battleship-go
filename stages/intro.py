@@ -52,8 +52,9 @@ class Intro:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            
-            self.gui_items['host_input']['item'].handle_input_events(event)
+
+            if self.gui_items['host_input']['enabled']:
+                self.gui_items['host_input']['item'].handle_input_events(event)
 
         if self.handle_buttom_click(self.gui_items['start_button']):
             self.states['game_started'] = True
@@ -65,16 +66,18 @@ class Intro:
           This function creates and loads gui items
           used in stage.
         """
+        
+        sign = DevSign(pos_x=325, pos_y=475)
 
         start_button = Button(
             text='Start game',
             pos_x=187,
-            pos_y=220,
+            pos_y=320,
             width=120,
             height=40
         )
-        sign = DevSign(pos_x=325, pos_y=475)
-        host_input = Input(pos_x=50, pos_y=50, width=100, height=20)
+        host_input = Input(pos_x=280, pos_y=150)
+        port_input = Input(pos_x=280, pos_y=200)
         gui_items = {
             'start_button': {
                 'enabled': True,
@@ -87,6 +90,10 @@ class Intro:
             'host_input': {
                 'enabled': True,
                 'item': host_input
+            },
+            'port_input': {
+                'enabled': True,
+                'item': port_input
             }
         }
 

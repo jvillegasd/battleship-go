@@ -11,8 +11,8 @@ class Input:
             self,
             pos_x: float,
             pos_y: float,
-            width: float,
-            height: float,
+            width: float = 100,
+            height: float = 20,
             border_radius: int = 10,
             text_color: str = '#475F77',
             input_color: str = '#CCE6EC',
@@ -23,10 +23,12 @@ class Input:
         self.pos_y = pos_y
         self.width = width
         self.height = height
-        self.is_active: bool = False
 
         # Input tracking variable
         self.input_text: str = ''
+        self.is_active: bool = False
+        self.split_text: bool = False
+        self.splited_size: int = 0
 
         # Define gui properties
         self.text_color = text_color
@@ -45,12 +47,12 @@ class Input:
         # Define text rect shadow
         self.input_shadow_rect = self.input_rect.inflate(6, 6)
 
-    def handle_input_events(self, event: pygame.event.Event):
+    def handle_input_events(self, event: pygame.event.Event) -> None:
         """
           This function handles text input events, such as
           keyboard typing and selected.
         """
-        
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.input_rect.collidepoint(event.pos):
                 self.is_active = True
@@ -68,11 +70,21 @@ class Input:
 
         self.update()
 
+        # Show only the lastest substring of input text
+        if self.input_surf.get_width() >= self.width:
+            self.split_text = True
+        else:
+            self.split_text = False
+            self.splited_size = len(self.input_text)
+
     def update(self) -> None:
         """ This function updates surf and rect with current input text. """
 
-        self.input_surf = GUI_FONT.render(
-            self.input_text, True, self.text_color)
+        current_text: str = self.input_text
+        if self.split_text:
+            current_text = self.input_text[-self.splited_size:]
+
+        self.input_surf = GUI_FONT.render(current_text, True, self.text_color)
         self.input_rect = self.input_surf.get_rect(
             topleft=(self.pos_x, self.pos_y), width=self.width, height=self.height)
 
@@ -89,3 +101,7 @@ class Input:
 
         # Draw text
         window.blit(self.input_surf, self.input_rect)
+
+    def get_text(self) -> str:
+        """ This function gets current input text. """
+        return self.input_text
