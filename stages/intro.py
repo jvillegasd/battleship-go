@@ -62,7 +62,8 @@ class Intro:
                 self.gui_items['port_input']['item'].handle_input_events(event)
 
         if self.handle_buttom_click(self.gui_items['start_button']):
-            self.states['game_started'] = True
+            # self.states['game_started'] = True
+            pass
 
         return self.states
 
@@ -82,29 +83,25 @@ class Intro:
         )
         title_label = Label(
             pos_x=190,
-            pos_y=40,
+            pos_y=80,
             text='Battleship',
             font_size=20
         )
-        
         card = Card(
           pos_x=100,
-          pos_y=100,
-          width=200,
-          height=200
+          pos_y=140,
+          width=300,
+          height=250
         )
+        conn_label = Label(pos_x=170, pos_y=163, text='Connect to a server')
 
-        host_input = Input(pos_x=280, pos_y=150)
-        host_label = Label(pos_x=150, pos_y=150, text='Host:')
+        host_input = Input(pos_x=230, pos_y=210, width=120)
+        host_label = Label(pos_x=160, pos_y=212, text='Host:')
 
-        port_input = Input(pos_x=280, pos_y=200)
-        port_label = Label(pos_x=150, pos_y=200, text='Port:')
+        port_input = Input(pos_x=230, pos_y=260, width=120)
+        port_label = Label(pos_x=160, pos_y=262, text='Port:')
 
         gui_items = {
-            'start_button': {
-                'enabled': True,
-                'item': start_button
-            },
             'dev_sign': {
                 'enabled': True,
                 'item': sign
@@ -132,7 +129,15 @@ class Intro:
             'port_input': {
                 'enabled': True,
                 'item': port_input
-            }
+            },
+            'conn_label': {
+                'enabled': True,
+                'item': conn_label  
+            },
+            'start_button': {
+                'enabled': True,
+                'item': start_button
+            },
         }
 
         return gui_items
