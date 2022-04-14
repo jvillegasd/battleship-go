@@ -2,6 +2,7 @@ import sys
 import pygame
 
 # Import GUI items
+from gui.card import Card
 from gui.label import Label
 from gui.button import Button
 from gui.text_input import Input
@@ -80,10 +81,17 @@ class Intro:
             height=40
         )
         title_label = Label(
-            pos_x=10,
-            pos_y=10,
+            pos_x=190,
+            pos_y=40,
             text='Battleship',
             font_size=20
+        )
+        
+        card = Card(
+          pos_x=100,
+          pos_y=100,
+          width=200,
+          height=200
         )
 
         host_input = Input(pos_x=280, pos_y=150)
@@ -100,6 +108,10 @@ class Intro:
             'dev_sign': {
                 'enabled': True,
                 'item': sign
+            },
+            'card': {
+                'enabled': True,
+                'item': card
             },
             'title_label': {
                 'enabled': True,
