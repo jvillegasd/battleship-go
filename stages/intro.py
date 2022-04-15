@@ -1,6 +1,9 @@
 import sys
 import pygame
 
+# Import client
+from networking.client import Client
+
 # Import GUI items
 from gui.card import Card
 from gui.label import Label
@@ -14,7 +17,8 @@ class Intro:
 
     def __init__(self) -> None:
         self.states = {
-            'game_started': False
+            'game_started': False,
+            'client': None
         }
         self.gui_items = self.__load_gui_items()
 
@@ -46,7 +50,18 @@ class Intro:
 
     def connect_to_server(self) -> None:
         """ This function creates a client to connect to game server. """
-        self.gui_items['conn_label']['item'].change_text('Connecting to server...')
+        self.gui_items['conn_label']['item'].change_text(
+            'Connecting to server...')
+        
+        username = self.gui_items['username_input']['item'].get_text()
+        host_address = self.gui_items['host_input']['item'].get_text()
+        host_post = self.gui_items['port_input']['item'].get_text()
+        
+        client = Client(username, host_address, int(host_post))
+        if client.connect_to_server():
+            self.gui_items['conn_label']['item'].change_text('Connected')
+        else:
+            self.gui_items['conn_label']['item'].change_text('Connection error...')
 
     def process_events(self) -> None:
         """
@@ -58,6 +73,9 @@ class Intro:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+            if self.gui_items['username_input']['enabled']:
+                self.gui_items['username_input']['item'].handle_input_events(event)
 
             if self.gui_items['host_input']['enabled']:
                 self.gui_items['host_input']['item'].handle_input_events(event)
@@ -81,7 +99,7 @@ class Intro:
         start_button = Button(
             text='Start game',
             pos_x=187,
-            pos_y=320,
+            pos_y=360,
             width=120,
             height=40
         )
@@ -92,18 +110,21 @@ class Intro:
             font_size=20
         )
         card = Card(
-          pos_x=100,
-          pos_y=140,
-          width=300,
-          height=250
+            pos_x=100,
+            pos_y=140,
+            width=300,
+            height=300
         )
         conn_label = Label(pos_x=170, pos_y=163, text='Connect to a server')
 
-        host_input = Input(pos_x=230, pos_y=210, width=120)
-        host_label = Label(pos_x=160, pos_y=212, text='Host:')
+        username_input = Input(pos_x=230, pos_y=210, width=120)
+        username_label = Label(pos_x=150, pos_y=212, text='Username:')
 
-        port_input = Input(pos_x=230, pos_y=260, width=120)
-        port_label = Label(pos_x=160, pos_y=262, text='Port:')
+        host_input = Input(pos_x=230, pos_y=257, width=120)
+        host_label = Label(pos_x=150, pos_y=259, text='Host:')
+
+        port_input = Input(pos_x=230, pos_y=300, width=120)
+        port_label = Label(pos_x=150, pos_y=302, text='Port:')
 
         gui_items = {
             'dev_sign': {
@@ -136,7 +157,15 @@ class Intro:
             },
             'conn_label': {
                 'enabled': True,
-                'item': conn_label  
+                'item': conn_label
+            },
+            'username_input': {
+                'enabled': True,
+                'item': username_input
+            },
+            'username_label': {
+                'enabled': True,
+                'item': username_label
             },
             'start_button': {
                 'enabled': True,

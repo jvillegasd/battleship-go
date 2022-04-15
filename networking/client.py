@@ -23,7 +23,7 @@ class Client(Network):
         self.host_port = host_port
         self.clients_tiles = {}
 
-    def connect_to_server(self) -> None:
+    def connect_to_server(self) -> bool:
         """ This function creates a socket to connect to game server. """
 
         try:
@@ -34,8 +34,14 @@ class Client(Network):
             server_thread = Thread(target=self.server_listener,
                                    args=(self.server_socket, self.client_name))
             server_thread.start()
+            
+            return True
+        except TypeError as error:
+            logging.error(error)
         except socket.error as error:
-            logging.ERROR(error)
+            logging.error(error)
+        
+        return False
 
     def disconnect(self) -> None:
         """ This function send a disconnected request to server. """
