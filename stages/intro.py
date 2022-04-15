@@ -44,6 +44,10 @@ class Intro:
 
         pygame.display.update()
 
+    def connect_to_server(self) -> None:
+        """ This function creates a client to connect to game server. """
+        self.gui_items['conn_label']['item'].change_text('Connecting to server...')
+
     def process_events(self) -> None:
         """
           This function handles pygame events related
@@ -63,7 +67,7 @@ class Intro:
 
         if self.handle_buttom_click(self.gui_items['start_button']):
             # self.states['game_started'] = True
-            pass
+            self.connect_to_server()
 
         return self.states
 
