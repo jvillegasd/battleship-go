@@ -17,6 +17,7 @@ class Client(Network):
     """ This function represents client instance. """
 
     def __init__(self, client_name: str, host_address: str, host_port: int) -> None:
+        self.is_disconnected = False
         self.client_name = client_name
         self.server_socket = None
         self.host_address = host_address
@@ -49,6 +50,7 @@ class Client(Network):
 
     def disconnect(self) -> None:
         """ This function send a disconnected request to server. """
+        self.is_disconnected = True
         self.send_data_to_server({'disconnect': True})
 
     def server_listener(self, server_socket: socket.socket, client_name: str) -> None:
@@ -76,6 +78,7 @@ class Client(Network):
             socket_disconnected = True
             logging.info('Server socket disconnected')
 
+        self.is_disconnected = True
         if not socket_disconnected:
             server_socket.close()
 
