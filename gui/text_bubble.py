@@ -43,7 +43,7 @@ class TextBubble:
             center=self.bubble_rect.center)
 
     def center_button_from_position(self, position: Tuple[float, float]) -> None:
-        """ This function center text bubble over provider position """
+        """ This function center text bubble over provider position. """
 
         self.bubble_rect.center = position
         self.bubble_shadow_rect.center = position

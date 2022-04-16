@@ -50,18 +50,23 @@ class Intro:
 
     def connect_to_server(self) -> None:
         """ This function creates a client to connect to game server. """
-        self.gui_items['conn_label']['item'].change_text(
-            'Connecting to server...')
         
+        label_offset = (0 ,0)
         username = self.gui_items['username_input']['item'].get_text()
         host_address = self.gui_items['host_input']['item'].get_text()
         host_post = self.gui_items['port_input']['item'].get_text()
-        
-        client = Client(username, host_address, int(host_post))
+
+        client = Client(username, host_address, host_post)
         if client.connect_to_server():
-            self.gui_items['conn_label']['item'].change_text('Connected')
+            label_offset = (5 ,0)
+            self.gui_items['conn_label']['item'].change_text(
+                'Waiting for player...')
         else:
-            self.gui_items['conn_label']['item'].change_text('Connection error...')
+            label_offset = (13, 0)
+            self.gui_items['conn_label']['item'].change_text(
+                'Connection error...')
+        
+        self.gui_items['conn_label']['item'].move_label(label_offset)
 
     def process_events(self) -> None:
         """
@@ -75,7 +80,8 @@ class Intro:
                 sys.exit()
 
             if self.gui_items['username_input']['enabled']:
-                self.gui_items['username_input']['item'].handle_input_events(event)
+                self.gui_items['username_input']['item'].handle_input_events(
+                    event)
 
             if self.gui_items['host_input']['enabled']:
                 self.gui_items['host_input']['item'].handle_input_events(event)

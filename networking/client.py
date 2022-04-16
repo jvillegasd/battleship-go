@@ -27,6 +27,8 @@ class Client(Network):
         """ This function creates a socket to connect to game server. """
 
         try:
+            self.host_port = int(self.host_port)
+            
             self.server_socket = socket.socket(
                 socket.AF_INET, socket.SOCK_STREAM)
             self.server_socket.connect((self.host_address, self.host_port))
@@ -37,6 +39,8 @@ class Client(Network):
             
             return True
         except TypeError as error:
+            logging.error(error)
+        except ValueError as error:
             logging.error(error)
         except socket.error as error:
             logging.error(error)

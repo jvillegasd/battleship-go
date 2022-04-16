@@ -28,14 +28,20 @@ class Label:
         self.text_surf = self.font.render(text, True, self.text_color)
         self.text_rect = self.text_surf.get_rect(
             topleft=(self.pos_x, self.pos_y))
-    
+
+    def move_label(self, delta: Tuple[float, float]) -> None:
+        """ This function movel label.. """
+        
+        self.text_rect.x += delta[0]
+        self.text_rect.y += delta[1]
+
+    def draw(self, window: pygame.display) -> None:
+        """ This function draws label on window. """
+        window.blit(self.text_surf, self.text_rect)
+
     def change_text(self, new_text: str) -> None:
         """ This function changes text of label. """
         
         self.text_surf = self.font.render(new_text, True, self.text_color)
         self.text_rect = self.text_surf.get_rect(
             topleft=(self.pos_x, self.pos_y))
-
-    def draw(self, window: pygame.display) -> None:
-        """ This function draws label on window. """
-        window.blit(self.text_surf, self.text_rect)
