@@ -72,8 +72,12 @@ class Server(Network):
 
         logging.info(f'Client connected: {client_name}')
 
+        # Notify to other clients that a new player is connected
         if len(self.game_data['clients']) > 1:
             self.send_data_to_clients(self.game_data['clients'], client_name)
+        
+        if len(self.game_data['clients']) == CONN_LIMIT:
+            self.send_data_to_clients({'message': 'Game started'})
 
         try:
             while True:
@@ -104,7 +108,7 @@ class Server(Network):
             client_socket.close()
 
     @thread_safe
-    def send_data_to_clients(self, data: object, sender_name: str) -> None:
+    def send_data_to_clients(self, data: object, sender_name: str = None) -> None:
         """ This function sends data to all clients. """
 
         message = self.create_datagram(BUFFER_SIZE, data)
