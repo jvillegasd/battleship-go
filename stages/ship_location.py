@@ -2,6 +2,9 @@ import sys
 import pygame
 from typing import Tuple, List
 
+# Import client
+from networking.client import Client
+
 # Import GUI items
 from gui.grid import Grid
 from gui.button import Button
@@ -21,6 +24,7 @@ class ShipLocation:
 
     def __init__(self) -> None:
         self.states = {
+            'client': None,
             'ship_locked': False,
             'last_selected_ship': -1
         }
@@ -94,6 +98,10 @@ class ShipLocation:
                 self.ships)
 
         return self.states
+
+    def load_client(self, client: Client) -> None:
+        """ This function loads connected client to current stage. """
+        self.states['client'] = client
 
     def get_maps_and_ships(self) -> Tuple[MapWidget, list, List[pygame.Rect]]:
         """ This function returns map widget and ships """

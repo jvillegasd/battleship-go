@@ -20,6 +20,7 @@ class GameState:
     """
 
     def __init__(self) -> None:
+        self.client = None
         self.state = 'intro'
         self.intro_stage = Intro()
         self.ship_location_stage = ShipLocation()
@@ -33,6 +34,8 @@ class GameState:
 
         if states['game_started']:
             self.state = 'ship_location'
+            self.client = self.states['client']
+            self.ship_location_stage.load_client(self.client)
 
     def ship_location(self) -> None:
         """ Ship location stage state handler. """
@@ -43,6 +46,8 @@ class GameState:
         if states['ship_locked']:
             self.state = 'battle'
             map_widget, ships, ships_rect = self.ship_location_stage.get_maps_and_ships()
+
+            self.battle_stage.load_client(self.client)
             self.battle_stage.load_maps_and_ships(
                 map_widget, ships, ships_rect)
 

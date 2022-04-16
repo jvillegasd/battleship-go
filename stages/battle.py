@@ -2,6 +2,9 @@ import sys
 import pygame
 from typing import Tuple, List
 
+# Import client
+from networking.client import Client
+
 # Import GUI items
 from gui.grid import Grid
 from gui.dev_sign import DevSign
@@ -17,6 +20,7 @@ class Battle:
 
     def __init__(self) -> None:
         self.states = {
+            'client': None,
             'game_finished': False,
             'winner_name': None,
             'maps_ships_loaded': False,
@@ -94,6 +98,10 @@ class Battle:
         self.gui_items['ships']['enabled'] = True
 
         self.states['maps_ships_loaded'] = True
+
+    def load_client(self, client: Client) -> None:
+        """ This function loads connected client to current stage. """
+        self.states['client'] = client
 
     def attack_enemy_ship(
             self,

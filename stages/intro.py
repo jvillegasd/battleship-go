@@ -61,6 +61,7 @@ class Intro:
             label_offset = (5 ,0)
             self.gui_items['conn_label']['item'].change_text(
                 'Waiting for player...')
+            self.states['client'] = client
         else:
             label_offset = (13, 0)
             self.gui_items['conn_label']['item'].change_text(
@@ -76,6 +77,9 @@ class Intro:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                if self.states['client']:
+                    self.states['client'].disconnect()
+                
                 pygame.quit()
                 sys.exit()
 
