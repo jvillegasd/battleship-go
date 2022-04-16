@@ -1,3 +1,4 @@
+import enum
 import socket
 import logging
 from typing import List
@@ -13,6 +14,13 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 logging.root.setLevel(logging.NOTSET)
 
 
+class GameStatus(enum.Enum):
+    lobby = 1
+    ship_lock = 2
+    started = 3
+    finished = 4
+
+
 class Server(Network):
     """ This class represents server instance. """
 
@@ -22,6 +30,8 @@ class Server(Network):
         self.host_address = host_address
         self.host_port = host_port
         self.game_data = {
+            'winner': None,
+            'game_status': GameStatus['lobby'].name,
             'clients': {},
             'sockets': {}
         }
@@ -38,7 +48,7 @@ class Server(Network):
 
     def stop_server(self) -> None:
         """ This function stops current server. """
-        
+
         self.end_game()
         self.server_socket.close()
 
@@ -73,9 +83,9 @@ class Server(Network):
         # Notify new client connection status to network
         if len(self.game_data['clients']) > 1:
             self.send_data_to_clients(self.game_data['clients'], client_name)
-        
+
         if len(self.game_data['clients']) == CONN_LIMIT:
-            self.send_data_to_clients({'game_started': True})
+            self.game_data['game_status'] = GameStatus['started'].name
 
         try:
             while True:
@@ -86,16 +96,22 @@ class Server(Network):
                 decoded_data = self.decode_data(data)
                 logging.info(f'Received_data: {decoded_data}')
 
-                if 'reset_game' in decoded_data:
-                    self.reset_game()
-                elif 'disconnect' in decoded_data:
-                    logging.info(f'Client disconnected: {client_name}')
-                    break
-                elif 'game_data' in decoded_data:
-                    self.update_game(decoded_data['data'])
+                if 'request' in decoded_data:
+                    if decoded_data['request'] == 'reset_game':
+                        self.reset_game()
+                    if decoded_data['request'] == 'disconnect':
+                        logging.info(f'Client disconnected: {client_name}')
+                        break
+                    if decoded_data['request'] == 'game_data':
+                        self.send_data_to_client(
+                            self.game_data['clients'], client_name)
+                    if decoded_data['request'] == 'game_status':
+                        self.send_data_to_client(
+                            {'game_status': self.game_data['game_status']}, client_name)
+                    if decoded_data['request'] == 'winner':
+                        self.send_data_to_client(
+                            {'winner': self.game_data['winner']}, client_name)
 
-                self.send_data_to_clients(
-                    self.game_data['clients'], client_name)
         except socket.error:
             socket_disconnected = True
             logging.info(f'Client disconnected by server: {client_name}')
@@ -130,10 +146,12 @@ class Server(Network):
     @thread_safe
     def end_game(self) -> None:
         """ This function ends game by cleaning server connections. """
-        
+
         for client_name in self.game_data['sockets']:
             self.game_data['sockets'][client_name].shutdown(socket.SHUT_RDWR)
             self.game_data['sockets'][client_name].close()
+
+        self.game_data['game_status'] = GameStatus['ship_lock'].name
 
     @thread_safe
     def reset_game(self) -> None:
@@ -145,6 +163,8 @@ class Server(Network):
                 'ship_locked': False,
                 'my_turn': False
             }
+        
+        self.game_data['game_status'] = GameStatus['ship_lock'].name
 
     @thread_safe
     def get_connected_clients(self) -> List[str]:

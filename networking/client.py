@@ -17,12 +17,15 @@ class Client(Network):
     """ This function represents client instance. """
 
     def __init__(self, client_name: str, host_address: str, host_port: int) -> None:
+        self.is_game_started = False
         self.is_disconnected = False
         self.client_name = client_name
-        self.server_socket = None
-        self.host_address = host_address
-        self.host_port = host_port
+        
         self.clients_tiles = {}
+        
+        self.server_socket = None
+        self.host_port = host_port
+        self.host_address = host_address
 
     def connect_to_server(self) -> bool:
         """ This function creates a socket to connect to game server. """
@@ -34,9 +37,8 @@ class Client(Network):
                 socket.AF_INET, socket.SOCK_STREAM)
             self.server_socket.connect((self.host_address, self.host_port))
 
-            server_thread = Thread(target=self.server_listener,
-                                   args=(self.server_socket, self.client_name))
-            server_thread.start()
+            ack = self.send_data_to_server(self.client_name)
+            logging.info(f'Server ACK: {ack}')
             
             return True
         except TypeError as error:
@@ -51,44 +53,31 @@ class Client(Network):
     def disconnect(self) -> None:
         """ This function send a disconnected request to server. """
         self.is_disconnected = True
-        self.send_data_to_server({'disconnect': True})
+        self.send_data_to_server({'request': 'disconnect'})
 
-    def server_listener(self, server_socket: socket.socket, client_name: str) -> None:
-        """ This function listen to server messages. """
-
-        socket_disconnected = False
-
-        self.send_data_to_server(client_name)
-        data = server_socket.recv(BUFFER_SIZE)
-        ack = self.decode_data(data)
-
-        logging.info(f'Server ACK: {ack}')
-
-        try:
-            while True:
-                data = server_socket.recv(BUFFER_SIZE)
-                if not data:
-                    break
-
-                decoded_data = self.decode_data(data)
-                logging.info(f'Received data: {decoded_data}')
-
-                self.update_client_tiles(decoded_data)
-        except socket.error:
-            socket_disconnected = True
-            logging.info('Server socket disconnected')
-
-        self.is_disconnected = True
-        if not socket_disconnected:
-            server_socket.close()
-
-    def send_data_to_server(self, data: object) -> None:
-        """ This function sends data to server. """
+    def send_data_to_server(self, data: object) -> dict:
+        """ This function sends data and receive response from server. """
 
         message = self.create_datagram(BUFFER_SIZE, data)
         self.server_socket.sendall(message)
+        
+        response = self.server_socket.recv(BUFFER_SIZE)
+        return self.decode_data(response)
+    
+    def get_game_data(self) -> dict:
+        """ Request current game data to server. """
+        
+        response = self.send_data_to_server({'request': 'game_data'})
+        return response
 
-    @thread_safe
-    def update_client_tiles(self, new_clients_tiles: dict) -> None:
-        """ This function updates client tiles. """
-        self.clients_tiles = new_clients_tiles
+    def get_game_status(self) -> str:
+        """ Request to server if game started. """
+        
+        response = self.send_data_to_server({'request': 'game_status'})
+        return response['game_status']
+
+    def get_winner(self) -> str:
+        """ Request to server winner username. """
+
+        response = self.send_data_to_server({'request': 'winner'})
+        return response['winner']
