@@ -143,7 +143,11 @@ class Server(Network):
             client_socket: socket.socket) -> None:
         """ This function adds a client to game_data. """
 
-        self.game_data['clients'][client_name] = {'attacked_tile': None}
+        self.game_data['clients'][client_name] = {
+            'attacked_tile': None,
+            'ship_locked': False,
+            'my_turn': False
+        }
         self.game_data['sockets'][client_name] = client_socket
 
     @thread_safe
