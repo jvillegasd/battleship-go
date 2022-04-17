@@ -58,14 +58,29 @@ class Battle:
 
         pygame.display.update()
 
+    def load_client(self, client: Client) -> None:
+        """ This function loads connected client to current stage. """
+        self.states['client'] = client
+
+    def is_client_disconnected(self) -> bool:
+        """ This function checks if client is disconnected. """
+        return self.states['client'] and self.states['client'].is_disconnected
+    
     def process_events(self) -> dict:
         """
           This function handles pygame events related
           to current stage.
         """
+        
+        if self.is_client_disconnected():
+            pygame.quit()
+            sys.exit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                if self.states['client']:
+                    self.states['client'].disconnect()
+                
                 pygame.quit()
                 sys.exit()
 
@@ -98,10 +113,6 @@ class Battle:
         self.gui_items['ships']['enabled'] = True
 
         self.states['maps_ships_loaded'] = True
-
-    def load_client(self, client: Client) -> None:
-        """ This function loads connected client to current stage. """
-        self.states['client'] = client
 
     def attack_enemy_ship(
             self,
