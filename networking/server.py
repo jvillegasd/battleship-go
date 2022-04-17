@@ -16,9 +16,10 @@ logging.root.setLevel(logging.NOTSET)
 
 class GameStatus(enum.Enum):
     lobby = 1
-    ship_lock = 2
-    started = 3
+    started = 2
+    ship_lock = 3
     finished = 4
+    player_disconnected = 5
 
 
 class Server(Network):
@@ -94,7 +95,7 @@ class Server(Network):
                     break
 
                 decoded_data = self.decode_data(data)
-                logging.info(f'Received_data: {decoded_data}')
+                logging.info(f'Received data: {decoded_data}')
 
                 if 'request' in decoded_data:
                     if decoded_data['request'] == 'reset_game':
@@ -111,7 +112,8 @@ class Server(Network):
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
-
+                else:
+                    self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:
             socket_disconnected = True
             logging.info(f'Client disconnected by server: {client_name}')
@@ -120,6 +122,8 @@ class Server(Network):
         if not socket_disconnected:
             client_socket.shutdown(socket.SHUT_RDWR)
             client_socket.close()
+            
+            logging.info(f'Closing game')
             self.end_game()
 
     @thread_safe
@@ -151,7 +155,8 @@ class Server(Network):
             self.game_data['sockets'][client_name].shutdown(socket.SHUT_RDWR)
             self.game_data['sockets'][client_name].close()
 
-        self.game_data['game_status'] = GameStatus['ship_lock'].name
+        self.game_data['clients'] = {}
+        self.game_data['game_status'] = GameStatus['player_disconnected'].name
 
     @thread_safe
     def reset_game(self) -> None:

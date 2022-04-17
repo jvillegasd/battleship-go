@@ -48,9 +48,6 @@ class Intro:
 
         pygame.display.update()
 
-    def is_game_started(self) -> bool:
-        return self.states['client'] and self.states['client'].is_game_started
-
     def connect_to_server(self) -> None:
         """ This function creates a client to connect to game server. """
 
@@ -61,22 +58,44 @@ class Intro:
 
         client = Client(username, host_address, host_post)
         if client.connect_to_server():
+            self.states['client'] = client
+            
             label_offset = (5, 0)
             self.gui_items['conn_label']['item'].change_text(
                 'Waiting for player...')
-            self.states['client'] = client
+            self.gui_items['start_button']['enabled'] = False
         else:
             label_offset = (13, 0)
             self.gui_items['conn_label']['item'].change_text(
                 'Connection error...')
 
         self.gui_items['conn_label']['item'].move_label(label_offset)
-
+    
+    def is_client_disconnected(self) -> bool:
+        """ This function checks if client is disconnected. """
+        return self.states['client'] and self.states['client'].is_disconnected
+    
+    def is_game_started(self) -> bool:
+        """
+          This function fetchs game status from server
+          and checks if game started.
+        """
+        
+        if self.states['client']:
+            game_status = self.states['client'].get_game_status()
+            return game_status == 'started'
+        
+        return False
+    
     def process_events(self) -> None:
         """
           This function handles pygame events related
           to current stage.
         """
+        
+        if self.is_client_disconnected():
+            pygame.quit()
+            sys.exit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -85,7 +104,7 @@ class Intro:
 
                 pygame.quit()
                 sys.exit()
-
+            
             if self.gui_items['username_input']['enabled']:
                 self.gui_items['username_input']['item'].handle_input_events(
                     event)

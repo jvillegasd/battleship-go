@@ -9,3 +9,10 @@ client = Client('LinkRs', host_address, host_port)
 client.connect_to_server()
 client.send_data_to_server({'hello': 'world'})
 client.send_data_to_server({'hello': 'world2'})
+
+while True:
+    if client.is_disconnected:
+        break
+    
+    client.get_game_status()
+    client.disconnect()

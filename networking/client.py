@@ -1,10 +1,8 @@
-import json
 import socket
 import logging
-from threading import Thread
+from typing import Union
 
 from networking.network import Network
-from networking.decorator import thread_safe
 from networking.constants import BUFFER_SIZE
 
 
@@ -17,7 +15,6 @@ class Client(Network):
     """ This function represents client instance. """
 
     def __init__(self, client_name: str, host_address: str, host_port: int) -> None:
-        self.is_game_started = False
         self.is_disconnected = False
         self.client_name = client_name
         
@@ -52,32 +49,41 @@ class Client(Network):
 
     def disconnect(self) -> None:
         """ This function send a disconnected request to server. """
+        
         self.is_disconnected = True
         self.send_data_to_server({'request': 'disconnect'})
+        logging.info('Client disconnected')
 
-    def send_data_to_server(self, data: object) -> dict:
+    def send_data_to_server(self, data: object) -> Union[dict, None]:
         """ This function sends data and receive response from server. """
 
-        message = self.create_datagram(BUFFER_SIZE, data)
-        self.server_socket.sendall(message)
+        try:
+            message = self.create_datagram(BUFFER_SIZE, data)
+            self.server_socket.sendall(message)
+            
+            response = self.server_socket.recv(BUFFER_SIZE)
+            if response:
+                return self.decode_data(response)
+        except socket.error:
+            logging.info('Client disconnected by server')
+            self.is_disconnected = True
         
-        response = self.server_socket.recv(BUFFER_SIZE)
-        return self.decode_data(response)
+        return None
     
-    def get_game_data(self) -> dict:
+    def get_game_data(self) -> Union[dict, None]:
         """ Request current game data to server. """
         
         response = self.send_data_to_server({'request': 'game_data'})
         return response
 
-    def get_game_status(self) -> str:
+    def get_game_status(self) -> Union[dict, None]:
         """ Request to server if game started. """
         
         response = self.send_data_to_server({'request': 'game_status'})
-        return response['game_status']
+        return response['game_status'] if response else None
 
-    def get_winner(self) -> str:
+    def get_winner(self) -> Union[dict, None]:
         """ Request to server winner username. """
 
         response = self.send_data_to_server({'request': 'winner'})
-        return response['winner']
+        return response['winner'] if response else None
