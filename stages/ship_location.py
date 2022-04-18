@@ -76,6 +76,18 @@ class ShipLocation:
         """ This function checks if client is disconnected. """
         return self.states['client'] and self.states['client'].is_disconnected
 
+    def is_game_started(self) -> bool:
+        """
+          This function fetch game status from server
+          and checks if all clients locked their ship.
+        """
+
+        if self.states['client']:
+            game_status = self.states['client'].get_game_status()
+            return game_status == 'battle'
+
+        return False
+
     def lock_ships_position(self) -> None:
         """ This function notifies to server that a client locked ships. """
       
@@ -118,15 +130,13 @@ class ShipLocation:
                 self.states['last_selected_ship'] = selected_ship
             else:
                 self.gui_items['ships']['enabled'] = False
-        
-        if self.states['client']:
-            response = self.states['client'].get_game_status()
-            if response['game_status'] == 'started':
-                self.states['ship_locked'] = True
 
         self.map_widget.handle_button_tabs_events()
         if self.handle_buttom_click(self.gui_items['lock_ships']):
             self.lock_ships_position()
+        
+        if self.is_game_started():
+            self.states['ship_locked'] = True
 
         return self.states
 
