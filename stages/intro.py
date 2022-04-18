@@ -17,8 +17,8 @@ class Intro:
 
     def __init__(self) -> None:
         self.states = {
-            'game_started': False,
-            'client': None
+            'client': None,
+            'players_connected': False
         }
         self.gui_items = self.__load_gui_items()
 
@@ -75,15 +75,15 @@ class Intro:
         """ This function checks if client is disconnected. """
         return self.states['client'] and self.states['client'].is_disconnected
     
-    def is_game_started(self) -> bool:
+    def all_players_connected(self) -> bool:
         """
           This function fetchs game status from server
-          and checks if game started.
+          and checks if all clients are ready.
         """
         
         if self.states['client']:
             game_status = self.states['client'].get_game_status()
-            return game_status == 'started'
+            return game_status == 'ship_lock'
         
         return False
     
@@ -118,8 +118,8 @@ class Intro:
         if self.handle_buttom_click(self.gui_items['start_button']):
             self.connect_to_server()
 
-        if self.is_game_started():
-            self.states['game_started'] = True
+        if self.all_players_connected():
+            self.states['players_connected'] = True
 
         return self.states
 

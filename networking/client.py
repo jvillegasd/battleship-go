@@ -18,8 +18,6 @@ class Client(Network):
         self.is_disconnected = False
         self.client_name = client_name
         
-        self.clients_tiles = {}
-        
         self.server_socket = None
         self.host_port = host_port
         self.host_address = host_address

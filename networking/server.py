@@ -16,8 +16,8 @@ logging.root.setLevel(logging.NOTSET)
 
 class GameStatus(enum.Enum):
     lobby = 1
-    started = 2
-    ship_lock = 3
+    ship_lock = 2
+    started = 3
     finished = 4
     player_disconnected = 5
 
@@ -81,12 +81,8 @@ class Server(Network):
 
         logging.info(f'Client connected: {client_name}')
 
-        # Notify new client connection status to network
-        if len(self.game_data['clients']) > 1:
-            self.send_data_to_clients(self.game_data['clients'], client_name)
-
         if len(self.game_data['clients']) == CONN_LIMIT:
-            self.game_data['game_status'] = GameStatus['started'].name
+            self.game_data['game_status'] = GameStatus['ship_lock'].name
 
         try:
             while True:

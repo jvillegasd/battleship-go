@@ -1,3 +1,4 @@
+from http.client import responses
 import sys
 import pygame
 from typing import Tuple, List
@@ -7,6 +8,7 @@ from networking.client import Client
 
 # Import GUI items
 from gui.grid import Grid
+from gui.label import Label
 from gui.button import Button
 from gui.dev_sign import DevSign
 from gui.map_widget import MapWidget
@@ -74,6 +76,17 @@ class ShipLocation:
         """ This function checks if client is disconnected. """
         return self.states['client'] and self.states['client'].is_disconnected
 
+    def lock_ships_position(self) -> None:
+        """ This function notifies to server that a client locked ships. """
+      
+        if self.states['client']:
+            self.states['client'].send_data_to_server({'ship_locked': True})
+            
+            self.gui_items['conn_label']['enabled'] = True
+            self.gui_items['lock_ships']['enabled'] = False
+            self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(
+                self.ships)
+
     def process_events(self) -> dict:
         """
           This function handles pygame events related
@@ -105,12 +118,15 @@ class ShipLocation:
                 self.states['last_selected_ship'] = selected_ship
             else:
                 self.gui_items['ships']['enabled'] = False
+        
+        if self.states['client']:
+            response = self.states['client'].get_game_status()
+            if response['game_status'] == 'started':
+                self.states['ship_locked'] = True
 
         self.map_widget.handle_button_tabs_events()
         if self.handle_buttom_click(self.gui_items['lock_ships']):
-            self.states['ship_locked'] = True
-            self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(
-                self.ships)
+            self.lock_ships_position()
 
         return self.states
 
@@ -132,6 +148,8 @@ class ShipLocation:
             width=110,
             height=40
         )
+        conn_label = Label(pos_x=130, pos_y=430, text='Waiting for confirmation...')
+        
         gui_items = {
             'lock_ships': {
                 'enabled': True,
@@ -148,6 +166,10 @@ class ShipLocation:
             'dev_sign': {
                 'enabled': True,
                 'item': sign
+            },
+            'conn_label': {
+                'enabled': False,
+                'item': conn_label
             }
         }
 

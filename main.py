@@ -32,7 +32,7 @@ class GameState:
         states = self.intro_stage.process_events()
         self.intro_stage.draw(WIN)
 
-        if states['game_started']:
+        if states['players_connected']:
             self.state = 'ship_location'
             self.client = self.states['client']
             
