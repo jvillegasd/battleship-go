@@ -94,8 +94,12 @@ class Server(Network):
                 logging.info(f'Received data: {decoded_data}')
 
                 if 'request' in decoded_data:
+                    if decoded_data['request'] == 'ship_locked':
+                        self.game_data['clients'][client_name]['ship_locked'] = True
+                        self.send_data_to_client({'message': 'ok'}, client_name)
                     if decoded_data['request'] == 'reset_game':
                         self.reset_game()
+                        self.send_data_to_client({'message': 'ok'}, client_name)
                     if decoded_data['request'] == 'disconnect':
                         logging.info(f'Client disconnected: {client_name}')
                         break

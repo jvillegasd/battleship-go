@@ -92,7 +92,7 @@ class ShipLocation:
         """ This function notifies to server that a client locked ships. """
       
         if self.states['client']:
-            self.states['client'].send_data_to_server({'ship_locked': True})
+            self.states['client'].send_data_to_server({'request': 'ship_locked'})
             
             self.gui_items['conn_label']['enabled'] = True
             self.gui_items['lock_ships']['enabled'] = False
