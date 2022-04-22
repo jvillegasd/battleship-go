@@ -71,7 +71,7 @@ class Client(Network):
     # TODO: create attack_tile
 
     def lock_ships_and_send_game_grid(self, game_grid: List[list]) -> None:
-        """ This function notify to server that client locked ships and send game grid """
+        """ Notify to server that client locked ships and send game grid """
         self.send_data_to_server({'request': 'ship_locked', 'grid': game_grid})
 
     def is_my_turn(self) -> bool:
