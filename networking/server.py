@@ -112,6 +112,8 @@ class Server(Network):
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
+                    # TODO: Before battle begins, client send to server their grid
+                    #TODO: Create attack_tile and change turn
                 else:
                     self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:

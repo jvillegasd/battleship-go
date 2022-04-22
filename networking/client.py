@@ -68,6 +68,14 @@ class Client(Network):
         
         return None
     
+    # TODO: create attack_tile
+    
+    def is_my_turn(self) -> bool:
+        """ This function checks if it is client turn. """
+        
+        game_data = self.get_game_data()
+        return game_data[self.client_name]['my_turn']
+    
     def get_game_data(self) -> Union[dict, None]:
         """ Request current game data to server. """
         

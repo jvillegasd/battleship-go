@@ -64,14 +64,15 @@ class Battle:
 
     def is_client_disconnected(self) -> bool:
         """ This function checks if client is disconnected. """
-        return self.states['client'] and self.states['client'].is_disconnected
-    
+        return ((self.states['client'] and self.states['client'].is_disconnected)
+                or not self.states['client'])
+
     def process_events(self) -> dict:
         """
           This function handles pygame events related
           to current stage.
         """
-        
+
         if self.is_client_disconnected():
             pygame.quit()
             sys.exit()
@@ -80,7 +81,7 @@ class Battle:
             if event.type == pygame.QUIT:
                 if self.states['client']:
                     self.states['client'].disconnect()
-                
+
                 pygame.quit()
                 sys.exit()
 
@@ -89,8 +90,9 @@ class Battle:
                     self.gui_items['ships']['enabled'] = True
                 else:
                     self.gui_items['ships']['enabled'] = False
-                    self.attack_enemy_ship(
-                        event, self.map_widget.enemy_map, self.ships)
+                    if self.states['client'].is_my_turn():
+                        self.attack_enemy_ship(
+                            event, self.map_widget.enemy_map)
 
         if self.states['maps_ships_loaded']:
             self.states['last_selected_ship'] = self.__show_ship_life_status()
@@ -99,7 +101,11 @@ class Battle:
 
         return self.states
 
-    def load_maps_and_ships(self, maps: MapWidget, ships: list, ships_rect: List[pygame.Rect]) -> None:
+    def load_maps_and_ships(
+            self,
+            maps: MapWidget,
+            ships: list,
+            ships_rect: List[pygame.Rect]) -> None:
         """ This function loads into GUI map widget and ships """
 
         self.map_widget = maps
@@ -114,35 +120,44 @@ class Battle:
 
         self.states['maps_ships_loaded'] = True
 
-    def attack_enemy_ship(
-            self,
-            event: pygame.event.Event,
-            grid: Grid,
-            ships: list) -> Tuple[bool, str]:
+    def attack_enemy_ship(self, event: pygame.event.Event, grid: Grid) -> None:
         """
           This function handles required mouse events to
           attack enemy ship.
         """
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            attacked, ship_name = grid.attack_tile(event.pos)
-            if attacked:
+            response = self.states['client'].attack_tile(event.pos)
+            if response['attacked']:
                 explosion = Explosion(
                     pos_x=event.pos[0],
                     pos_y=event.pos[1],
                     stop_after_finish=True
                 )
-
+                
                 centered_position = grid.center_position(event.pos)
                 explosion.center_animation_from_position(centered_position)
                 self.gui_items['enemy_fire']['item'].append(explosion)
+
+    def receive_enemy_attack(
+            self,
+            grid: Grid,
+            ships: list) -> None:
+        """ This function check if enemy attack hits a ship """
+        
+        response = self.states['client'].get_game_data()
+        
+        
+        attacked_ship = next(
+            (ship for ship in ships if ships.name == response['ship_name']), None)
+        attacked_ship.get_attacked()
 
     def __load_gui_items(self) -> dict:
         """
           This function creates and loads gui items
           used in stage.
         """
-        
+
         sign = DevSign(pos_x=325, pos_y=475)
         gui_items = {
             'tabs': {

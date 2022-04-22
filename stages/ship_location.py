@@ -74,7 +74,8 @@ class ShipLocation:
 
     def is_client_disconnected(self) -> bool:
         """ This function checks if client is disconnected. """
-        return self.states['client'] and self.states['client'].is_disconnected
+        return ((self.states['client'] and self.states['client'].is_disconnected)
+                or not self.states['client'])
 
     def is_game_started(self) -> bool:
         """
