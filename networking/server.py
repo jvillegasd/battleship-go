@@ -33,6 +33,7 @@ class Server(Network):
         self.game_data = {
             'winner': None,
             'game_status': GameStatus['lobby'].name,
+            'game_grid': {},
             'clients': {},
             'sockets': {}
         }
@@ -93,13 +94,22 @@ class Server(Network):
                 decoded_data = self.decode_data(data)
                 logging.info(f'Received data: {decoded_data}')
 
+                if (
+                    self.game_data['game_status'] == GameStatus['ship_lock'].name
+                    and self.check_if_ships_are_locked()
+                ):
+                    self.game_data['game_status'] = GameStatus['started'].name
+
                 if 'request' in decoded_data:
                     if decoded_data['request'] == 'ship_locked':
                         self.game_data['clients'][client_name]['ship_locked'] = True
-                        self.send_data_to_client({'message': 'ok'}, client_name)
+                        self.game_data['game_grid'][client_name] = decoded_data['grid']
+                        self.send_data_to_client(
+                            {'message': 'ok'}, client_name)
                     if decoded_data['request'] == 'reset_game':
                         self.reset_game()
-                        self.send_data_to_client({'message': 'ok'}, client_name)
+                        self.send_data_to_client(
+                            {'message': 'ok'}, client_name)
                     if decoded_data['request'] == 'disconnect':
                         logging.info(f'Client disconnected: {client_name}')
                         break
@@ -112,8 +122,7 @@ class Server(Network):
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
-                    # TODO: Before battle begins, client send to server their grid
-                    #TODO: Create attack_tile and change turn
+                    # TODO: Create attack_tile and change turn
                 else:
                     self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:
@@ -124,7 +133,7 @@ class Server(Network):
         if not socket_disconnected:
             client_socket.shutdown(socket.SHUT_RDWR)
             client_socket.close()
-            
+
             logging.info(f'Closing game')
             self.end_game()
 
@@ -170,8 +179,16 @@ class Server(Network):
                 'ship_locked': False,
                 'my_turn': False
             }
-        
+            self.game_data['game_grid'][client_name] = None
+
         self.game_data['game_status'] = GameStatus['ship_lock'].name
+
+    @thread_safe
+    def check_if_ships_are_locked(self) -> None:
+        """ This function check clients locked their ships """
+        return all(
+            self.game_data['game_grid'][client_name] is not None
+            for client_name in self.game_data['game_grid'])
 
     @thread_safe
     def get_connected_clients(self) -> List[str]:
@@ -190,6 +207,7 @@ class Server(Network):
             'ship_locked': False,
             'my_turn': self.is_first_player
         }
+        self.game_data['game_grid'][client_name] = None
         self.game_data['sockets'][client_name] = client_socket
         self.is_first_player = False
 
@@ -198,3 +216,4 @@ class Server(Network):
         """ This function removes client from game_data. """
         self.game_data['clients'].pop(client_name, None)
         self.game_data['sockets'].pop(client_name, None)
+        self.game_data['game_grid'].pop(client_name, None)

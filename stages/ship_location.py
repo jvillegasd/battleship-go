@@ -91,14 +91,15 @@ class ShipLocation:
 
     def lock_ships_position(self) -> None:
         """ This function notifies to server that a client locked ships. """
-      
+
         if self.states['client']:
-            self.states['client'].send_data_to_server({'request': 'ship_locked'})
-            
-            self.gui_items['conn_label']['enabled'] = True
-            self.gui_items['lock_ships']['enabled'] = False
             self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(
                 self.ships)
+            self.states['client'].lock_ships_and_send_game_grid(
+                self.map_widget.ally_map.game_grid)
+
+            self.gui_items['conn_label']['enabled'] = True
+            self.gui_items['lock_ships']['enabled'] = False
 
     def process_events(self) -> dict:
         """
@@ -114,7 +115,7 @@ class ShipLocation:
             if event.type == pygame.QUIT:
                 if self.states['client']:
                     self.states['client'].disconnect()
-                
+
                 pygame.quit()
                 sys.exit()
 
@@ -135,7 +136,7 @@ class ShipLocation:
         self.map_widget.handle_button_tabs_events()
         if self.handle_buttom_click(self.gui_items['lock_ships']):
             self.lock_ships_position()
-        
+
         if self.is_game_started():
             self.states['ship_locked'] = True
 
@@ -159,8 +160,9 @@ class ShipLocation:
             width=110,
             height=40
         )
-        conn_label = Label(pos_x=130, pos_y=430, text='Waiting for confirmation...')
-        
+        conn_label = Label(pos_x=130, pos_y=430,
+                           text='Waiting for confirmation...')
+
         gui_items = {
             'lock_ships': {
                 'enabled': True,
