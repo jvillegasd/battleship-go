@@ -17,7 +17,7 @@ logging.root.setLevel(logging.NOTSET)
 class GameStatus(enum.Enum):
     lobby = 1
     ship_lock = 2
-    started = 3
+    battle = 3
     finished = 4
     player_disconnected = 5
 
@@ -98,7 +98,7 @@ class Server(Network):
                     self.game_data['game_status'] == GameStatus['ship_lock'].name
                     and self.check_if_ships_are_locked()
                 ):
-                    self.game_data['game_status'] = GameStatus['started'].name
+                    self.game_data['game_status'] = GameStatus['battle'].name
 
                 if 'request' in decoded_data:
                     if decoded_data['request'] == 'ship_locked':
