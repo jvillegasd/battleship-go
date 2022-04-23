@@ -1,6 +1,6 @@
 import socket
 import logging
-from typing import Union, List
+from typing import Union, List, Tuple
 
 from networking.network import Network
 from networking.constants import BUFFER_SIZE
@@ -70,9 +70,15 @@ class Client(Network):
 
     # TODO: create attack_tile
 
-    def lock_ships_and_send_game_grid(self, game_grid: List[list]) -> None:
+    def lock_ships(self, game_grid: List[list]) -> None:
         """ Notify to server that client locked ships and send game grid """
         self.send_data_to_server({'request': 'ship_locked', 'grid': game_grid})
+
+    def attack_enemy_tile(self, position: Tuple[float, float]) -> str:
+        """ Request an attack to enemy grid. """
+        
+        response = self.send_data_to_server({'request': 'attack_tile', 'position': position})
+        return response.get('attacked')
 
     def is_my_turn(self) -> bool:
         """ This function checks if it is client turn. """
@@ -90,10 +96,10 @@ class Client(Network):
         """ Request to server if game started. """
 
         response = self.send_data_to_server({'request': 'game_status'})
-        return response['game_status'] if response else None
+        return response.get('game_status')
 
     def get_winner(self) -> Union[dict, None]:
         """ Request to server winner username. """
 
         response = self.send_data_to_server({'request': 'winner'})
-        return response['winner'] if response else None
+        return response.get('winner')

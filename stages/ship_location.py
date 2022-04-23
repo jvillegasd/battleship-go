@@ -95,7 +95,7 @@ class ShipLocation:
         if self.states['client']:
             self.ships = self.map_widget.ally_map.locate_ships_into_game_grid(
                 self.ships)
-            self.states['client'].lock_ships_and_send_game_grid(
+            self.states['client'].lock_ships(
                 self.map_widget.ally_map.game_grid)
 
             self.gui_items['conn_label']['enabled'] = True

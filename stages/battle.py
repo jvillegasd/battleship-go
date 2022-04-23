@@ -67,6 +67,58 @@ class Battle:
         return ((self.states['client'] and self.states['client'].is_disconnected)
                 or not self.states['client'])
 
+    def attack_enemy_ship(self, event: pygame.event.Event, grid: Grid) -> None:
+        """
+          This function handles required mouse events to
+          attack enemy ship.
+        """
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            tile_pos = grid.translate_position(event.pos)
+            ship_name = self.states['client'].attack_enemy_tile(tile_pos)
+            if ship_name:
+                explosion = Explosion(
+                    pos_x=event.pos[0],
+                    pos_y=event.pos[1],
+                    stop_after_finish=True
+                )
+
+                centered_pos = grid.center_position(event.pos)
+                explosion.center_animation_from_position(centered_pos)
+                self.gui_items['enemy_fire']['item'].append(explosion)
+
+    def receive_enemy_attack(
+            self,
+            grid: Grid,
+            ships: list) -> None:
+        """ This function check if enemy attack hits a ship """
+
+        response = self.states['client'].get_game_data()
+
+        enemy_data = next(
+            (
+                value
+                for key, value in response
+                if key != self.states['client'].client_name), None)
+        if enemy_data['attacked_tile']['ship_name']:
+            rescaled_pos = grid.center_position(
+                enemy_data['attacked_tile']['position'])
+            explosion = Explosion(
+                pos_x=rescaled_pos[0],
+                pos_y=rescaled_pos[1],
+                stop_after_finish=True
+            )
+
+            attacked_ship = next(
+                (
+                    ship
+                    for ship in ships
+                    if ships.name == enemy_data['attacked_tile']['ship_name']), None)
+            attacked_ship.get_attacked()
+
+            explosion.center_animation_from_position(rescaled_pos)
+            self.gui_items['enemy_fire']['item'].append(explosion)
+
     def process_events(self) -> dict:
         """
           This function handles pygame events related
@@ -119,38 +171,6 @@ class Battle:
         self.gui_items['ships']['enabled'] = True
 
         self.states['maps_ships_loaded'] = True
-
-    def attack_enemy_ship(self, event: pygame.event.Event, grid: Grid) -> None:
-        """
-          This function handles required mouse events to
-          attack enemy ship.
-        """
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            response = self.states['client'].attack_tile(event.pos)
-            if response['attacked']:
-                explosion = Explosion(
-                    pos_x=event.pos[0],
-                    pos_y=event.pos[1],
-                    stop_after_finish=True
-                )
-                
-                centered_position = grid.center_position(event.pos)
-                explosion.center_animation_from_position(centered_position)
-                self.gui_items['enemy_fire']['item'].append(explosion)
-
-    def receive_enemy_attack(
-            self,
-            grid: Grid,
-            ships: list) -> None:
-        """ This function check if enemy attack hits a ship """
-        
-        response = self.states['client'].get_game_data()
-        
-        
-        attacked_ship = next(
-            (ship for ship in ships if ships.name == response['ship_name']), None)
-        attacked_ship.get_attacked()
 
     def __load_gui_items(self) -> dict:
         """

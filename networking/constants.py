@@ -1,2 +1,3 @@
 CONN_LIMIT = 2
 BUFFER_SIZE = 1024
+SHIPS_NAMES = ['B', 'C', 'D', 'R', 'S']

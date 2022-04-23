@@ -1,12 +1,12 @@
 import enum
 import socket
 import logging
-from typing import List
+from typing import List, Tuple
 from threading import Thread
 
 from networking.network import Network
 from networking.decorator import thread_safe
-from networking.constants import CONN_LIMIT, BUFFER_SIZE
+from networking.constants import CONN_LIMIT, BUFFER_SIZE, SHIPS_NAMES
 
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -122,7 +122,15 @@ class Server(Network):
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
-                    # TODO: Create attack_tile and change turn
+                    if decoded_data['request'] == 'attack_tile':
+                        ship_name = self.attack_enemy_tile(
+                            client_name, decoded_data['position'])
+                        self.game_data['clients'][client_name]['attacked_tile'] = {
+                            'position': decoded_data['position'],
+                            'ship_name': ship_name
+                        }
+                        self.send_data_to_client(
+                            {'attacked': ship_name}, client_name)
                 else:
                     self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:
@@ -189,6 +197,22 @@ class Server(Network):
         return all(
             self.game_data['game_grid'][client_name] is not None
             for client_name in self.game_data['game_grid'])
+
+    @thread_safe
+    def attack_enemy_tile(self, attacker_name: str, position: Tuple[float, float]) -> str:
+        """ This function checks if position hits a enemy ship """
+
+        enemy_grid = [
+            value
+            for key, value in self.game_data['game_grid']
+            if key != attacker_name
+        ]
+
+        if (len(enemy_grid)
+                and enemy_grid[0][position[0]][position[1]] in SHIPS_NAMES):
+            return enemy_grid[0][position[0]][position[1]]
+
+        return None
 
     @thread_safe
     def get_connected_clients(self) -> List[str]:
