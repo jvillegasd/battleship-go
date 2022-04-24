@@ -115,7 +115,8 @@ class Battle:
                 (
                     ship
                     for ship in ships
-                    if ships.name == enemy_data['attacked_tile']['ship_name']), None)
+                    if ships.name == enemy_data['attacked_tile']['ship_name']
+                ), None)
             attacked_ship.get_attacked()
             grid.game_grid[rescaled_pos[0]][rescaled_pos[1]] = 'X'
 
