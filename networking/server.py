@@ -208,8 +208,11 @@ class Server(Network):
             if key != attacker_name
         ]
 
-        if (len(enemy_grid)
-                and enemy_grid[0][position[0]][position[1]] in SHIPS_NAMES):
+        if (
+            len(enemy_grid)
+            and enemy_grid[0][position[0]][position[1]] in SHIPS_NAMES
+        ):
+            enemy_grid[0][position[0]][position[1]] = 'X'
             return enemy_grid[0][position[0]][position[1]]
 
         return None

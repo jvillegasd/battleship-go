@@ -82,9 +82,9 @@ class Battle:
                     pos_y=event.pos[1],
                     stop_after_finish=True
                 )
-                
+
                 grid.game_grid[tile_pos[0]][tile_pos[1]] = 'X'
-                
+
                 centered_pos = grid.center_position(event.pos)
                 explosion.center_animation_from_position(centered_pos)
                 self.gui_items['enemy_fire']['item'].append(explosion)
@@ -143,14 +143,13 @@ class Battle:
             if self.states['maps_ships_loaded']:
                 if self.__ally_tab_selected():
                     self.gui_items['ships']['enabled'] = True
+                    self.receive_enemy_attack(
+                        self.map_widget.ally_map, self.ships)
                 else:
                     self.gui_items['ships']['enabled'] = False
                     if self.states['client'].is_my_turn():
                         self.attack_enemy_ship(
                             event, self.map_widget.enemy_map)
-                    else:
-                        self.receive_enemy_attack(
-                            self.map_widget.ally_map, self.ships)
 
         if self.states['maps_ships_loaded']:
             self.states['last_selected_ship'] = self.__show_ship_life_status()
