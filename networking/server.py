@@ -183,7 +183,10 @@ class Server(Network):
 
         for client_name in self.game_data['clients']:
             self.game_data['clients'][client_name] = {
-                'attacked_tile': None,
+                'attacked_tile': {
+                    'ship_name': None,
+                    'position': None
+                },
                 'ship_locked': False,
                 'my_turn': False
             }
@@ -204,7 +207,7 @@ class Server(Network):
 
         enemy_grid = [
             value
-            for key, value in self.game_data['game_grid']
+            for key, value in self.game_data['game_grid'].items()
             if key != attacker_name
         ]
 
@@ -230,7 +233,10 @@ class Server(Network):
         """ This function adds a client to game_data. """
 
         self.game_data['clients'][client_name] = {
-            'attacked_tile': None,
+            'attacked_tile': {
+                'ship_name': None,
+                'position': None
+            },
             'ship_locked': False,
             'my_turn': self.is_first_player
         }

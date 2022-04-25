@@ -96,11 +96,11 @@ class Battle:
         """ This function check if enemy attack hits a ship """
 
         response = self.states['client'].get_game_data()
-
+        print('response', response, self.states['client'].client_name)
         enemy_data = next(
             (
                 value
-                for key, value in response
+                for key, value in response.items()
                 if key != self.states['client'].client_name), None)
         if enemy_data['attacked_tile']['ship_name']:
             rescaled_pos = grid.center_position(

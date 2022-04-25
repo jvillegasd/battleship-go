@@ -34,7 +34,7 @@ class GameState:
 
         if states['players_connected']:
             self.state = 'ship_location'
-            self.client = self.states['client']
+            self.client = states['client']
             
             self.ship_location_stage = ShipLocation()
             self.ship_location_stage.load_client(self.client)

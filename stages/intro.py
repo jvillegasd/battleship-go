@@ -73,8 +73,7 @@ class Intro:
     
     def is_client_disconnected(self) -> bool:
         """ This function checks if client is disconnected. """
-        return ((self.states['client'] and self.states['client'].is_disconnected)
-                or not self.states['client'])
+        return self.states['client'] and self.states['client'].is_disconnected
     
     def all_players_connected(self) -> bool:
         """
