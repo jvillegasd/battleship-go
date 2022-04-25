@@ -96,13 +96,16 @@ class Battle:
         """ This function check if enemy attack hits a ship """
 
         response = self.states['client'].get_game_data()
-        print('response', response, self.states['client'].client_name)
         enemy_data = next(
             (
                 value
                 for key, value in response.items()
                 if key != self.states['client'].client_name), None)
-        if enemy_data['attacked_tile']['ship_name']:
+        if (
+            enemy_data['attacked_tile']['ship_name']
+            and enemy_data['attacked_tile']['ship_name'] != 'X'
+            and grid.game_grid[rescaled_pos[0]][rescaled_pos[1]] != 'X'
+        ):
             rescaled_pos = grid.center_position(
                 enemy_data['attacked_tile']['position'])
             explosion = Explosion(

@@ -215,8 +215,9 @@ class Server(Network):
             len(enemy_grid)
             and enemy_grid[0][position[0]][position[1]] in SHIPS_NAMES
         ):
+            ship_name = enemy_grid[0][position[0]][position[1]]
             enemy_grid[0][position[0]][position[1]] = 'X'
-            return enemy_grid[0][position[0]][position[1]]
+            return ship_name
 
         return None
 

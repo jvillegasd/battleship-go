@@ -26,17 +26,25 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 
-client = Client('LinkRs', host_address, host_port)
-client.connect_to_server()
-client.send_data_to_server({'hello': 'world'})
-client.send_data_to_server({'hello': 'world2'})
+linkrs = Client('LinkRs', host_address, host_port)
+zeldars = Client('ZeldaRs', host_address, host_port)
 
-while True:
-    if client.is_disconnected:
-        break
+linkrs.connect_to_server()
+zeldars.connect_to_server()
 
-    # client.get_game_status()
-    
-    client.lock_ships(grid)
-    print(client.get_game_data())
-    client.disconnect()
+
+linkrs.lock_ships(grid)
+zeldars.lock_ships(grid)
+
+print('Before attack')
+print(linkrs.get_game_data())
+print(zeldars.get_game_data())
+
+
+linkrs.attack_enemy_tile((13, 0))
+zeldars.attack_enemy_tile((14, 0))
+
+
+print('After attack')
+print(linkrs.get_game_data())
+print(zeldars.get_game_data())
