@@ -92,7 +92,7 @@ class Server(Network):
                     break
 
                 decoded_data = self.decode_data(data)
-                logging.info(f'Received data: {decoded_data}')
+                # logging.info(f'Received data: {decoded_data}')
 
                 if (
                     self.game_data['game_status'] == GameStatus['ship_lock'].name
@@ -205,18 +205,17 @@ class Server(Network):
     def attack_enemy_tile(self, attacker_name: str, position: Tuple[float, float]) -> str:
         """ This function checks if position hits a enemy ship """
 
-        enemy_grid = [
-            value
-            for key, value in self.game_data['game_grid'].items()
-            if key != attacker_name
-        ]
-
+        enemy_grid = next(
+            (
+                value
+                for key, value in self.game_data['game_grid'].items()
+                if key != attacker_name), None)
         if (
-            len(enemy_grid)
-            and enemy_grid[0][position[0]][position[1]] in SHIPS_NAMES
+            enemy_grid
+            and enemy_grid[position[1]][position[0]] in SHIPS_NAMES
         ):
-            ship_name = enemy_grid[0][position[0]][position[1]]
-            enemy_grid[0][position[0]][position[1]] = 'X'
+            ship_name = enemy_grid[position[1]][position[0]]
+            enemy_grid[position[1]][position[0]] = 'X'
             return ship_name
 
         return None

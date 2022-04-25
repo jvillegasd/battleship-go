@@ -104,27 +104,29 @@ class Battle:
         if (
             enemy_data['attacked_tile']['ship_name']
             and enemy_data['attacked_tile']['ship_name'] != 'X'
-            and grid.game_grid[rescaled_pos[0]][rescaled_pos[1]] != 'X'
         ):
-            rescaled_pos = grid.center_position(
-                enemy_data['attacked_tile']['position'])
-            explosion = Explosion(
-                pos_x=rescaled_pos[0],
-                pos_y=rescaled_pos[1],
-                stop_after_finish=True
-            )
+            position = enemy_data['attacked_tile']['position']
+            if grid.game_grid[position[1]][position[0]] != 'X':
+                rescaled_pos = grid.upscale_position(position)
+                rescaled_pos = grid.center_position(rescaled_pos)
+                
+                explosion = Explosion(
+                    pos_x=rescaled_pos[0],
+                    pos_y=rescaled_pos[1],
+                    stop_after_finish=True
+                )
 
-            attacked_ship = next(
-                (
-                    ship
-                    for ship in ships
-                    if ships.name == enemy_data['attacked_tile']['ship_name']
-                ), None)
-            attacked_ship.get_attacked()
-            grid.game_grid[rescaled_pos[0]][rescaled_pos[1]] = 'X'
+                attacked_ship = next(
+                    (
+                        ship
+                        for ship in ships
+                        if ship.name == enemy_data['attacked_tile']['ship_name']
+                    ), None)
+                attacked_ship.get_attacked()
+                grid.game_grid[position[1]][position[0]] = 'X'
 
-            explosion.center_animation_from_position(rescaled_pos)
-            self.gui_items['enemy_fire']['item'].append(explosion)
+                explosion.center_animation_from_position(rescaled_pos)
+                self.gui_items['ally_fire']['item'].append(explosion)
 
     def process_events(self) -> dict:
         """

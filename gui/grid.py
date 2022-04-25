@@ -96,6 +96,19 @@ class Grid:
         position_with_offset = pygame.Vector2(position) - grid_offset
         return int(position_with_offset[0] // self.tile_size), int(position_with_offset[1] // self.tile_size)
 
+    def upscale_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
+        """ This function upscales the provided position. """
+        
+        grid_offset = (self.pos_x, self.pos_y)
+        
+        upscaled_x = position[0] * self.tile_size
+        upscaled_y = position[1] * self.tile_size
+        
+        position_without_offset = pygame.Vector2(
+            (upscaled_x, upscaled_y)) + grid_offset
+        
+        return position_without_offset
+
     def center_position(self, position: Tuple[float, float]) -> Tuple[float, float]:
         """
           This function readjust and upscales the provided position
@@ -105,8 +118,7 @@ class Grid:
           in order to get a valid position, them, this coordinates
           is upscaled and centered at tile.
         """
-
-        grid_offset = (self.pos_x, self.pos_y)
+        
         tile_center_offset = (int(self.tile_size // 2),
                               int(self.tile_size // 2))
 
@@ -114,10 +126,7 @@ class Grid:
         x, y = self.translate_position(position)
 
         # Take translated position and upscale it
-        upscaled_x = x * self.tile_size
-        upscaled_y = y * self.tile_size
-        position_without_offset = pygame.Vector2(
-            (upscaled_x, upscaled_y)) + grid_offset
+        position_without_offset = self.upscale_position((x, y))
 
         # Add another offset in order to locate ship.rect.center at center of the tile
         position_without_offset += tile_center_offset
