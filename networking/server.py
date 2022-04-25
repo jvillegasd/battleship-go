@@ -123,6 +123,7 @@ class Server(Network):
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
                     if decoded_data['request'] == 'attack_tile':
+                        logging.info(f'client {client_name} attack {decoded_data}')
                         ship_name = self.attack_enemy_tile(
                             client_name, decoded_data['position'])
                         self.game_data['clients'][client_name]['attacked_tile'] = {
@@ -162,11 +163,6 @@ class Server(Network):
         self.game_data['sockets'][client_name].sendall(message)
 
     @thread_safe
-    def update_game(self, new_game_data: dict) -> None:
-        """ This function updates game data. """
-        self.game_data['clients'] = new_game_data
-
-    @thread_safe
     def end_game(self) -> None:
         """ This function ends game by cleaning server connections. """
 
@@ -174,6 +170,7 @@ class Server(Network):
             self.game_data['sockets'][client_name].shutdown(socket.SHUT_RDWR)
             self.game_data['sockets'][client_name].close()
 
+        self.is_first_player = True
         self.game_data['clients'] = {}
         self.game_data['game_status'] = GameStatus['player_disconnected'].name
 
@@ -181,6 +178,7 @@ class Server(Network):
     def reset_game(self) -> None:
         """ This function reset game data. """
 
+        self.is_first_player = True
         for client_name in self.game_data['clients']:
             self.game_data['clients'][client_name] = {
                 'attacked_tile': {
@@ -188,8 +186,9 @@ class Server(Network):
                     'position': None
                 },
                 'ship_locked': False,
-                'my_turn': False
+                'my_turn': self.is_first_player
             }
+            self.is_first_player = False
             self.game_data['game_grid'][client_name] = None
 
         self.game_data['game_status'] = GameStatus['ship_lock'].name

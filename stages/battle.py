@@ -76,6 +76,7 @@ class Battle:
         if event.type == pygame.MOUSEBUTTONDOWN:
             tile_pos = grid.translate_position(event.pos)
             ship_name = self.states['client'].attack_enemy_tile(tile_pos)
+            print('attack', ship_name)
             if ship_name:
                 explosion = Explosion(
                     pos_x=event.pos[0],
@@ -96,6 +97,7 @@ class Battle:
         """ This function check if enemy attack hits a ship """
 
         response = self.states['client'].get_game_data()
+        print('receive', response)
         enemy_data = next(
             (
                 value
