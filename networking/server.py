@@ -215,7 +215,7 @@ class Server(Network):
             ship_name = enemy_grid[position[1]][position[0]]
             enemy_grid[position[1]][position[0]] = 'X'
             
-            # Update new turn
+            # Update players turn
             for client_name in self.game_data['clients']:
                 if client_name == attacker_name:
                     self.game_data['clients'][client_name]['my_turn'] = False

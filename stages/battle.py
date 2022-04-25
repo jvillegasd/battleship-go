@@ -1,12 +1,13 @@
 import sys
 import pygame
-from typing import Tuple, List
+from typing import List
 
 # Import client
 from networking.client import Client
 
 # Import GUI items
 from gui.grid import Grid
+from gui.label import Label
 from gui.dev_sign import DevSign
 from gui.map_widget import MapWidget
 
@@ -129,6 +130,21 @@ class Battle:
                 explosion.center_animation_from_position(rescaled_pos)
                 self.gui_items['ally_fire']['item'].append(explosion)
 
+    def check_player_turn(self, is_my_turn: bool) -> None:
+        """ This function shows the current player turn. """
+        
+        label_offset = (0, 0)
+        
+        if is_my_turn:
+            label_offset = (50, 0)
+            self.gui_items['turn_label']['item'].change_text('My turn!')
+        else:
+            label_offset = (15, 0)
+            self.gui_items['turn_label']['item'].change_text(
+                'Waiting for enemy turn...')
+        
+        self.gui_items['turn_label']['item'].move_label(label_offset)
+
     def process_events(self) -> dict:
         """
           This function handles pygame events related
@@ -138,6 +154,8 @@ class Battle:
         if self.is_client_disconnected():
             pygame.quit()
             sys.exit()
+
+        is_my_turn = self.states['client'].is_my_turn()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -152,10 +170,12 @@ class Battle:
                     self.gui_items['ships']['enabled'] = True
                 else:
                     self.gui_items['ships']['enabled'] = False
-                    if self.states['client'].is_my_turn():
+                    if is_my_turn:
                         self.attack_enemy_ship(
                             event, self.map_widget.enemy_map)
-
+        
+        self.check_player_turn(is_my_turn)
+        
         if self.states['maps_ships_loaded']:
             self.receive_enemy_attack(
                 self.map_widget.ally_map, self.ships)
@@ -191,6 +211,9 @@ class Battle:
         """
 
         sign = DevSign(pos_x=325, pos_y=475)
+        turn_label = Label(pos_x=130, pos_y=430,
+                           text='Waiting for enemy turn...')
+
         gui_items = {
             'tabs': {
                 'enabled': False,
@@ -211,6 +234,10 @@ class Battle:
             'dev_sign': {
                 'enabled': True,
                 'item': sign
+            },
+            'turn_label': {
+                'enabled': True,
+                'item': turn_label
             }
         }
 
