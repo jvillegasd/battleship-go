@@ -97,7 +97,6 @@ class Battle:
         """ This function check if enemy attack hits a ship """
 
         response = self.states['client'].get_game_data()
-        print('receive', response)
         enemy_data = next(
             (
                 value
@@ -111,7 +110,7 @@ class Battle:
             if grid.game_grid[position[1]][position[0]] != 'X':
                 rescaled_pos = grid.upscale_position(position)
                 rescaled_pos = grid.center_position(rescaled_pos)
-                
+
                 explosion = Explosion(
                     pos_x=rescaled_pos[0],
                     pos_y=rescaled_pos[1],
@@ -151,8 +150,6 @@ class Battle:
             if self.states['maps_ships_loaded']:
                 if self.__ally_tab_selected():
                     self.gui_items['ships']['enabled'] = True
-                    self.receive_enemy_attack(
-                        self.map_widget.ally_map, self.ships)
                 else:
                     self.gui_items['ships']['enabled'] = False
                     if self.states['client'].is_my_turn():
@@ -160,6 +157,8 @@ class Battle:
                             event, self.map_widget.enemy_map)
 
         if self.states['maps_ships_loaded']:
+            self.receive_enemy_attack(
+                self.map_widget.ally_map, self.ships)
             self.states['last_selected_ship'] = self.__show_ship_life_status()
             self.__handle_attack_animation()
             self.map_widget.handle_button_tabs_events()

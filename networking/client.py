@@ -68,8 +68,6 @@ class Client(Network):
 
         return None
 
-    # TODO: create attack_tile
-
     def lock_ships(self, game_grid: List[list]) -> None:
         """ Notify to server that client locked ships and send game grid """
         self.send_data_to_server({'request': 'ship_locked', 'grid': game_grid})

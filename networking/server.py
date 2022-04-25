@@ -123,7 +123,6 @@ class Server(Network):
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
                     if decoded_data['request'] == 'attack_tile':
-                        logging.info(f'client {client_name} attack {decoded_data}')
                         ship_name = self.attack_enemy_tile(
                             client_name, decoded_data['position'])
                         self.game_data['clients'][client_name]['attacked_tile'] = {
@@ -215,6 +214,14 @@ class Server(Network):
         ):
             ship_name = enemy_grid[position[1]][position[0]]
             enemy_grid[position[1]][position[0]] = 'X'
+            
+            # Update new turn
+            for client_name in self.game_data['clients']:
+                if client_name == attacker_name:
+                    self.game_data['clients'][client_name]['my_turn'] = False
+                else:
+                    self.game_data['clients'][client_name]['my_turn'] = True
+            
             return ship_name
 
         return None
