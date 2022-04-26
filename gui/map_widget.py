@@ -1,6 +1,7 @@
 import pygame
 
 from gui.grid import Grid
+from gui.card import Card
 from gui.button import Button
 
 
@@ -19,11 +20,13 @@ class MapWidget:
         self.btn_width = 90
         self.btn_height = 30
 
-        # Define main rect
-        self.main_rect = pygame.Rect(
-            (self.pos_x, self.pos_y), (self.width, self.height))
-        self.main_rect_color = (204, 230, 244)
-        self.main_rect_border_radius = 12
+        # Define card
+        self.card = Card(
+            pos_x=self.pos_x,
+            pos_y=self.pos_y,
+            width=self.width,
+            height=self.height
+        )
 
         # Define button tab colors
         self.ally_map_selected = True
@@ -70,9 +73,8 @@ class MapWidget:
           depending on which tab is selected on window.
         """
 
-        # Draw main rect
-        pygame.draw.rect(window, self.main_rect_color, self.main_rect,
-                         border_radius=self.main_rect_border_radius)
+        # Draw card
+        self.card.draw(window)
 
         # Draw button tabs
         self.ally_tab_btn.draw(window)

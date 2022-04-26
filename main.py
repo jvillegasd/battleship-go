@@ -76,8 +76,7 @@ class GameState:
 
 
 def main() -> None:
-    # TODO: Create client-server networking for multiplayer
-    # TODO: Reset battle buttom
+    # TODO: Winner stage
 
     game_state = GameState()
     clock = pygame.time.Clock()
