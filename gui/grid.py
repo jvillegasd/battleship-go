@@ -147,8 +147,9 @@ class Grid:
         """
 
         for index, ship in enumerate(ships):
+            ship_life = 0
             x, y = self.translate_position(ship.rect.center)
-
+            
             if ship.is_vertical:
                 collision_rect_height = ship.collision_rect.height
                 number_of_tiles = int(collision_rect_height // self.tile_size)
@@ -156,9 +157,15 @@ class Grid:
                 # Locate ship vertically by using translated position as a pivot
                 for i in range(int(number_of_tiles // 2)):
                     if y - i >= 0:
+                        if self.game_grid[y - i][x] == 0:
+                            ship_life += 1
+                        
                         self.game_grid[y - i][x] = ship.name
 
                     if y + i < self.game_grid_rows:
+                        if self.game_grid[y + i][x] == 0:
+                            ship_life += 1
+                        
                         self.game_grid[y + i][x] = ship.name
             else:
                 collision_rect_width = ship.collision_rect.width
@@ -167,13 +174,18 @@ class Grid:
                 # Locate ship horizontally by using translated position as a pivot
                 for i in range(int(number_of_tiles // 2)):
                     if x - i >= 0:
+                        if self.game_grid[y][x - i] == 0:
+                            ship_life += 1
+                        
                         self.game_grid[y][x - i] = ship.name
 
                     if x + i < self.game_grid_cols:
+                        if self.game_grid[y][x + i] == 0:
+                            ship_life += 1
+                        
                         self.game_grid[y][x + i] = ship.name
 
-            ships[index].set_ship_life(number_of_tiles)
-
+            ships[index].set_ship_life(ship_life)
         return ships
 
     def attack_tile(self, position: Tuple[float, float]) -> Tuple[bool, str]:

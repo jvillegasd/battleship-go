@@ -92,7 +92,7 @@ class Server(Network):
                     break
 
                 decoded_data = self.decode_data(data)
-                # logging.info(f'Received data: {decoded_data}')
+                logging.info(f'Received data: {decoded_data}')
 
                 if (
                     self.game_data['game_status'] == GameStatus['ship_lock'].name
