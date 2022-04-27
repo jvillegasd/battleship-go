@@ -101,3 +101,7 @@ class Client(Network):
 
         response = self.send_data_to_server({'request': 'winner'})
         return response.get('winner')
+
+    def reset_game(self) -> None:
+        """ Request to reset game. """
+        self.send_data_to_server({'request': 'reset_game'})

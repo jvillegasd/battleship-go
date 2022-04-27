@@ -4,6 +4,7 @@ import pygame
 from stages.intro import Intro
 from stages.battle import Battle
 from stages.ship_location import ShipLocation
+from stages.podium import Podium
 
 
 FPS = 30
@@ -21,10 +22,11 @@ class GameState:
 
     def __init__(self) -> None:
         self.client = None
-        self.state = 'intro'
+        self.state = 'podium'
         self.intro_stage = Intro()
         self.ship_location_stage: ShipLocation = None
         self.battle_stage: Battle = None
+        self.podium_stage: Podium = Podium()
 
     def intro(self) -> None:
         """ Intro stage state handler. """
@@ -63,16 +65,26 @@ class GameState:
 
         states = self.battle_stage.process_events()
         self.battle_stage.draw(WIN)
+    
+    def podium(self) -> None:
+        """ Podium stage state handler. """
+        
+        states = self.podium_stage.process_events()
+        self.podium_stage.draw(WIN)
+        
+        self.podium_stage.load_winner_name('LinkRs')
 
     def state_manager(self) -> None:
         """ This function keeps tracking of current game state. """
-
+        
         if self.state == 'intro':
             self.intro()
         elif self.state == 'ship_location':
             self.ship_location()
         elif self.state == 'battle':
             self.battle()
+        elif self.state == 'podium':
+            self.podium()
 
 
 def main() -> None:
