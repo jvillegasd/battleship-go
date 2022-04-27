@@ -83,7 +83,7 @@ class Intro:
         
         if self.states['client']:
             game_status = self.states['client'].get_game_status()
-            return game_status == 'ship_lock'
+            return game_status != 'lobby'
         
         return False
     

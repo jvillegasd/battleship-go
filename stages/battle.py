@@ -22,8 +22,8 @@ class Battle:
     def __init__(self) -> None:
         self.states = {
             'client': None,
-            'game_finished': False,
             'winner_name': None,
+            'game_finished': False,
             'maps_ships_loaded': False,
             'last_selected_ship': -1
         }
@@ -182,6 +182,8 @@ class Battle:
             self.states['last_selected_ship'] = self.__show_ship_life_status()
             self.__handle_attack_animation()
             self.map_widget.handle_button_tabs_events()
+        
+        # TODO: if there_is_winner: request them and end stage
 
         return self.states
 

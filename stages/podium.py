@@ -54,14 +54,24 @@ class Podium:
 
     def load_winner_name(self, winner_name: str) -> None:
         """ This function loads winner name. """
-        
+
         self.states['winner_name'] = winner_name
-        self.gui_items['winner_label']['item'].change_text(winner_name)
+        self.gui_items['winner_label']['item'].change_text(
+            f'The winner is: {winner_name}')
 
     def is_client_disconnected(self) -> bool:
         """ This function checks if client is disconnected. """
         return ((self.states['client'] and self.states['client'].is_disconnected)
                 or not self.states['client'])
+
+    def is_game_reseted(self) -> bool:
+        """ This function checks if game is reseted. """
+
+        if self.states['client']:
+            game_status = self.states['client'].get_game_status()
+            return game_status == 'ship_lock'
+
+        return False
 
     def process_events(self) -> dict:
         """
@@ -80,9 +90,13 @@ class Podium:
 
                 pygame.quit()
                 sys.exit()
-        
+
         if self.handle_buttom_click(self.gui_items['reset_button']):
-              self.states['client'].reset_game()
+            self.states['client'].reset_game()
+            self.states['reset_game'] = True
+
+        if self.is_game_reseted():
+            self.states['reset_game'] = True
 
         return self.states
 
@@ -107,7 +121,7 @@ class Podium:
             width=120,
             height=40
         )
-        
+
         gui_items = {
             'dev_sign': {
                 'enabled': True,
@@ -126,5 +140,5 @@ class Podium:
                 'item': reset_button
             }
         }
-        
+
         return gui_items

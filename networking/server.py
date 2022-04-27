@@ -106,22 +106,28 @@ class Server(Network):
                         self.game_data['game_grid'][client_name] = decoded_data['grid']
                         self.send_data_to_client(
                             {'message': 'ok'}, client_name)
+                    
                     if decoded_data['request'] == 'reset_game':
                         self.reset_game()
                         self.send_data_to_client(
                             {'message': 'ok'}, client_name)
+                    
                     if decoded_data['request'] == 'disconnect':
                         logging.info(f'Client disconnected: {client_name}')
                         break
+                    
                     if decoded_data['request'] == 'game_data':
                         self.send_data_to_client(
                             self.game_data['clients'], client_name)
+                    
                     if decoded_data['request'] == 'game_status':
                         self.send_data_to_client(
                             {'game_status': self.game_data['game_status']}, client_name)
+                    
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
+                    
                     if decoded_data['request'] == 'attack_tile':
                         ship_name = self.attack_enemy_tile(
                             client_name, decoded_data['position'])
