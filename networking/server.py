@@ -239,18 +239,15 @@ class Server(Network):
     def attack_enemy_tile(self, attacker_name: str, position: Tuple[float, float]) -> str:
         """ This function checks if position hits an enemy ship and updates turn. """
 
-        # Update players turn
+        # Update players turn and get enemy grid
+        enemy_grid = None
         for client_name in self.game_data['clients']:
             if client_name == attacker_name:
                 self.game_data['clients'][client_name]['my_turn'] = False
             else:
+                enemy_grid = self.game_data['game_grid'][client_name]
                 self.game_data['clients'][client_name]['my_turn'] = True
-
-        enemy_grid = next(
-            (
-                value
-                for key, value in self.game_data['game_grid'].items()
-                if key != attacker_name), None)
+        
         if (
             enemy_grid
             and enemy_grid[position[1]][position[0]] in SHIPS_NAMES
