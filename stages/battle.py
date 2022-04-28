@@ -128,7 +128,7 @@ class Battle:
                 grid.game_grid[position[1]][position[0]] = 'X'
                 
                 if attacked_ship.get_ship_life() == 0:
-                    self.states['client']
+                    self.states['client'].ship_sinked()
 
                 explosion.center_animation_from_position(rescaled_pos)
                 self.gui_items['ally_fire']['item'].append(explosion)
