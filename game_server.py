@@ -16,7 +16,6 @@ class GameServerWindow(object):
 
         # Core attributes
         self.server = None
-        # self.parent = parent
         self.polling_interval = 1000
 
         # Top frame for start and stop game server
