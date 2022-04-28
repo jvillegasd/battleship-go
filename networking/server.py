@@ -215,14 +215,19 @@ class Server(Network):
 
     @thread_safe
     def check_if_ships_are_locked(self) -> bool:
-        """ This function checks clients locked their ships """
+        """ This function checks clients locked their ships. """
         return all(
             self.game_data['game_grid'][client_name] is not None
             for client_name in self.game_data['game_grid'])
 
     @thread_safe
     def someone_wins_a_game(self, loser_name: str) -> None:
-        """ This function looks for the winner name by filtering using loser name. """
+        """
+          This function looks for the winner name by filtering using loser name.
+
+          Server maintain a tracking of players grids an their attacks attemps,
+          but clients notifies when a ship sinks.
+        """
         self.game_data['winner'] = next(
             (
                 client_name
@@ -232,7 +237,7 @@ class Server(Network):
 
     @thread_safe
     def attack_enemy_tile(self, attacker_name: str, position: Tuple[float, float]) -> str:
-        """ This function checks if position hits a enemy ship and updates turn. """
+        """ This function checks if position hits an enemy ship and updates turn. """
 
         # Update players turn
         for client_name in self.game_data['clients']:
