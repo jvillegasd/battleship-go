@@ -80,7 +80,8 @@ class Server(Network):
         self.__add_client_to_server(client_name, client_socket)
         self.send_data_to_client('Connected', client_name)
 
-        logging.info(f'Client connected: {client_name}')
+        logging.info(
+            f'Client "{client_name}" connected from IP: "{client_ip}"')
 
         if len(self.game_data['clients']) == CONN_LIMIT:
             self.game_data['game_status'] = GameStatus['ship_lock'].name
@@ -100,34 +101,40 @@ class Server(Network):
                 ):
                     self.game_data['game_status'] = GameStatus['battle'].name
 
+                if (
+                    self.game_data['game_status'] == GameStatus['battle'].name
+                    and self.game_data['winner']
+                ):
+                    self.game_data['game_status'] = GameStatus['finished'].name
+
                 if 'request' in decoded_data:
                     if decoded_data['request'] == 'ship_locked':
                         self.game_data['clients'][client_name]['ship_locked'] = True
                         self.game_data['game_grid'][client_name] = decoded_data['grid']
                         self.send_data_to_client(
                             {'message': 'ok'}, client_name)
-                    
+
                     if decoded_data['request'] == 'reset_game':
                         self.reset_game()
                         self.send_data_to_client(
                             {'message': 'ok'}, client_name)
-                    
+
                     if decoded_data['request'] == 'disconnect':
                         logging.info(f'Client disconnected: {client_name}')
                         break
-                    
+
                     if decoded_data['request'] == 'game_data':
                         self.send_data_to_client(
                             self.game_data['clients'], client_name)
-                    
+
                     if decoded_data['request'] == 'game_status':
                         self.send_data_to_client(
                             {'game_status': self.game_data['game_status']}, client_name)
-                    
+
                     if decoded_data['request'] == 'winner':
                         self.send_data_to_client(
                             {'winner': self.game_data['winner']}, client_name)
-                    
+
                     if decoded_data['request'] == 'attack_tile':
                         ship_name = self.attack_enemy_tile(
                             client_name, decoded_data['position'])
@@ -137,6 +144,11 @@ class Server(Network):
                         }
                         self.send_data_to_client(
                             {'attacked': ship_name}, client_name)
+
+                    if decoded_data['request'] == 'ship_sinked':
+                        self.game_data['clients'][client_name]['sinked_ships'] += 1
+                        if self.game_data['clients'][client_name]['sinked_ships'] >= len(SHIPS_NAMES):
+                            self.someone_wins_a_game(client_name)
                 else:
                     self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:
@@ -177,6 +189,7 @@ class Server(Network):
 
         self.is_first_player = True
         self.game_data['clients'] = {}
+        self.game_data['winner'] = None
         self.game_data['game_status'] = GameStatus['player_disconnected'].name
 
     @thread_safe
@@ -190,24 +203,36 @@ class Server(Network):
                     'ship_name': None,
                     'position': None
                 },
+                'sinked_ships': 0,
                 'ship_locked': False,
                 'my_turn': self.is_first_player
             }
             self.is_first_player = False
             self.game_data['game_grid'][client_name] = None
 
+        self.game_data['winner'] = None
         self.game_data['game_status'] = GameStatus['ship_lock'].name
 
     @thread_safe
-    def check_if_ships_are_locked(self) -> None:
-        """ This function check clients locked their ships """
+    def check_if_ships_are_locked(self) -> bool:
+        """ This function checks clients locked their ships """
         return all(
             self.game_data['game_grid'][client_name] is not None
             for client_name in self.game_data['game_grid'])
 
     @thread_safe
+    def someone_wins_a_game(self, loser_name: str) -> None:
+        """ This function looks for the winner name by filtering using loser name. """
+        self.game_data['winner'] = next(
+            (
+                client_name
+                for client_name in self.game_data['clients']
+                if client_name != loser_name
+            ), None)
+
+    @thread_safe
     def attack_enemy_tile(self, attacker_name: str, position: Tuple[float, float]) -> str:
-        """ This function checks if position hits a enemy ship """
+        """ This function checks if position hits a enemy ship and updates turn. """
 
         # Update players turn
         for client_name in self.game_data['clients']:
@@ -215,7 +240,7 @@ class Server(Network):
                 self.game_data['clients'][client_name]['my_turn'] = False
             else:
                 self.game_data['clients'][client_name]['my_turn'] = True
-        
+
         enemy_grid = next(
             (
                 value
@@ -248,6 +273,7 @@ class Server(Network):
                 'ship_name': None,
                 'position': None
             },
+            'sinked_ships': 0,
             'ship_locked': False,
             'my_turn': self.is_first_player
         }

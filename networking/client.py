@@ -84,6 +84,10 @@ class Client(Network):
         game_data = self.get_game_data()
         return game_data[self.client_name]['my_turn']
 
+    def ship_sinked(self) -> None:
+        """ Notify that a ship is sinked. """
+        self.send_data_to_server({'request': 'ship_sinked'})
+
     def get_game_data(self) -> Union[dict, None]:
         """ Request current game data to server. """
 

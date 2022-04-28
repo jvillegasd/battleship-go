@@ -146,6 +146,10 @@ class Ship:
         self.current_life = life
         self.life_diplay.change_text(f'life: {self.current_life}/{self.life}')
 
+    def get_ship_life(self) -> int:
+        """ This function returns current ship life. """
+        return self.current_life
+
     def get_attacked(self) -> int:
         """
           This function substracts 1 point of live
