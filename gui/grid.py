@@ -45,7 +45,7 @@ class Grid:
 
         # Translate mouse position to grid space
         x, y = self.translate_position(pygame.mouse.get_pos())
-        if self.__is_valid_position((x, y)):
+        if self.is_valid_position((x, y)):
             return x, y
         else:
             return None, None
@@ -196,16 +196,16 @@ class Grid:
 
         # Translate mouse position to grid space
         x, y = self.translate_position(position)
-        if self.__is_valid_position((x, y)):
+        if self.is_valid_position((x, y)):
             if self.game_grid[y][x] in SHIPS_NAMES:
                 self.game_grid[y][x] = 1
                 return True, self.game_grid[y][x]
 
         return False, ''
 
-    def __is_valid_position(self, position: Tuple[float, float]) -> bool:
+    def is_valid_position(self, position: Tuple[float, float]) -> bool:
         """
-          This private function validates if provided position is
+          This function validates if provided position is
           inside re-scaled grid.
         """
 

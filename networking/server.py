@@ -111,6 +111,7 @@ class Server(Network):
                     if decoded_data['request'] == 'ship_locked':
                         self.game_data['clients'][client_name]['ship_locked'] = True
                         self.game_data['game_grid'][client_name] = decoded_data['grid']
+                        
                         self.send_data_to_client(
                             {'message': 'ok'}, client_name)
 
@@ -142,13 +143,17 @@ class Server(Network):
                             'position': decoded_data['position'],
                             'ship_name': ship_name
                         }
+                        
                         self.send_data_to_client(
                             {'attacked': ship_name}, client_name)
 
                     if decoded_data['request'] == 'ship_sinked':
                         self.game_data['clients'][client_name]['sinked_ships'] += 1
                         if self.game_data['clients'][client_name]['sinked_ships'] >= len(SHIPS_NAMES):
-                            self.someone_wins_a_game(client_name)
+                            self.game_over(client_name)
+                        
+                        self.send_data_to_client(
+                            {'message': 'ok'}, client_name)
                 else:
                     self.send_data_to_client({'message': 'ok'}, client_name)
         except socket.error:
@@ -221,7 +226,7 @@ class Server(Network):
             for client_name in self.game_data['game_grid'])
 
     @thread_safe
-    def someone_wins_a_game(self, loser_name: str) -> None:
+    def game_over(self, loser_name: str) -> None:
         """
           This function looks for the winner name by filtering using loser name.
 
@@ -247,7 +252,7 @@ class Server(Network):
             else:
                 enemy_grid = self.game_data['game_grid'][client_name]
                 self.game_data['clients'][client_name]['my_turn'] = True
-        
+
         if (
             enemy_grid
             and enemy_grid[position[1]][position[0]] in SHIPS_NAMES

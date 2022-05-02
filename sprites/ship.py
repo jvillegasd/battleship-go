@@ -176,8 +176,6 @@ class Ship:
         
         if self.can_draw_bubble:
             self.life_diplay.draw(window)
-        
-        self.draw_hitbox(window)
 
     def draw_hitbox(self, window: pygame.display) -> None:
         """

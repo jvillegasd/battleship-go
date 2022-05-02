@@ -1,6 +1,6 @@
 import sys
 import pygame
-from typing import List
+from typing import List, Union
 
 # Import client
 from networking.client import Client
@@ -76,20 +76,21 @@ class Battle:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             tile_pos = grid.translate_position(event.pos)
-            ship_name = self.states['client'].attack_enemy_tile(tile_pos)
-            print('attack', ship_name)
-            if ship_name:
-                explosion = Explosion(
-                    pos_x=event.pos[0],
-                    pos_y=event.pos[1],
-                    stop_after_finish=True
-                )
+            if grid.is_valid_position(tile_pos):
+                ship_name = self.states['client'].attack_enemy_tile(tile_pos)
 
-                grid.game_grid[tile_pos[0]][tile_pos[1]] = 'X'
+                if ship_name:
+                    explosion = Explosion(
+                        pos_x=event.pos[0],
+                        pos_y=event.pos[1],
+                        stop_after_finish=True
+                    )
 
-                centered_pos = grid.center_position(event.pos)
-                explosion.center_animation_from_position(centered_pos)
-                self.gui_items['enemy_fire']['item'].append(explosion)
+                    grid.game_grid[tile_pos[0]][tile_pos[1]] = 'X'
+
+                    centered_pos = grid.center_position(event.pos)
+                    explosion.center_animation_from_position(centered_pos)
+                    self.gui_items['enemy_fire']['item'].append(explosion)
 
     def receive_enemy_attack(
             self,
@@ -122,11 +123,10 @@ class Battle:
                     (
                         ship
                         for ship in ships
-                        if ship.name == enemy_data['attacked_tile']['ship_name']
-                    ), None)
+                        if ship.name == enemy_data['attacked_tile']['ship_name']), None)
                 attacked_ship.get_attacked()
                 grid.game_grid[position[1]][position[0]] = 'X'
-                
+
                 if attacked_ship.get_ship_life() == 0:
                     self.states['client'].ship_sinked()
 
@@ -135,9 +135,9 @@ class Battle:
 
     def check_player_turn(self, is_my_turn: bool) -> None:
         """ This function shows the current player turn. """
-        
+
         label_offset = (0, 0)
-        
+
         if is_my_turn:
             label_offset = (50, 0)
             self.gui_items['turn_label']['item'].change_text('My turn!')
@@ -145,7 +145,7 @@ class Battle:
             label_offset = (15, 0)
             self.gui_items['turn_label']['item'].change_text(
                 'Waiting for enemy turn...')
-        
+
         self.gui_items['turn_label']['item'].move_label(label_offset)
 
     def process_events(self) -> dict:
@@ -176,17 +176,20 @@ class Battle:
                     if is_my_turn:
                         self.attack_enemy_ship(
                             event, self.map_widget.enemy_map)
-        
+
         self.check_player_turn(is_my_turn)
-        
+
         if self.states['maps_ships_loaded']:
             self.receive_enemy_attack(
                 self.map_widget.ally_map, self.ships)
             self.states['last_selected_ship'] = self.__show_ship_life_status()
             self.__handle_attack_animation()
             self.map_widget.handle_button_tabs_events()
-        
-        # TODO: if there_is_winner: request them and end stage
+
+        winner_name = self.states['client'].get_winner()
+        if winner_name:
+            self.states['winner_name'] = winner_name
+            self.states['game_finished'] = True
 
         return self.states
 
