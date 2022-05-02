@@ -24,3 +24,6 @@ Sprites used in this project are not my authorship. There were found on internet
  - [Sea Warfare set](https://opengameart.org/content/sea-warfare-set-ships-and-more)
 
 ## Images
+![lobby](https://user-images.githubusercontent.com/23248296/166291502-a8964bc7-5138-4bde-a7bc-ad30a4cd45dd.PNG)
+![battle](https://user-images.githubusercontent.com/23248296/166291602-75f04685-2665-4e9f-ac6c-f685a8523fe9.PNG)
+![game server](https://user-images.githubusercontent.com/23248296/166291634-b5f7d4b0-e65b-458c-8685-352dcc3df824.PNG)
