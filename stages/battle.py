@@ -85,8 +85,8 @@ class Battle:
                         pos_y=event.pos[1],
                         stop_after_finish=True
                     )
-
-                    grid.game_grid[tile_pos[0]][tile_pos[1]] = 'X'
+                    
+                    grid.game_grid[tile_pos[1]][tile_pos[0]] = 'X'
 
                     centered_pos = grid.center_position(event.pos)
                     explosion.center_animation_from_position(centered_pos)
