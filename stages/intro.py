@@ -54,20 +54,39 @@ class Intro:
         label_offset = (0, 0)
         username = self.gui_items['username_input']['item'].get_text()
         host_address = self.gui_items['host_input']['item'].get_text()
-        host_post = self.gui_items['port_input']['item'].get_text()
+        host_port_text = self.gui_items['port_input']['item'].get_text()
 
-        client = Client(username, host_address, host_post)
-        if client.connect_to_server():
-            self.states['client'] = client
+        try:
+            host_port = int(host_port_text)
+            if not (0 <= host_port <= 65535): 
+                raise ValueError("Port out of range") 
+        except ValueError: 
+            self.gui_items['conn_label']['item'].change_text("Invalid port number (0–65535)") 
+            self.gui_items['conn_label']['item'].move_label((13, 0)) 
+            print("Invalid port entered:", host_port_text) 
+
+            old = self.gui_items['port_input']['item'] 
+            self.gui_items['port_input']['item'] = Input(pos_x=old.pos_x, pos_y=old.pos_y, width=old.width)
+            return
+
+        try:
+            client = Client(username, host_address, host_port)
+            if client.connect_to_server():
+                self.states['client'] = client
             
-            label_offset = (5, 0)
-            self.gui_items['conn_label']['item'].change_text(
-                'Waiting for player...')
-            self.gui_items['start_button']['enabled'] = False
-        else:
-            label_offset = (13, 0)
-            self.gui_items['conn_label']['item'].change_text(
-                'Connection error...')
+                label_offset = (5, 0)
+                self.gui_items['conn_label']['item'].change_text(
+                    'Waiting for player...')
+                self.gui_items['start_button']['enabled'] = False
+            else:
+                label_offset = (13, 0)
+                self.gui_items['conn_label']['item'].change_text(
+                    'Connection error...')
+        except ConnectionRefusedError: 
+            label_offset = (13, 0) 
+            self.gui_items['conn_label']['item'].change_text( 
+                'Could not connect to server!') 
+            print("Connection refused")
 
         self.gui_items['conn_label']['item'].move_label(label_offset)
     
