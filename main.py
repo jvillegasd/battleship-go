@@ -31,17 +31,23 @@ class GameState:
     def intro(self) -> None:
         """ Intro stage state handler. """
 
-        states = self.intro_stage.process_events()
-        self.intro_stage.draw(WIN)
+        try:
+            states = self.intro_stage.process_events()
+            self.intro_stage.draw(WIN)
 
-        if states['players_connected']:
-            self.state = 'ship_location'
-            self.client = states['client']
+            if states['players_connected']:
+                self.state = 'ship_location'
+                self.client = states['client']
 
-            self.ship_location_stage = ShipLocation()
-            self.ship_location_stage.load_client(self.client)
+                self.ship_location_stage = ShipLocation()
+                self.ship_location_stage.load_client(self.client)
 
-            self.intro_stage = None
+                self.intro_stage = None
+
+        except ConnectionRefusedError: 
+            print("Could not connect to server.")
+            if self.intro_stage: 
+                self.intro_stage.status_message = "Connection failed. Please check server."
 
     def ship_location(self) -> None:
         """ Ship location stage state handler. """
